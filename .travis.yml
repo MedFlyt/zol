@@ -12,8 +12,8 @@ notifications:
 node_js:
     - '6'
 before_script:
-    - ./node_modules/.bin/lerner bootstrap
+    - ./node_modules/.bin/lerna bootstrap
 script:
-    - ./node_modules/.bin/lerner run test:prod && lerner run build
+    - ./node_modules/.bin/lerna run test:prod && lerner run build
 after_success:
-    - ./node_modules/.bin/lerner run report-coverage
+    - ./node_modules/.bin/lerna run report-coverage
