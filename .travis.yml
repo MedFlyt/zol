@@ -20,6 +20,6 @@ before_script:
     - psql -c 'select version();' -U postgres
     - psql -c 'create database travis_ci_test;' -U postgres
 script:
-    - DATABASE_URL=postgres://postgres:@localhost:5432/travis_ci_test ./node_modules/.bin/lerna run test:prod && lerner run build
+    - DATABASE_URL=postgres://postgres:@localhost:5432/travis_ci_test ./node_modules/.bin/lerna run test:prod && ./node_modules/.bin/lerna run build
 after_success:
     - ./node_modules/.bin/lerna run report-coverage
