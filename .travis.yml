@@ -17,6 +17,7 @@ services:
     - postgresql
 before_script:
     - ./node_modules/.bin/lerna bootstrap
+    - psql -c 'select version();' -U postgres
     - psql -c 'create database travis_ci_test;' -U postgres
 script:
     - DATABASE_URL=postgres://postgres:@localhost:5432/travis_ci_test ./node_modules/.bin/lerna run test:prod && lerner run build
