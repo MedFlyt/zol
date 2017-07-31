@@ -12,8 +12,8 @@ notifications:
 node_js:
     - '6'
 before_script:
-    - npm prune && npm cache clean
+    - ./node_modules/.bin/lerner bootstrap
 script:
-    - lerner run test:prod && lerner run build
+    - ./node_modules/.bin/lerner run test:prod && lerner run build
 after_success:
-    - lerner run report-coverage
+    - ./node_modules/.bin/lerner run report-coverage
