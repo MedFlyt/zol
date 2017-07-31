@@ -1,0 +1,62 @@
+{
+    "extends": ["tslint:latest"],
+    "rules": {
+        "array-type": false,
+        "arrow-parens": false,
+        "forin": false,
+        "interface-name": false,
+        "jsx-no-lambda": false,
+        "jsx-no-multiline-js": false,
+        "indent": [true, "spaces", 4],
+        "linebreak-style": [true, "LF"],
+        "encoding": true,
+        "max-classes-per-file": false,
+        "max-line-length": false, // TODO This is probably useful, reconsider
+        "no-angle-bracket-type-assertion": false,
+        "no-consecutive-blank-lines": false,
+        "no-console": false,
+        "no-default-export": true,
+        "no-empty-interface": false,
+        "no-import-side-effect": true,
+        "no-mergeable-namespace": true,
+        "no-namespace": false,
+        "no-non-null-assertion": true,
+        "no-require-imports": true,
+        "no-string-literal": false,
+        "no-switch-case-fall-through": true,
+        "object-literal-key-quotes": [true, "consistent"],
+        "object-literal-shorthand": false,
+        "object-literal-sort-keys": false,
+        "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
+        "triple-equals": true,
+        "variable-name": [true, "ban-keywords"],
+        "whitespace": [true,
+            "check-branch",
+            "check-decl",
+            "check-operator",
+            "check-module",
+            "check-separator",
+            "check-type",
+            "check-preblock"
+        ],
+
+        "await-promise": true,
+        "match-default-export-name": true,
+        "no-unnecessary-qualifier": true,
+        "no-for-in-array": true,
+        "no-inferred-empty-object-type": true,
+        "no-unbound-method": [true, "ignore-static"],
+        "strict-boolean-expressions": true,
+        "strict-type-predicates": true,
+        "no-boolean-literal-compare": true,
+        // "restrict-plus-operands": true, // TODO This is good
+        "no-use-before-declare": false,
+        "prefer-conditional-expression": false,
+        "no-reference-import": true,
+        "no-irregular-whitespace": true,
+        "switch-default": true, // <https://github.com/palantir/tslint/issues/3076>
+        "no-unnecessary-type-assertion": false, // TODO This is good, but tslint seems to flag some false positives
+        "no-shadowed-variable": false, // TODO This is actually good but we use too many shadows
+        "unified-signatures": false // TODO Not sure how I really feel about this one
+    }
+}

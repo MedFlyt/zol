@@ -1,0 +1,34 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "inlineSources": true,
+        "removeComments": false,
+        "newLine": "LF",
+        "preserveConstEnums": false,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strictNullChecks": true,
+        "suppressExcessPropertyErrors": false,
+        "suppressImplicitAnyIndexErrors": false,
+        "lib": [
+            "dom",
+            "es2015.collection",
+            "es2015.promise",
+            "es2015.symbol",
+            "es5",
+            "es6"
+        ],
+        "noLib": false,
+        "target": "es5",
+        "module": "es2015",
+        "moduleResolution": "node",
+        "isolatedModules": false
+    }
+}

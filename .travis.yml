@@ -1,0 +1,19 @@
+language: node_js
+branches:
+    only:
+        - master
+        - /^greenkeeper/.*$/
+cache:
+    yarn: true
+    directories:
+        - node_modules
+notifications:
+    email: false
+node_js:
+    - '6'
+before_script:
+    - npm prune && npm cache clean
+script:
+    - lerner run test:prod && lerner run build
+after_success:
+    - lerner run report-coverage

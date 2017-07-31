@@ -1,0 +1,8 @@
+{
+    "extends": "../base_tsconfig/tsconfig.json",
+    "compilerOptions": {
+        "outDir": "../build/src",
+        "declaration": true,
+        "declarationDir": "../build/types"
+    }
+}
