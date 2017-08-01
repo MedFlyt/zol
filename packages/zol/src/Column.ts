@@ -35,20 +35,6 @@ export function liftC2<s, a, b, c>(f: (x: Exp<SQL, a>, y: Exp<SQL, b>) => Exp<SQ
     };
 }
 
-/**
- * Perform a runtime cast of a column to a specified SQL type
- *
- * @param sqlType The SQL type, such as `BIGINT`
- */
-export function unsafeCast<s, a, b>(col: Col<s, a>, sqlType: string, parser: (val: string) => b): Col<s, b> {
-    return <any>colWrap({
-        type: "ECast",
-        exp: colUnwrap(col),
-        sqlType: sqlType,
-        parser: parser
-    });
-}
-
 export function nullCol<s>(): Col<s, null> {
     return colWrap({
         type: "ELit",

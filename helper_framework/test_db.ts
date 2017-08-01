@@ -1,4 +1,4 @@
-import { pg } from "../src/zol";
+import { pg } from "./pg";
 
 /**
  * Starts a new database transaction, runs your action, and then aborts the transaction,

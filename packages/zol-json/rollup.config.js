@@ -2,7 +2,7 @@ import sourceMaps from "rollup-plugin-sourcemaps"
 const pkg = require("./package.json")
 const camelCase = require("lodash.camelcase")
 
-const libraryName = "zol"
+const libraryName = "zol-json"
 
 export default {
     entry: `build/src/${libraryName}.js`,
@@ -13,7 +13,7 @@ export default {
     sourceMap: true,
     // Indicate here external modules you don't wanna include in your bundle (i.e.: "lodash")
     external: [
-        "pg"
+        "zol"
     ],
     plugins: [
         sourceMaps()

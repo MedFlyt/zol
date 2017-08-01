@@ -16,10 +16,14 @@ addons:
 services:
     - postgresql
 before_script:
-    - ./node_modules/.bin/lerna bootstrap
     - psql -c 'select version();' -U postgres
     - psql -c 'create database travis_ci_test;' -U postgres
 script:
-    - DATABASE_URL=postgres://postgres:@localhost:5432/travis_ci_test ./node_modules/.bin/lerna run test:prod && ./node_modules/.bin/lerna run build
+    - npm run bootstrap
+    - npm run build-all
+    - npm run build-tests-all
+    - DATABASE_URL=postgres://postgres:@localhost:5432/travis_ci_test npm run test-all
+    - npm run lint-all
+    - npm run style-all
 after_success:
-    - ./node_modules/.bin/lerna run report-coverage
+    - npm run report-coverage

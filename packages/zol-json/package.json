@@ -1,7 +1,7 @@
 {
-  "name": "zol",
+  "name": "zol-json",
   "version": "0.0.1",
-  "description": "Type safe composable SQL abstraction layer",
+  "description": "JSON SQL functionality for Zol",
   "keywords": [
     "typescript",
     "sql",
@@ -10,9 +10,9 @@
     "postgres",
     "orm"
   ],
-  "main": "dist/zol.umd.js",
-  "module": "dist/zol.es5.js",
-  "typings": "dist/types/zol.d.ts",
+  "main": "dist/zol-json.umd.js",
+  "module": "dist/zol-json.es5.js",
+  "typings": "dist/types/zol-json.d.ts",
   "files": [
     "dist",
     "src"
@@ -23,7 +23,7 @@
     "style": "node ../../tools/ts-style.js './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts'",
     "style-fix": "node ../../tools/ts-style.js './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts' --fix",
     "prebuild": "rimraf dist",
-    "build": "tsc --project src && rollup -c && ts-node ../../tools/dts-merge.ts ./build/types/zol.d.ts -o ./dist/types/zol.d.ts && typedoc --out dist/docs --target es6 --readme none --mode file --theme minimal --includeDeclarations --excludePrivate --excludeExternals dist/types/zol.d.ts",
+    "build": "tsc --project src && rollup -c && ts-node ../../tools/dts-merge.ts ./build/types/zol-json.d.ts -o ./dist/types/zol-json.d.ts && typedoc --tsconfig src/tsconfig.json --readme none --mode file --theme minimal --includeDeclarations --excludePrivate --excludeExternals dist/types/zol-json.d.ts --out dist/docs",
     "build-tests": "tsc --project tests",
     "deploy-docs": "echo TODO && false"
   },
@@ -46,7 +46,6 @@
     "typescript": "2.4.2"
   },
   "dependencies": {
-    "@types/pg": "^6.1.43",
-    "pg": "^7.0.2"
+    "zol": "^0.0.1"
   }
 }

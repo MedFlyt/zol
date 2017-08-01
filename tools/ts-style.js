@@ -1,8 +1,8 @@
-var glob = require('glob');
-var childProcess = require('child_process');
-var fs = require('fs-extra');
-var tmp = require('tmp');
-var path = require('path');
+var childProcess = require("child_process");
+var fs = require("fs-extra");
+var glob = require("glob");
+var path = require("path");
+var tmp = require("tmp");
 
 function isPlatformWindows() {
     return /^win/.test(process.platform);
@@ -46,9 +46,9 @@ function runWithChunkedArgs(args, action) {
 function tsformat_files(files) {
     runWithChunkedArgs(files, function (chunked) {
         var p = childProcess.spawnSync(
-            node_exe('tsfmt'),
-            ['-r'].concat(chunked),
-            { stdio: '' });
+            node_exe("tsfmt"),
+            ["-r"].concat(chunked),
+            { stdio: "" });
 
         if (p.error) {
             throw p.error;
@@ -59,9 +59,9 @@ function tsformat_files(files) {
 function tslint_files(files) {
     runWithChunkedArgs(files, function (chunked) {
         var p = childProcess.spawnSync(
-            node_exe('tslint'),
-            ['--fix'].concat(chunked),
-            { stdio: '' });
+            node_exe("tslint"),
+            ["--fix"].concat(chunked),
+            { stdio: "" });
 
         if (p.error) {
             throw p.error;
@@ -98,9 +98,9 @@ function check_files(files, fix) {
                     foundErrors = true;
                     try {
                         childProcess.execFileSync(
-                            'python',
-                            [tool_path('diffstyle.py'), file, '-c', file_mirror(file)],
-                            { stdio: 'inherit' });
+                            "python",
+                            [tool_path("diffstyle.py"), file, "-c", file_mirror(file)],
+                            { stdio: "inherit" });
                     } catch (e) {
                         if (e.status) {
                             // We expected the command to return an exit code status error, but we still want to continue
@@ -127,26 +127,47 @@ function print_usage() {
 
 function parse_args() {
     var fix = false;
+    var patterns = [];
+    var i;
+
     if (process.argv.length === 2) {
-    } else if (process.argv.length === 3) {
-        if (process.argv[2] === "--fix") {
-            fix = true;
-        } else {
-            print_usage();
-        }
-    } else {
         print_usage();
     }
 
-    return {
-        fix: fix
+    for (i = 2; i < process.argv.length; ++i) {
+        if (process.argv[i] === "--fix") {
+            fix = true;
+        } else {
+            patterns.push(process.argv[i]);
+        }
     }
+
+    return {
+        fix: fix,
+        patterns: patterns
+    }
+}
+
+function multiGlob(patterns, results, callback) {
+    if (patterns.length === 0) {
+        callback(null, results);
+        return;
+    }
+
+    glob(patterns[0], function (err, matches) {
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        multiGlob(patterns.slice(1), results.concat(matches), callback);
+    });
 }
 
 function main() {
     var args = parse_args();
 
-    glob('{./src/**/*.ts?(x),./helper_framework/**/*.ts?(x),./tests/**/*.ts?(x),./benchmarks/**/*.ts?(x)}', function (err, matches) {
+    multiGlob(args.patterns, [], function (err, matches) {
         if (err) {
             console.error(err);
             process.exit(1);

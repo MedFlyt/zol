@@ -50,8 +50,12 @@ export namespace Lit {
 }
 
 export namespace SqlType {
-    export function numberParser(val: string): number {
+    export function intParser(val: string): number {
         return parseInt(val, 10);
+    }
+
+    export function numberParser(val: string): number {
+        return parseFloat(val);
     }
 
     export function stringParser(val: string): string {
