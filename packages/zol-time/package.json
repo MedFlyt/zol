@@ -18,7 +18,7 @@
     "src"
   ],
   "scripts": {
-    "lint": "tslint -c ../../tslint.json --type-check --project ./src/tsconfig.json -t codeFrame && tslint -c ../../tslint.json --type-check --project ./tests/tsconfig.json -t codeFrame && tslint -c ../../tslint.json --type-check --project ./benchmarks/tsconfig.json -t codeFrame",
+    "lint": "tslint -c ../../tslint.json --type-check --project ./src/tsconfig.json -t codeFrame && tslint -c ../../tslint.json --type-check --project ./tests/tsconfig.json -t codeFrame",
     "lint-fix": "tslint -c ../../tslint.json --format stylish --fix './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts'",
     "style": "node ../../tools/ts-style.js './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts'",
     "style-fix": "node ../../tools/ts-style.js './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts' --fix",

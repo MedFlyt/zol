@@ -1,12 +1,7 @@
 {
-    "extends": "../base_tsconfig/tsconfig.json",
+    "extends": "../../../base_tsconfig/tsconfig.json",
     "compilerOptions": {
         "module": "commonjs",
         "outDir": "../build"
-    },
-    "include": [
-        "../src",
-        "../helper_framework",
-        "."
-    ]
+    }
 }
