@@ -71,3 +71,13 @@ export function unsafeAggr<s, a, b>(funName: string, col: Col<s, a>, parser: (va
         parser: parser
     });
 }
+
+export function unsafeBinOp<s, a, b, c>(opName: string, lhs: Col<s, a>, rhs: Col<s, b>, parser: (val: string) => c): Col<s, c> {
+    return <any>colWrap({
+        type: "ECustomBinOp",
+        op: opName,
+        lhs: colUnwrap(lhs),
+        rhs: colUnwrap(rhs),
+        parser: parser
+    });
+}

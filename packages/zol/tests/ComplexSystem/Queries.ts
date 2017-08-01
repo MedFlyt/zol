@@ -1,7 +1,7 @@
-import { aggregate, Col, count, dateCol, defaultValue, e, groupBy, inQuery, insertReturning, isNotNull, jsonCol, leftJoin, not, nullCol, numberCol, Order, order, pg, PGJson, Q, query, restrict, restrictEq, select, textCol, update } from "../../src/zol";
+import { aggregate, Col, count, dateCol, defaultValue, e, groupBy, inQuery, insertReturning, isNotNull, leftJoin, not, nullCol, numberCol, Order, order, pg, Q, restrict, restrictEq, select, textCol, update } from "../../src/zol";
 import { agentIdCol, auditionIdCol, auditionPerformanceIdCol, performerIdCol, personIdCol, talentAgencyIdCol } from "./EntityCol";
 import { AgentId, AuditionId, AuditionPerformanceId, PerformerId, PersonId, TalentAgencyId } from "./EntityIds";
-import { AgentTable, agentTable, auditionOutcomeTable, AuditionOutcomeTable, auditionPerformanceTable, AuditionPerformanceTable, auditionTable, AuditionTable, performerAgencyContractTable, PerformerAgencyContractTable, PerformerTable, performerTable, personTable, PersonTable, recommendedAuditionTable, RecommendedAuditionTable, singingSkillTable, statusUpdateTable, StatusUpdateTable } from "./Tables";
+import { AgentTable, agentTable, auditionOutcomeTable, AuditionOutcomeTable, auditionPerformanceTable, AuditionPerformanceTable, auditionTable, AuditionTable, performerAgencyContractTable, PerformerAgencyContractTable, PerformerTable, performerTable, personTable, PersonTable, recommendedAuditionTable, RecommendedAuditionTable, singingSkillTable, statusUpdateTable } from "./Tables";
 import { Sex, sexCol } from "./Types";
 
 export async function createPerson(conn: pg.Client, name: string): Promise<PersonId> {
@@ -283,49 +283,49 @@ export function selectStatusUpdateWithPerson<s>(q: Q<s>) {
     };
 }
 
-export async function createPerformerStatusUpdate(conn: pg.Client, performerId: PerformerId, date: Date, title: string, body: string) {
-    const results = await query(conn, q => {
-        const performer = select(q, performerTable);
-        restrictEq(q, performer.id, performerIdCol(performerId));
-        return {
-            personId: performer.personId
-        };
-    });
+// export async function createPerformerStatusUpdate(conn: pg.Client, performerId: PerformerId, date: Date, title: string, body: string) {
+//     const results = await query(conn, q => {
+//         const performer = select(q, performerTable);
+//         restrictEq(q, performer.id, performerIdCol(performerId));
+//         return {
+//             personId: performer.personId
+//         };
+//     });
 
-    if (results.length !== 1) {
-        throw new Error("Expected 1 row but got: " + results.length);
-    }
+//     if (results.length !== 1) {
+//         throw new Error("Expected 1 row but got: " + results.length);
+//     }
 
-    return createStatusUpdate(conn, results[0].personId, date, title, body);
-}
+//     return createStatusUpdate(conn, results[0].personId, date, title, body);
+// }
 
-export async function createStatusUpdate(conn: pg.Client, personId: PersonId, date: Date, title: string, body: string) {
-    const values: StatusUpdateTable = {
-        id: defaultValue(),
-        personId: personIdCol(personId),
-        date: dateCol(date),
-        payload: jsonCol({
-            title: title,
-            body: body
-        })
-    };
+// export async function createStatusUpdate(conn: pg.Client, personId: PersonId, date: Date, title: string, body: string) {
+//     const values: StatusUpdateTable = {
+//         id: defaultValue(),
+//         personId: personIdCol(personId),
+//         date: dateCol(date),
+//         payload: jsonCol({
+//             title: title,
+//             body: body
+//         })
+//     };
 
-    const inserted = await insertReturning(conn,
-        statusUpdateTable,
-        values,
-        row => ({ id: row.id }));
+//     const inserted = await insertReturning(conn,
+//         statusUpdateTable,
+//         values,
+//         row => ({ id: row.id }));
 
-    return inserted.id;
-}
+//     return inserted.id;
+// }
 
-export function getAllStatusUpdates<s>(q: Q<s>, performerId: Col<s, PerformerId>) {
-    const status = select(q, statusUpdateTable);
-    const performer = select(q, performerTable);
-    restrictEq(q, performer.id, performerId);
-    restrictEq(q, status.personId, performer.personId);
-    return {
-        ...status,
-        title: PGJson.objFieldAsText(status.payload, textCol("title")),
-        body: PGJson.objFieldAsText(status.payload, textCol("body"))
-    };
-}
+// export function getAllStatusUpdates<s>(q: Q<s>, performerId: Col<s, PerformerId>) {
+//     const status = select(q, statusUpdateTable);
+//     const performer = select(q, performerTable);
+//     restrictEq(q, performer.id, performerId);
+//     restrictEq(q, status.personId, performer.personId);
+//     return {
+//         ...status,
+//         title: PGJson.objFieldAsText(status.payload, textCol("title")),
+//         body: PGJson.objFieldAsText(status.payload, textCol("body"))
+//     };
+// }

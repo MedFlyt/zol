@@ -11,7 +11,6 @@ export { pg } from "./pg";
 export { query, restrict, groupBy, aggregate, inQuery, leftJoin, innerJoin, inner, suchThat, select, limit, order, Q } from "./Imperative";
 export { isNull, isNotNull, not, restrictEq, like } from "./Operators";
 export { e } from "./e";
-export { PGJson, jsonCol } from "./PGTypes";
 export { Debug } from "./Debug";
 export { SqlType } from "./SqlType";
-export { unsafeCast, unsafeFun, unsafeFun2, unsafeAggr } from "./Unsafe";
+export { unsafeCast, unsafeFun, unsafeFun2, unsafeAggr, unsafeBinOp } from "./Unsafe";

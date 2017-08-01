@@ -2,11 +2,11 @@ import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-sid
 
 import * as test from "blue-tape";
 import { withTestDatabase } from "../../../../helper_framework/test_db";
-import { defaultValue, insertManyReturning, nullCol, order, Order, pg, PGJson, query, textCol } from "../../src/zol";
+import { defaultValue, insertManyReturning, nullCol, order, Order, pg, query, textCol } from "../../src/zol";
 import { createTablesSql } from "./CreateTablesSql";
 import { performerIdCol, talentAgencyIdCol } from "./EntityCol";
 import { AgentId, PerformerId, TalentAgencyId } from "./EntityIds";
-import { agentRecommendAudition, auditionAddPerformance, auditionSetWinner, createAgent, createAudition, createPerformer, createPerformerStatusUpdate, getAllStatusUpdates, performerAuditions, performerAuditionsWonOrUndecided, selectAgentFullView, talentAgencyAuditions, talentAgencySignPerformer } from "./Queries";
+import { agentRecommendAudition, auditionAddPerformance, auditionSetWinner, createAgent, createAudition, createPerformer, performerAuditions, performerAuditionsWonOrUndecided, selectAgentFullView, talentAgencyAuditions, talentAgencySignPerformer } from "./Queries";
 import { TalentAgencyTable, talentAgencyTable } from "./Tables";
 import { Sex } from "./Types";
 
@@ -401,26 +401,26 @@ test("talent agency auditions", t => withAllTables(async conn => {
     t.deepEqual(actual, expected);
 }));
 
-test.skip("talent agency auditions 2", t => withAllTables(async conn => {
-    const { performers } = await insertInitialData(conn);
+// test("talent agency auditions 2", t => withAllTables(async conn => {
+//     const { performers } = await insertInitialData(conn);
 
-    const statusUpdateId = await createPerformerStatusUpdate(conn, performers.abe, new Date("2000-05-01T09:00:00.000Z"), "Title", "Body");
+//     const statusUpdateId = await createPerformerStatusUpdate(conn, performers.abe, new Date("2000-05-01T09:00:00.000Z"), "Title", "Body");
 
-    const actual = await query(conn, q => getAllStatusUpdates(q, performerIdCol(performers.abe)));
+//     const actual = await query(conn, q => getAllStatusUpdates(q, performerIdCol(performers.abe)));
 
-    const expected: typeof actual = [
-        {
-            id: statusUpdateId,
-            date: new Date("2000-05-01T09:00:00.000Z"),
-            personId: actual[0].personId,
-            payload: PGJson.parse({
-                title: "Title",
-                body: "Body"
-            }),
-            title: "Title",
-            body: "Body"
-        }
-    ];
+//     const expected: typeof actual = [
+//         {
+//             id: statusUpdateId,
+//             date: new Date("2000-05-01T09:00:00.000Z"),
+//             personId: actual[0].personId,
+//             payload: PGJson.parse({
+//                 title: "Title",
+//                 body: "Body"
+//             }),
+//             title: "Title",
+//             body: "Body"
+//         }
+//     ];
 
-    t.deepEqual(actual, expected);
-}));
+//     t.deepEqual(actual, expected);
+// }));

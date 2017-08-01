@@ -1,4 +1,4 @@
-import { declareTable, MakeCols, MakeTable, PGJson, SqlType } from "../../src/zol";
+import { declareTable, MakeCols, MakeTable, SqlType } from "../../src/zol";
 import { ActingSkillId, AgentId, AuditionId, AuditionOutcomeId, AuditionPerformanceId, ComedySkillId, PerformerAgencyContractId, PerformerId, PerformerPhotoId, PersonId, RecommendedAuditionId, SingingSkillId, StatusUpdateId, TalentAgencyId } from "./EntityIds";
 import { Sex, VoiceType } from "./Types";
 
@@ -283,7 +283,7 @@ export const auditionOutcomeTable = declareTable<AuditionOutcomeReq, AuditionOut
 interface StatusUpdateReq {
     readonly personId: PersonId;
     readonly date: Date;
-    readonly payload: PGJson;
+    readonly payload: string;
 }
 
 interface StatusUpdateDef {
