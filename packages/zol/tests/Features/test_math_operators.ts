@@ -1,7 +1,7 @@
 import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
 
 import * as test from "blue-tape";
-import { withTestDatabase } from "../../../../helper_framework/test_db";
+import { withTestDatabase } from "../../../../helper_framework/TestDb";
 import { Col, e, numberCol, query, SqlType, unsafeCast } from "../../src/zol";
 
 function intCol<s>(val: number): Col<s, number> {

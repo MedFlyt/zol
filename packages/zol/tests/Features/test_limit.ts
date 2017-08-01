@@ -1,7 +1,7 @@
 import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
 
 import * as test from "blue-tape";
-import { withTestDatabase } from "../../../../helper_framework/test_db";
+import { withTestDatabase } from "../../../../helper_framework/TestDb";
 import { defaultValue, insertMany, limit, numberCol, order, Order, pg, query, select, textCol } from "../../src/zol";
 import { createPersonTableSql, PersonTable, personTable } from "./Tables";
 

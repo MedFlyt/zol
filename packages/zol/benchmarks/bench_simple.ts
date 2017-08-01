@@ -1,6 +1,6 @@
 import "../../../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
 
-import { withTestDatabase } from "../../../helper_framework/test_db";
+import { withTestDatabase } from "../../../helper_framework/TestDb";
 import { Debug, declareTable, MakeCols, MakeTable, pg, query, select, SqlType } from "../src/zol";
 import { Benchmark } from "./Benchmark";
 import { QueryBenchmark } from "./QueryBenchmark";

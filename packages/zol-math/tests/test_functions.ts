@@ -2,7 +2,7 @@ import "../../../helper_framework/boot"; // tslint:disable-line:no-import-side-e
 
 import * as test from "blue-tape";
 import { numberCol, query } from "zol";
-import { withTestDatabase } from "../../../helper_framework/test_db";
+import { withTestDatabase } from "../../../helper_framework/TestDb";
 import { sqrt } from "../src/zol-math";
 
 test("sqrt", t => withTestDatabase(async conn => {
