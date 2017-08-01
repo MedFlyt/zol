@@ -1,7 +1,7 @@
-import "../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
+import "../../../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
 
 import * as test from "blue-tape";
-import { withTestDatabase } from "../helper_framework/db";
+import { withTestDatabase } from "../../../helper_framework/test_db";
 import { query } from "../src/Frontend";
 import * as m from "../src/Imperative";
 import { pg } from "../src/pg";

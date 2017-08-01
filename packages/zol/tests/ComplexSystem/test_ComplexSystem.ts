@@ -1,7 +1,7 @@
-import "../../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
+import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
 
 import * as test from "blue-tape";
-import { withTestDatabase } from "../../helper_framework/db";
+import { withTestDatabase } from "../../../../helper_framework/test_db";
 import { defaultValue, insertManyReturning, nullCol, order, Order, pg, PGJson, query, textCol } from "../../src/zol";
 import { createTablesSql } from "./CreateTablesSql";
 import { performerIdCol, talentAgencyIdCol } from "./EntityCol";

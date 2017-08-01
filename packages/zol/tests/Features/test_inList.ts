@@ -1,7 +1,7 @@
-import "../../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
+import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
 
 import * as test from "blue-tape";
-import { withTestDatabase } from "../../helper_framework/db";
+import { withTestDatabase } from "../../../../helper_framework/test_db";
 import { Col, inList, numberCol, query, restrict, SqlType, textCol, unsafeCast } from "../../src/zol";
 
 test("in list", t => withTestDatabase(async conn => {
