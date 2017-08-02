@@ -1,4 +1,4 @@
-const { cd, exec, echo, touch } = require("shelljs")
+const { cd, exec, echo, touch, set } = require("shelljs")
 const { readFileSync } = require("fs")
 const url = require("url")
 
@@ -17,6 +17,7 @@ let parsedUrl = url.parse(repoUrl)
 let repository = (parsedUrl.host || "") + (parsedUrl.path || "")
 let ghToken = process.env.GH_TOKEN
 
+set('-e')
 echo("Deploying docs!!!")
 exec("rm -rf dist")
 exec("mkdir -p dist/docs")
@@ -32,8 +33,8 @@ exec("cp -r ../packages/zol-math/dist/docs/* docs/zol-math/")
 exec("cp -r ../packages/zol-time/dist/docs/* docs/zol-time/")
 exec("git init")
 exec("git add .")
-exec('git config user.name ""')
-exec('git config user.email ""')
+exec('git config user.name "deploy"')
+exec('git config user.email "<>"')
 exec('git commit -m "docs(docs): update gh-pages"')
 exec(
     `git push --force --quiet "https://${ghToken}@${repository}" master:gh-pages`
