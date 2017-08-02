@@ -17,6 +17,8 @@ export function allNamesInExp<a>(exp: Exp<SQL, a>): ColName[] {
             return allNamesInExp(exp.lhs).concat(allNamesInExp(exp.rhs));
         case "EUnOp":
             return allNamesInExp(exp.exp);
+        case "EFun2":
+            return allNamesInExp(exp.lhs).concat(allNamesInExp(exp.rhs));
         case "ECast":
             return allNamesInExp(exp.exp);
         case "EAggrEx":
@@ -31,8 +33,9 @@ export function allNamesInExp<a>(exp: Exp<SQL, a>): ColName[] {
         }
         case "EInQuery":
             return allNamesInExp(exp.exp).concat(allNamesInSQL(exp.sql));
+        /* istanbul ignore next */
         default:
-            throw new Error("TODO " + exp.type);
+            return assertNever(exp);
     }
 }
 

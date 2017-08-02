@@ -191,6 +191,14 @@ function ppCol<a>(c: Exp<SQL, a>): PP<string> {
             return ppBinOp(c.op, c.lhs, c.rhs);
         case "EUnOp":
             return ppUnOp(c.op, c.exp);
+        case "EFun2":
+            return State.bind(
+                ppCol(c.lhs),
+                a2 => State.bind(
+                    ppCol(c.rhs),
+                    b2 => State.pure(c.name + "(" + a2 + ", " + b2 + ")")
+                )
+            );
         case "EAggrEx":
             return ppUnOp({
                 type: "UFun",
@@ -217,8 +225,9 @@ function ppCol<a>(c: Exp<SQL, a>): PP<string> {
                     q2 => State.pure(x2 + " IN (" + q2 + ")")
                 )
             );
+        /* istanbul ignore next */
         default:
-            throw new Error("TODO " + c.type);
+            return assertNever(c);
     }
 }
 

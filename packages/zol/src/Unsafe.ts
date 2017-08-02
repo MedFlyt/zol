@@ -45,12 +45,13 @@ export function unsafeFun<s, a, b>(funName: string, col: Col<s, a>, parser: (val
  * @param col2 Second argument to the function
  * @param parser Function that parses the raw SQL value into the return type of the function
  */
-export function unsafeFun2<s, a, b, c>(funName: string, col1: Col<s, a>, col2: Col<s, b>): Col<s, c> {
+export function unsafeFun2<s, a, b, c>(funName: string, col1: Col<s, a>, col2: Col<s, b>, parser: (val: string) => c): Col<s, c> {
     return <any>colWrap({
         type: "EFun2",
         name: funName,
         lhs: colUnwrap(col1),
-        rhs: colUnwrap(col2)
+        rhs: colUnwrap(col2),
+        parser: parser
     });
 }
 
