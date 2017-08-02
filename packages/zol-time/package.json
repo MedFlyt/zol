@@ -47,6 +47,7 @@
     "typescript": "2.4.2"
   },
   "dependencies": {
+    "js-joda": "^1.5.4",
     "zol": "^0.0.1"
   }
 }
