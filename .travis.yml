@@ -27,4 +27,8 @@ script:
     - npm run style-all
 after_success:
     - npm run report-coverage
-    - npm run deploy-docs
+deploy:
+  provider: script
+  script: npm run deploy-docs
+  on:
+    branch: master
