@@ -1,4 +1,4 @@
-import { aggregate, Col, count, dateCol, defaultValue, e, groupBy, inQuery, insertReturning, isNotNull, leftJoin, not, nullCol, numberCol, Order, order, pg, Q, restrict, restrictEq, select, textCol, update } from "../../src/zol";
+import { aggregate, Col, count, defaultValue, e, groupBy, inQuery, insertReturning, isNotNull, leftJoin, not, nullCol, numberCol, Order, order, pg, Q, restrict, restrictEq, select, textCol, update } from "../../src/zol";
 import { agentIdCol, auditionIdCol, auditionPerformanceIdCol, performerIdCol, personIdCol, talentAgencyIdCol } from "./EntityCol";
 import { AgentId, AuditionId, AuditionPerformanceId, PerformerId, PersonId, TalentAgencyId } from "./EntityIds";
 import { AgentTable, agentTable, auditionOutcomeTable, AuditionOutcomeTable, auditionPerformanceTable, AuditionPerformanceTable, auditionTable, AuditionTable, performerAgencyContractTable, PerformerAgencyContractTable, PerformerTable, performerTable, personTable, PersonTable, recommendedAuditionTable, RecommendedAuditionTable, singingSkillTable, statusUpdateTable } from "./Tables";
@@ -56,12 +56,12 @@ export async function createPerformer(conn: pg.Client, name: string, sex: Sex, h
     return inserted.id;
 }
 
-export async function talentAgencySignPerformer(conn: pg.Client, talentAgencyId: TalentAgencyId, performerId: PerformerId, signedAt: Date): Promise<void> {
+export async function talentAgencySignPerformer(conn: pg.Client, talentAgencyId: TalentAgencyId, performerId: PerformerId, signedAt: string): Promise<void> {
     const values: PerformerAgencyContractTable = {
         id: defaultValue(),
         talentAgencyId: talentAgencyIdCol(talentAgencyId),
         performerId: performerIdCol(performerId),
-        signedAt: dateCol(signedAt),
+        signedAt: textCol(signedAt),
         terminatedAt: nullCol()
     };
 
@@ -72,7 +72,7 @@ export async function talentAgencySignPerformer(conn: pg.Client, talentAgencyId:
     );
 }
 
-export async function talentAgencyTerminatePerformer(conn: pg.Client, talentAgencyId: TalentAgencyId, performerId: PerformerId, terminatedAt: Date): Promise<void> {
+export async function talentAgencyTerminatePerformer(conn: pg.Client, talentAgencyId: TalentAgencyId, performerId: PerformerId, terminatedAt: string): Promise<void> {
     await update(conn,
         performerAgencyContractTable,
         contract => e(
@@ -81,18 +81,18 @@ export async function talentAgencyTerminatePerformer(conn: pg.Client, talentAgen
         contract => {
             const result: PerformerAgencyContractTable = {
                 ...contract,
-                terminatedAt: dateCol(terminatedAt)
+                terminatedAt: textCol(terminatedAt)
             };
             return result;
         }
     );
 }
 
-export async function createAudition(conn: pg.Client, title: string, time: Date, sex: Sex | null): Promise<AuditionId> {
+export async function createAudition(conn: pg.Client, title: string, time: string, sex: Sex | null): Promise<AuditionId> {
     const values: AuditionTable = {
         id: defaultValue(),
         title: textCol(title),
-        time: dateCol(time),
+        time: textCol(time),
         sex: sex !== null ? sexCol(sex) : nullCol()
     };
 
@@ -119,12 +119,12 @@ export async function agentRecommendAudition(conn: pg.Client, agentId: AgentId, 
     );
 }
 
-export async function auditionAddPerformance(conn: pg.Client, auditionId: AuditionId, performerId: PerformerId, auditionedAt: Date, referredByAgentId: AgentId | null): Promise<AuditionPerformanceId> {
+export async function auditionAddPerformance(conn: pg.Client, auditionId: AuditionId, performerId: PerformerId, auditionedAt: string, referredByAgentId: AgentId | null): Promise<AuditionPerformanceId> {
     const values: AuditionPerformanceTable = {
         id: defaultValue(),
         auditionId: auditionIdCol(auditionId),
         performerId: performerIdCol(performerId),
-        auditionedAt: dateCol(auditionedAt),
+        auditionedAt: textCol(auditionedAt),
         referredByAgentId: referredByAgentId !== null ? agentIdCol(referredByAgentId) : nullCol()
     };
 
@@ -137,12 +137,12 @@ export async function auditionAddPerformance(conn: pg.Client, auditionId: Auditi
     return inserted.id;
 }
 
-export async function auditionSetWinner(conn: pg.Client, auditionId: AuditionId, winningPerformanceId: AuditionPerformanceId, decidedAt: Date): Promise<void> {
+export async function auditionSetWinner(conn: pg.Client, auditionId: AuditionId, winningPerformanceId: AuditionPerformanceId, decidedAt: string): Promise<void> {
     const values: AuditionOutcomeTable = {
         id: defaultValue(),
         auditionId: auditionIdCol(auditionId),
         winningPerformanceId: auditionPerformanceIdCol(winningPerformanceId),
-        decidedAt: dateCol(decidedAt)
+        decidedAt: textCol(decidedAt)
     };
 
     await insertReturning(conn,

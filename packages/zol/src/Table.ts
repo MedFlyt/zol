@@ -16,16 +16,21 @@ export interface ColInfo {
     parser: (val: string) => any;
 }
 
-export function declareTable<Req, Def>(tableName: string, columns: [string, keyof (Req & Def), (val: any) => any][]): Table<Req, Def> {
-    const tableCols = columns.map(val => {
-        const [name, propName, parser] = val;
-        return {
-            name: ColName.wrap(name),
-            propName: propName,
-            parser: parser
-        };
-    });
-    tableCols.sort((a, b) => a.propName > b.propName ? 1 : -1);
+export declare type TableDeclareCols<T extends object> = {
+    [P in keyof T]: [string, (val: string) => T[P]];
+};
+
+export function declareTable<Req extends object, Def extends object>(tableName: string, columns: TableDeclareCols<Req & Def>): Table<Req, Def> {
+    const keys = Object.keys(columns);
+    keys.sort();
+    const tableCols: ColInfo[] = [];
+    for (const key of keys) {
+        tableCols.push({
+            propName: key,
+            name: ColName.wrap(columns[key][0]),
+            parser: columns[key][1]
+        });
+    }
     return <any>{
         tableName: TableName.wrap(tableName),
         tableCols: tableCols

@@ -22,11 +22,11 @@ interface PersonDef {
 export type PersonCols<s> = MakeCols<s, PersonReq & PersonDef>;
 export type PersonTable = MakeTable<PersonReq, PersonDef>;
 
-export const personTable = declareTable<PersonReq, PersonDef>("person", [
-    ["id", "id", SqlType.numberParser],
-    ["name", "name", SqlType.stringParser],
-    ["age", "age", SqlType.numberParser]
-]);
+export const personTable = declareTable<PersonReq, PersonDef>("person", {
+    id: ["id", SqlType.numberParser],
+    name: ["name", SqlType.stringParser],
+    age: ["age", SqlType.numberParser]
+});
 
 // --------------------------------------------------------------------
 
@@ -46,10 +46,10 @@ export interface AddressReq {
 export type AddressCols<s> = MakeCols<s, AddressReq & {}>;
 export type AddressTable = MakeTable<AddressReq, {}>;
 
-export const addressTable = declareTable<AddressReq, {}>("address", [
-    ["name", "name", SqlType.stringParser],
-    ["city", "city", SqlType.stringParser]
-]);
+export const addressTable = declareTable<AddressReq, {}>("address", {
+    name: ["name", SqlType.stringParser],
+    city: ["city", SqlType.stringParser]
+});
 
 // --------------------------------------------------------------------
 
@@ -79,11 +79,11 @@ interface BookDef {
 export type BookCols<s> = MakeCols<s, BookReq & BookDef>;
 export type BookTable = MakeTable<BookReq, BookDef>;
 
-export const bookTable = declareTable<BookReq, BookDef>("book", [
-    ["title_col", "title", SqlType.stringParser],
-    ["author_col", "author", SqlType.stringParser],
-    ["serial_col", "serial", SqlType.numberParser],
-    ["numPages", "numPages", SqlType.numberParser]
-]);
+export const bookTable = declareTable<BookReq, BookDef>("book", {
+    title: ["title_col", SqlType.stringParser],
+    author: ["author_col", SqlType.stringParser],
+    serial: ["serial_col", SqlType.numberParser],
+    numPages: ["numPages", SqlType.numberParser]
+});
 
 // --------------------------------------------------------------------

@@ -108,68 +108,68 @@ async function createPerformers(conn: pg.Client): Promise<Performers> {
 }
 
 async function talentAgenciesSignPerformers(conn: pg.Client, talentAgencies: TalentAgencies, performers: Performers) {
-    await talentAgencySignPerformer(conn, talentAgencies.venosis, performers.colin, new Date("2000-01-01T10:00:00.000Z"));
-    await talentAgencySignPerformer(conn, talentAgencies.venosis, performers.abe, new Date("2000-01-02T11:00:00.000Z"));
-    await talentAgencySignPerformer(conn, talentAgencies.venosis, performers.bernetta, new Date("2000-01-03T12:00:00.000Z"));
-    await talentAgencySignPerformer(conn, talentAgencies.venosis, performers.darlene, new Date("2000-01-04T13:00:00.000Z"));
+    await talentAgencySignPerformer(conn, talentAgencies.venosis, performers.colin, ("2000-01-01T10:00:00.000Z"));
+    await talentAgencySignPerformer(conn, talentAgencies.venosis, performers.abe, ("2000-01-02T11:00:00.000Z"));
+    await talentAgencySignPerformer(conn, talentAgencies.venosis, performers.bernetta, ("2000-01-03T12:00:00.000Z"));
+    await talentAgencySignPerformer(conn, talentAgencies.venosis, performers.darlene, ("2000-01-04T13:00:00.000Z"));
 
-    await talentAgencySignPerformer(conn, talentAgencies.wayneEnterprises, performers.elvis, new Date("2000-01-02T14:00:00.000Z"));
-    await talentAgencySignPerformer(conn, talentAgencies.wayneEnterprises, performers.darlene, new Date("2000-01-03T15:00:00.000Z"));
-    await talentAgencySignPerformer(conn, talentAgencies.wayneEnterprises, performers.colin, new Date("2000-01-04T16:00:00.000Z"));
+    await talentAgencySignPerformer(conn, talentAgencies.wayneEnterprises, performers.elvis, ("2000-01-02T14:00:00.000Z"));
+    await talentAgencySignPerformer(conn, talentAgencies.wayneEnterprises, performers.darlene, ("2000-01-03T15:00:00.000Z"));
+    await talentAgencySignPerformer(conn, talentAgencies.wayneEnterprises, performers.colin, ("2000-01-04T16:00:00.000Z"));
 }
 
 async function createAuditions(conn: pg.Client, performers: Performers, agents: Agents): Promise<void> {
     {
-        const audition = await createAudition(conn, "Terminal Surrender", new Date("2000-02-05T15:30:00.000Z"), Sex.MALE);
+        const audition = await createAudition(conn, "Terminal Surrender", ("2000-02-05T15:30:00.000Z"), Sex.MALE);
         await agentRecommendAudition(conn, agents.valencia, audition);
         await agentRecommendAudition(conn, agents.victor, audition);
         await agentRecommendAudition(conn, agents.walton, audition);
 
-        await auditionAddPerformance(conn, audition, performers.abe, new Date("2000-02-05T18:00:00.000Z"), agents.valencia);
-        const colinWon = await auditionAddPerformance(conn, audition, performers.colin, new Date("2000-02-05T18:20:00.000Z"), null);
-        await auditionAddPerformance(conn, audition, performers.elvis, new Date("2000-02-05T18:30:00.000Z"), null);
-        await auditionSetWinner(conn, audition, colinWon, new Date("2000-02-06T12:00:00.000Z"));
+        await auditionAddPerformance(conn, audition, performers.abe, ("2000-02-05T18:00:00.000Z"), agents.valencia);
+        const colinWon = await auditionAddPerformance(conn, audition, performers.colin, ("2000-02-05T18:20:00.000Z"), null);
+        await auditionAddPerformance(conn, audition, performers.elvis, ("2000-02-05T18:30:00.000Z"), null);
+        await auditionSetWinner(conn, audition, colinWon, ("2000-02-06T12:00:00.000Z"));
     }
     {
-        const audition = await createAudition(conn, "War for Humiliation", new Date("2000-02-08T15:30:00.000Z"), null);
+        const audition = await createAudition(conn, "War for Humiliation", ("2000-02-08T15:30:00.000Z"), null);
         await agentRecommendAudition(conn, agents.valencia, audition);
-        await auditionAddPerformance(conn, audition, performers.bernetta, new Date("2000-02-08T15:30:00.000Z"), agents.valencia);
-        await auditionAddPerformance(conn, audition, performers.elvis, new Date("2000-02-08T15:40:00.000Z"), null);
+        await auditionAddPerformance(conn, audition, performers.bernetta, ("2000-02-08T15:30:00.000Z"), agents.valencia);
+        await auditionAddPerformance(conn, audition, performers.elvis, ("2000-02-08T15:40:00.000Z"), null);
     }
     {
-        const audition = await createAudition(conn, "Infinite Jeopardy", new Date("2000-02-12T09:00:00.000Z"), Sex.MALE);
+        const audition = await createAudition(conn, "Infinite Jeopardy", ("2000-02-12T09:00:00.000Z"), Sex.MALE);
         await agentRecommendAudition(conn, agents.wanita, audition);
         await agentRecommendAudition(conn, agents.wesley, audition);
-        await auditionAddPerformance(conn, audition, performers.colin, new Date("2000-02-12T09:05:00.000Z"), null);
-        await auditionAddPerformance(conn, audition, performers.elvis, new Date("2000-02-12T09:20:00.000Z"), agents.wesley);
+        await auditionAddPerformance(conn, audition, performers.colin, ("2000-02-12T09:05:00.000Z"), null);
+        await auditionAddPerformance(conn, audition, performers.elvis, ("2000-02-12T09:20:00.000Z"), agents.wesley);
     }
     {
-        const audition = await createAudition(conn, "Instant Payback", new Date("2000-02-25T15:30:00.000Z"), null);
+        const audition = await createAudition(conn, "Instant Payback", ("2000-02-25T15:30:00.000Z"), null);
         await agentRecommendAudition(conn, agents.valencia, audition);
         await agentRecommendAudition(conn, agents.victor, audition);
         await agentRecommendAudition(conn, agents.walton, audition);
         await agentRecommendAudition(conn, agents.wanita, audition);
         await agentRecommendAudition(conn, agents.wesley, audition);
-        await auditionAddPerformance(conn, audition, performers.abe, new Date("2000-02-25T15:30:00.000Z"), null);
-        await auditionAddPerformance(conn, audition, performers.bernetta, new Date("2000-02-25T15:40:00.000Z"), null);
-        await auditionAddPerformance(conn, audition, performers.colin, new Date("2000-02-25T15:50:00.000Z"), agents.victor);
-        const darleneWon = await auditionAddPerformance(conn, audition, performers.darlene, new Date("2000-02-25T16:00:00.000Z"), agents.valencia);
-        await auditionAddPerformance(conn, audition, performers.elvis, new Date("2000-02-25T16:10:00.000Z"), agents.wanita);
-        await auditionSetWinner(conn, audition, darleneWon, new Date("2000-02-26T12:00:00.000Z"));
+        await auditionAddPerformance(conn, audition, performers.abe, ("2000-02-25T15:30:00.000Z"), null);
+        await auditionAddPerformance(conn, audition, performers.bernetta, ("2000-02-25T15:40:00.000Z"), null);
+        await auditionAddPerformance(conn, audition, performers.colin, ("2000-02-25T15:50:00.000Z"), agents.victor);
+        const darleneWon = await auditionAddPerformance(conn, audition, performers.darlene, ("2000-02-25T16:00:00.000Z"), agents.valencia);
+        await auditionAddPerformance(conn, audition, performers.elvis, ("2000-02-25T16:10:00.000Z"), agents.wanita);
+        await auditionSetWinner(conn, audition, darleneWon, ("2000-02-26T12:00:00.000Z"));
     }
     {
-        const audition = await createAudition(conn, "Sudden Retaliation", new Date("2000-02-25T15:40:00.000Z"), Sex.FEMALE);
+        const audition = await createAudition(conn, "Sudden Retaliation", ("2000-02-25T15:40:00.000Z"), Sex.FEMALE);
         await agentRecommendAudition(conn, agents.wesley, audition);
-        await auditionAddPerformance(conn, audition, performers.bernetta, new Date("2000-02-25T16:00:00.000Z"), null);
-        const darleneWon = await auditionAddPerformance(conn, audition, performers.darlene, new Date("2000-02-25T16:30:00.000Z"), agents.wesley);
-        await auditionSetWinner(conn, audition, darleneWon, new Date("2000-02-02T12:00:00.000Z"));
+        await auditionAddPerformance(conn, audition, performers.bernetta, ("2000-02-25T16:00:00.000Z"), null);
+        const darleneWon = await auditionAddPerformance(conn, audition, performers.darlene, ("2000-02-25T16:30:00.000Z"), agents.wesley);
+        await auditionSetWinner(conn, audition, darleneWon, ("2000-02-02T12:00:00.000Z"));
     }
     {
-        const audition = await createAudition(conn, "Welcoming Dearest Johnathan", new Date("2000-03-15T11:20:00.000Z"), null);
+        const audition = await createAudition(conn, "Welcoming Dearest Johnathan", ("2000-03-15T11:20:00.000Z"), null);
         await agentRecommendAudition(conn, agents.wanita, audition);
     }
     {
-        await createAudition(conn, "Master of Trouble", new Date("2000-03-16T10:00:00.000Z"), Sex.FEMALE);
+        await createAudition(conn, "Master of Trouble", ("2000-03-16T10:00:00.000Z"), Sex.FEMALE);
     }
 }
 
@@ -296,7 +296,7 @@ test.skip("performances won or undecided", t => withAllTables(async conn => {
                 hasWinningPerformance: false,
                 id: actual[1][0].id,
                 sex: null,
-                time: new Date("2000-02-08T15:30:00.000Z"),
+                time: ("2000-02-08T15:30:00.000Z"),
                 title: "War for Humiliation",
                 winningPerformanceAuditionedAt: null,
                 winningPerformanceDecidedAt: null,
@@ -309,10 +309,10 @@ test.skip("performances won or undecided", t => withAllTables(async conn => {
                 hasWinningPerformance: true,
                 id: actual[2][0].id,
                 sex: Sex.MALE,
-                time: new Date("2000-02-05T15:30:00.000Z"),
+                time: ("2000-02-05T15:30:00.000Z"),
                 title: "Terminal Surrender",
-                winningPerformanceAuditionedAt: new Date("2000-02-05T18:20:00.000Z"),
-                winningPerformanceDecidedAt: new Date("2000-02-06T12:00:00.000Z"),
+                winningPerformanceAuditionedAt: ("2000-02-05T18:20:00.000Z"),
+                winningPerformanceDecidedAt: ("2000-02-06T12:00:00.000Z"),
                 winningPerformancePerformerId: performers.colin,
                 winningPerformanceReferredByAgentId: null
             },
@@ -320,7 +320,7 @@ test.skip("performances won or undecided", t => withAllTables(async conn => {
                 hasWinningPerformance: false,
                 id: actual[2][1].id,
                 sex: Sex.MALE,
-                time: new Date("2000-02-12T09:00:00.000Z"),
+                time: ("2000-02-12T09:00:00.000Z"),
                 title: "Infinite Jeopardy",
                 winningPerformanceAuditionedAt: null,
                 winningPerformanceDecidedAt: null,
@@ -333,10 +333,10 @@ test.skip("performances won or undecided", t => withAllTables(async conn => {
                 hasWinningPerformance: true,
                 id: actual[3][0].id,
                 sex: null,
-                time: new Date("2000-02-25T15:30:00.000Z"),
+                time: ("2000-02-25T15:30:00.000Z"),
                 title: "Instant Payback",
-                winningPerformanceAuditionedAt: new Date("2000-02-25T16:00:00.000Z"),
-                winningPerformanceDecidedAt: new Date("2000-02-26T12:00:00.000Z"),
+                winningPerformanceAuditionedAt: ("2000-02-25T16:00:00.000Z"),
+                winningPerformanceDecidedAt: ("2000-02-26T12:00:00.000Z"),
                 winningPerformancePerformerId: performers.darlene,
                 winningPerformanceReferredByAgentId: agents.valencia
             },
@@ -344,10 +344,10 @@ test.skip("performances won or undecided", t => withAllTables(async conn => {
                 hasWinningPerformance: true,
                 id: actual[3][1].id,
                 sex: Sex.FEMALE,
-                time: new Date("2000-02-25T15:40:00.000Z"),
+                time: ("2000-02-25T15:40:00.000Z"),
                 title: "Sudden Retaliation",
-                winningPerformanceAuditionedAt: new Date("2000-02-25T16:30:00.000Z"),
-                winningPerformanceDecidedAt: new Date("2000-02-02T12:00:00.000Z"),
+                winningPerformanceAuditionedAt: ("2000-02-25T16:30:00.000Z"),
+                winningPerformanceDecidedAt: ("2000-02-02T12:00:00.000Z"),
                 winningPerformancePerformerId: performers.darlene,
                 winningPerformanceReferredByAgentId: agents.wesley
             }
@@ -357,7 +357,7 @@ test.skip("performances won or undecided", t => withAllTables(async conn => {
                 hasWinningPerformance: false,
                 id: actual[4][0].id,
                 sex: null,
-                time: new Date("2000-02-08T15:30:00.000Z"),
+                time: ("2000-02-08T15:30:00.000Z"),
                 title: "War for Humiliation",
                 winningPerformanceAuditionedAt: null,
                 winningPerformanceDecidedAt: null,
@@ -368,7 +368,7 @@ test.skip("performances won or undecided", t => withAllTables(async conn => {
                 hasWinningPerformance: false,
                 id: actual[2][1].id,
                 sex: Sex.MALE,
-                time: new Date("2000-02-12T09:00:00.000Z"),
+                time: ("2000-02-12T09:00:00.000Z"),
                 title: "Infinite Jeopardy",
                 winningPerformanceAuditionedAt: null,
                 winningPerformanceDecidedAt: null,
@@ -404,14 +404,14 @@ test("talent agency auditions", t => withAllTables(async conn => {
 // test("talent agency auditions 2", t => withAllTables(async conn => {
 //     const { performers } = await insertInitialData(conn);
 
-//     const statusUpdateId = await createPerformerStatusUpdate(conn, performers.abe, new Date("2000-05-01T09:00:00.000Z"), "Title", "Body");
+//     const statusUpdateId = await createPerformerStatusUpdate(conn, performers.abe, ("2000-05-01T09:00:00.000Z"), "Title", "Body");
 
 //     const actual = await query(conn, q => getAllStatusUpdates(q, performerIdCol(performers.abe)));
 
 //     const expected: typeof actual = [
 //         {
 //             id: statusUpdateId,
-//             date: new Date("2000-05-01T09:00:00.000Z"),
+//             date: ("2000-05-01T09:00:00.000Z"),
 //             personId: actual[0].personId,
 //             payload: PGJson.parse({
 //                 title: "Title",

@@ -16,11 +16,11 @@ interface TalentAgencyDef {
 export type TalentAgencyCols<s> = MakeCols<s, TalentAgencyReq & TalentAgencyDef>;
 export type TalentAgencyTable = MakeTable<TalentAgencyReq, TalentAgencyDef>;
 
-export const talentAgencyTable = declareTable<TalentAgencyReq, TalentAgencyDef>("talent_agency", [
-    ["id", "id", SqlType.numberParser],
-    ["name", "name", SqlType.stringParser],
-    ["website", "website", SqlType.stringParser]
-]);
+export const talentAgencyTable = declareTable<TalentAgencyReq, TalentAgencyDef>("talent_agency", {
+    id: ["id", <any>SqlType.numberParser],
+    name: ["name", SqlType.stringParser],
+    website: ["website", SqlType.stringParser]
+});
 
 // --------------------------------------------------------------------
 
@@ -35,10 +35,10 @@ interface PersonDef {
 export type PersonCols<s> = MakeCols<s, PersonReq & PersonDef>;
 export type PersonTable = MakeTable<PersonReq, PersonDef>;
 
-export const personTable = declareTable<PersonReq, PersonDef>("person", [
-    ["id", "id", SqlType.numberParser],
-    ["name", "name", SqlType.stringParser]
-]);
+export const personTable = declareTable<PersonReq, PersonDef>("person", {
+    id: ["id", <any>SqlType.numberParser],
+    name: ["name", SqlType.stringParser]
+});
 
 // --------------------------------------------------------------------
 
@@ -55,12 +55,12 @@ interface AgentDef {
 export type AgentCols<s> = MakeCols<s, AgentReq & AgentDef>;
 export type AgentTable = MakeTable<AgentReq, AgentDef>;
 
-export const agentTable = declareTable<AgentReq, AgentDef>("agent", [
-    ["id", "id", SqlType.numberParser],
-    ["person_id", "personId", SqlType.numberParser],
-    ["talent_agency_id", "talentAgencyId", SqlType.numberParser],
-    ["email", "email", SqlType.stringParser]
-]);
+export const agentTable = declareTable<AgentReq, AgentDef>("agent", {
+    id: ["id", <any>SqlType.numberParser],
+    personId: ["person_id", <any>SqlType.numberParser],
+    talentAgencyId: ["talent_agency_id", <any>SqlType.numberParser],
+    email: ["email", SqlType.stringParser]
+});
 
 // --------------------------------------------------------------------
 
@@ -77,18 +77,18 @@ interface PerformerDef {
 export type PerformerCols<s> = MakeCols<s, PerformerReq & PerformerDef>;
 export type PerformerTable = MakeTable<PerformerReq, PerformerDef>;
 
-export const performerTable = declareTable<PerformerReq, PerformerDef>("performer", [
-    ["id", "id", SqlType.numberParser],
-    ["person_id", "personId", SqlType.numberParser],
-    ["sex", "sex", SqlType.stringParser],
-    ["height", "height", SqlType.numberParser]
-]);
+export const performerTable = declareTable<PerformerReq, PerformerDef>("performer", {
+    id: ["id", <any>SqlType.numberParser],
+    personId: ["person_id", <any>SqlType.numberParser],
+    sex: ["sex", <any>SqlType.stringParser],
+    height: ["height", SqlType.numberParser]
+});
 
 // --------------------------------------------------------------------
 
 interface PerformerPhotoReq {
     readonly personId: PersonId;
-    readonly payload: object;
+    readonly payload: string;
 }
 
 interface PerformerPhotoDef {
@@ -98,19 +98,19 @@ interface PerformerPhotoDef {
 export type PerformerPhotoCols<s> = MakeCols<s, PerformerPhotoReq & PerformerPhotoDef>;
 export type PerformerPhotoTable = MakeTable<PerformerPhotoReq, PerformerPhotoDef>;
 
-export const performerPhotoTable = declareTable<PerformerPhotoReq, PerformerPhotoDef>("performer_photo", [
-    ["id", "id", SqlType.numberParser],
-    ["person_id", "personId", SqlType.numberParser],
-    ["payload", "payload", SqlType.stringParser]
-]);
+export const performerPhotoTable = declareTable<PerformerPhotoReq, PerformerPhotoDef>("performer_photo", {
+    id: ["id", <any>SqlType.numberParser],
+    personId: ["person_id", <any>SqlType.numberParser],
+    payload: ["payload", SqlType.stringParser]
+});
 
 // --------------------------------------------------------------------
 
 interface PerformerAgencyContractReq {
     readonly performerId: PerformerId;
     readonly talentAgencyId: TalentAgencyId;
-    readonly signedAt: Date;
-    readonly terminatedAt: Date | null;
+    readonly signedAt: string;
+    readonly terminatedAt: string | null;
 }
 
 interface PerformerAgencyContractDef {
@@ -120,13 +120,13 @@ interface PerformerAgencyContractDef {
 export type PerformerAgencyContractCols<s> = MakeCols<s, PerformerAgencyContractReq & PerformerAgencyContractDef>;
 export type PerformerAgencyContractTable = MakeTable<PerformerAgencyContractReq, PerformerAgencyContractDef>;
 
-export const performerAgencyContractTable = declareTable<PerformerAgencyContractReq, PerformerAgencyContractDef>("performer_agency_contract", [
-    ["id", "id", SqlType.numberParser],
-    ["performer_id", "performerId", SqlType.numberParser],
-    ["talent_agency_id", "talentAgencyId", SqlType.numberParser],
-    ["signed_at", "signedAt", SqlType.stringParser],
-    ["terminated_at", "terminatedAt", SqlType.stringParser]
-]);
+export const performerAgencyContractTable = declareTable<PerformerAgencyContractReq, PerformerAgencyContractDef>("performer_agency_contract", {
+    id: ["id", <any>SqlType.numberParser],
+    performerId: ["performer_id", <any>SqlType.numberParser],
+    talentAgencyId: ["talent_agency_id", <any>SqlType.numberParser],
+    signedAt: ["signed_at", SqlType.stringParser],
+    terminatedAt: ["terminated_at", SqlType.stringParser]
+});
 
 // --------------------------------------------------------------------
 
@@ -143,11 +143,11 @@ interface SingingSkillDef {
 export type SingingSkillCols<s> = MakeCols<s, SingingSkillReq & SingingSkillDef>;
 export type SingingSkillTable = MakeTable<SingingSkillReq, SingingSkillDef>;
 
-export const singingSkillTable = declareTable<SingingSkillReq, SingingSkillDef>("singing_skill", [
-    ["id", "id", SqlType.numberParser],
-    ["performer_id", "performerId", SqlType.numberParser],
-    ["voice_type", "voiceType", SqlType.stringParser]
-]);
+export const singingSkillTable = declareTable<SingingSkillReq, SingingSkillDef>("singing_skill", {
+    id: ["id", <any>SqlType.numberParser],
+    performerId: ["performer_id", <any>SqlType.numberParser],
+    voiceType: ["voice_type", <any>SqlType.stringParser]
+});
 
 // --------------------------------------------------------------------
 
@@ -163,11 +163,11 @@ interface ComedySkillDef {
 export type ComedySkillCols<s> = MakeCols<s, ComedySkillReq & ComedySkillDef>;
 export type ComedySkillTable = MakeTable<ComedySkillReq, ComedySkillDef>;
 
-export const comedySkillTable = declareTable<ComedySkillReq, ComedySkillDef>("comedy_skill", [
-    ["id", "id", SqlType.numberParser],
-    ["performer_id", "performerId", SqlType.numberParser],
-    ["comedy_description", "comedyDescription", SqlType.stringParser]
-]);
+export const comedySkillTable = declareTable<ComedySkillReq, ComedySkillDef>("comedy_skill", {
+    id: ["id", <any>SqlType.numberParser],
+    performerId: ["performer_id", <any>SqlType.numberParser],
+    comedyDescription: ["comedy_description", SqlType.stringParser]
+});
 
 // --------------------------------------------------------------------
 
@@ -184,17 +184,17 @@ interface ActingSkillDef {
 export type ActingSkillCols<s> = MakeCols<s, ActingSkillReq & ActingSkillDef>;
 export type ActingSkillTable = MakeTable<ActingSkillReq, ActingSkillDef>;
 
-export const actingSkillTable = declareTable<ActingSkillReq, ActingSkillDef>("acting_skill", [
-    ["id", "id", SqlType.numberParser],
-    ["performer_id", "performerId", SqlType.numberParser],
-    ["stunts", "stunts", SqlType.stringParser]
-]);
+export const actingSkillTable = declareTable<ActingSkillReq, ActingSkillDef>("acting_skill", {
+    id: ["id", <any>SqlType.numberParser],
+    performerId: ["performer_id", <any>SqlType.numberParser],
+    stunts: ["stunts", SqlType.booleanParser]
+});
 
 // --------------------------------------------------------------------
 
 interface AuditionReq {
     readonly title: string;
-    readonly time: Date;
+    readonly time: string;
     readonly sex: Sex | null;
 }
 
@@ -205,12 +205,12 @@ interface AuditionDef {
 export type AuditionCols<s> = MakeCols<s, AuditionReq & AuditionDef>;
 export type AuditionTable = MakeTable<AuditionReq, AuditionDef>;
 
-export const auditionTable = declareTable<AuditionReq, AuditionDef>("audition", [
-    ["id", "id", SqlType.numberParser],
-    ["title", "title", SqlType.stringParser],
-    ["time", "time", SqlType.stringParser],
-    ["sex", "sex", SqlType.stringParser]
-]);
+export const auditionTable = declareTable<AuditionReq, AuditionDef>("audition", {
+    id: ["id", <any>SqlType.numberParser],
+    title: ["title", SqlType.stringParser],
+    time: ["time", SqlType.stringParser],
+    sex: ["sex", <any>SqlType.stringParser]
+});
 
 // --------------------------------------------------------------------
 
@@ -226,11 +226,11 @@ interface RecommendedAuditionDef {
 export type RecommendedAuditionCols<s> = MakeCols<s, RecommendedAuditionReq & RecommendedAuditionDef>;
 export type RecommendedAuditionTable = MakeTable<RecommendedAuditionReq, RecommendedAuditionDef>;
 
-export const recommendedAuditionTable = declareTable<RecommendedAuditionReq, RecommendedAuditionDef>("recommended_audition", [
-    ["id", "id", SqlType.numberParser],
-    ["audition_id", "auditionId", SqlType.numberParser],
-    ["agent_id", "agentId", SqlType.numberParser]
-]);
+export const recommendedAuditionTable = declareTable<RecommendedAuditionReq, RecommendedAuditionDef>("recommended_audition", {
+    id: ["id", <any>SqlType.numberParser],
+    auditionId: ["audition_id", <any>SqlType.numberParser],
+    agentId: ["agent_id", <any>SqlType.numberParser]
+});
 
 // --------------------------------------------------------------------
 
@@ -238,7 +238,7 @@ interface AuditionPerformanceReq {
     readonly auditionId: AuditionId;
     readonly performerId: PerformerId;
     readonly referredByAgentId: AgentId | null;
-    readonly auditionedAt: Date;
+    readonly auditionedAt: string;
 }
 
 interface AuditionPerformanceDef {
@@ -248,20 +248,20 @@ interface AuditionPerformanceDef {
 export type AuditionPerformanceCols<s> = MakeCols<s, AuditionPerformanceReq & AuditionPerformanceDef>;
 export type AuditionPerformanceTable = MakeTable<AuditionPerformanceReq, AuditionPerformanceDef>;
 
-export const auditionPerformanceTable = declareTable<AuditionPerformanceReq, AuditionPerformanceDef>("audition_performance", [
-    ["id", "id", SqlType.numberParser],
-    ["audition_id", "auditionId", SqlType.numberParser],
-    ["performer_id", "performerId", SqlType.numberParser],
-    ["referred_by_agent_id", "referredByAgentId", SqlType.numberParser],
-    ["auditioned_at", "auditionedAt", SqlType.stringParser]
-]);
+export const auditionPerformanceTable = declareTable<AuditionPerformanceReq, AuditionPerformanceDef>("audition_performance", {
+    id: ["id", <any>SqlType.numberParser],
+    auditionId: ["audition_id", <any>SqlType.numberParser],
+    performerId: ["performer_id", <any>SqlType.numberParser],
+    referredByAgentId: ["referred_by_agent_id", <any>SqlType.numberParser],
+    auditionedAt: ["auditioned_at", SqlType.stringParser]
+});
 
 // --------------------------------------------------------------------
 
 interface AuditionOutcomeReq {
     readonly auditionId: AuditionId;
     readonly winningPerformanceId: AuditionPerformanceId;
-    readonly decidedAt: Date;
+    readonly decidedAt: string;
 }
 
 interface AuditionOutcomeDef {
@@ -271,18 +271,18 @@ interface AuditionOutcomeDef {
 export type AuditionOutcomeCols<s> = MakeCols<s, AuditionOutcomeReq & AuditionOutcomeDef>;
 export type AuditionOutcomeTable = MakeTable<AuditionOutcomeReq, AuditionOutcomeDef>;
 
-export const auditionOutcomeTable = declareTable<AuditionOutcomeReq, AuditionOutcomeDef>("audition_outcome", [
-    ["id", "id", SqlType.numberParser],
-    ["audition_id", "auditionId", SqlType.numberParser],
-    ["winning_performance_id", "winningPerformanceId", SqlType.numberParser],
-    ["decided_at", "decidedAt", SqlType.stringParser]
-]);
+export const auditionOutcomeTable = declareTable<AuditionOutcomeReq, AuditionOutcomeDef>("audition_outcome", {
+    id: ["id", <any>SqlType.numberParser],
+    auditionId: ["audition_id", <any>SqlType.numberParser],
+    winningPerformanceId: ["winning_performance_id", <any>SqlType.numberParser],
+    decidedAt: ["decided_at", SqlType.stringParser]
+});
 
 // --------------------------------------------------------------------
 
 interface StatusUpdateReq {
     readonly personId: PersonId;
-    readonly date: Date;
+    readonly date: string;
     readonly payload: string;
 }
 
@@ -293,11 +293,11 @@ interface StatusUpdateDef {
 export type StatusUpdateCols<s> = MakeCols<s, StatusUpdateReq & StatusUpdateDef>;
 export type StatusUpdateTable = MakeTable<StatusUpdateReq, StatusUpdateDef>;
 
-export const statusUpdateTable = declareTable<StatusUpdateReq, StatusUpdateDef>("status_update", [
-    ["id", "id", SqlType.numberParser],
-    ["person_id", "personId", SqlType.numberParser],
-    ["date", "date", SqlType.stringParser],
-    ["payload", "payload", SqlType.stringParser]
-]);
+export const statusUpdateTable = declareTable<StatusUpdateReq, StatusUpdateDef>("status_update", {
+    id: ["id", <any>SqlType.numberParser],
+    personId: ["person_id", <any>SqlType.numberParser],
+    date: ["date", SqlType.stringParser],
+    payload: ["payload", SqlType.stringParser]
+});
 
 // --------------------------------------------------------------------

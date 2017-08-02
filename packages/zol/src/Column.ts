@@ -73,13 +73,3 @@ export function numberCol<s>(val: number): Col<s, number> {
         }
     });
 }
-
-export function dateCol<s>(val: Date): Col<s, Date> {
-    return colWrap({
-        type: "ELit",
-        lit: {
-            type: "LDateTime",
-            value: val
-        }
-    });
-}

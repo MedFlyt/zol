@@ -23,10 +23,10 @@ interface PersonDef {
 export type PersonCols<s> = MakeCols<s, PersonReq & PersonDef>;
 export type PersonTable = MakeTable<PersonReq, PersonDef>;
 
-export const personTable = declareTable<PersonReq, PersonDef>("person", [
-    ["id", "id", SqlType.numberParser],
-    ["name", "name", SqlType.stringParser]
-]);
+export const personTable = declareTable<PersonReq, PersonDef>("person", {
+    id: ["id", SqlType.numberParser],
+    name: ["name", SqlType.stringParser]
+});
 
 // --------------------------------------------------------------------
 
@@ -57,13 +57,13 @@ export interface MeetingDef {
 export type MeetingCols<s> = MakeCols<s, MeetingReq & MeetingDef>;
 export type MeetingTable = MakeTable<MeetingReq, MeetingDef>;
 
-export const meetingTable = declareTable<MeetingReq, MeetingDef>("meeting", [
-    ["id", "id", SqlType.numberParser],
-    ["subject", "subject", SqlType.stringParser],
-    ["created_by", "createdBy", SqlType.numberParser],
-    ["created_at", "createdAt", instantParser],
-    ["scheduled_at", "scheduledAt", localDateTimeParser],
-    ["timezone", "timezone", SqlType.stringParser]
-]);
+export const meetingTable = declareTable<MeetingReq, MeetingDef>("meeting", {
+    id: ["id", SqlType.numberParser],
+    subject: ["subject", SqlType.stringParser],
+    createdBy: ["created_by", SqlType.numberParser],
+    createdAt: ["created_at", instantParser],
+    scheduledAt: ["scheduled_at", localDateTimeParser],
+    timezone: ["timezone", SqlType.stringParser]
+});
 
 // --------------------------------------------------------------------

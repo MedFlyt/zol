@@ -6,10 +6,10 @@ export interface Address {
     readonly city: string;
 }
 
-export const addressTable = declareTable<Address, {}>("address", [
-    ["name", "name", SqlType.stringParser],
-    ["city", "city", SqlType.stringParser]
-]);
+export const addressTable = declareTable<Address, {}>("address", {
+    name: ["name", SqlType.stringParser],
+    city: ["city", SqlType.stringParser]
+});
 
 export const createAddressSql =
     `

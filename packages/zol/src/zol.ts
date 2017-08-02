@@ -1,8 +1,8 @@
 export { ColName, TableName } from "./Types";
 export { Order } from "./SQL";
 export { MakeTable, Write, MakeCols, defaultValue, DefaultValue, count, avg, sum, max, min, inList, Aggr, Inner, AggrCols, LeftCols } from "./Query";
-export { declareTable, Table, ColInfo } from "./Table";
-export { nullCol, numberCol, textCol, dateCol, Col } from "./Column";
+export { declareTable, TableDeclareCols, Table, ColInfo } from "./Table";
+export { nullCol, numberCol, textCol, Col } from "./Column";
 export { update, updateReturning } from "./Update";
 export { insertReturning, insert, insertOnConflictDoNothingReturning, insertOnConflictDoNothing, insertOnConflictDoUpdateReturning, insertOnConflictDoUpdate, insertManyReturning, insertMany, insertManyOnConflictDoNothingReturning, insertManyOnConflictDoNothing, insertManyOnConflictDoUpdateReturning, insertManyOnConflictDoUpdate } from "./Insert";
 export { delete_ } from "./Delete";

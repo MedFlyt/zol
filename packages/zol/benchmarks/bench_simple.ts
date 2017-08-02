@@ -16,10 +16,10 @@ interface PersonDef {
 export type PersonCols<s> = MakeCols<s, PersonReq & PersonDef>;
 export type PersonTable = MakeTable<PersonReq, PersonDef>;
 
-export const personTable = declareTable<PersonReq, PersonDef>("person", [
-    ["name", "name", SqlType.stringParser],
-    ["age", "age", SqlType.numberParser]
-]);
+export const personTable = declareTable<PersonReq, PersonDef>("person", {
+    name: ["name", SqlType.stringParser],
+    age: ["age", SqlType.numberParser]
+});
 
 class StupidBenchmark extends QueryBenchmark {
     constructor(private conn: pg.Client) {

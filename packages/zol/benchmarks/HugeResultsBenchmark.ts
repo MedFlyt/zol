@@ -19,19 +19,19 @@ interface LargeReq {
     readonly k: number | null;
 }
 
-export const personTable = declareTable<LargeReq, {}>("large", [
-    ["a", "a", SqlType.stringParser],
-    ["b", "b", SqlType.numberParser],
-    ["c", "c", SqlType.booleanParser],
-    ["d", "d", SqlType.stringParser],
-    ["e", "e", SqlType.numberParser],
-    ["f", "f", SqlType.booleanParser],
-    ["g", "g", SqlType.stringParser],
-    ["h", "h", SqlType.numberParser],
-    ["i", "i", SqlType.booleanParser],
-    ["j", "j", SqlType.stringParser],
-    ["k", "k", SqlType.numberParser]
-]);
+export const personTable = declareTable<LargeReq, {}>("large", {
+    a: ["a", SqlType.stringParser],
+    b: ["b", SqlType.numberParser],
+    c: ["c", SqlType.booleanParser],
+    d: ["d", SqlType.stringParser],
+    e: ["e", SqlType.numberParser],
+    f: ["f", SqlType.booleanParser],
+    g: ["g", SqlType.stringParser],
+    h: ["h", SqlType.numberParser],
+    i: ["i", SqlType.booleanParser],
+    j: ["j", SqlType.stringParser],
+    k: ["k", SqlType.numberParser]
+});
 
 export class HugeResultsBenchmark extends QueryBenchmark {
     constructor(private conn: pg.Client) {
