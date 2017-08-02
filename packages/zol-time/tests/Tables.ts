@@ -1,5 +1,6 @@
-import { Instant } from "js-joda";
+import { Instant, LocalDateTime } from "js-joda";
 import { declareTable, MakeCols, MakeTable, SqlType } from "zol";
+import { localDateTimeParser } from "../src/Types";
 import { instantParser } from "../src/zol-time";
 
 // --------------------------------------------------------------------
@@ -35,7 +36,9 @@ export const createMeetingTableSql =
         id SERIAL PRIMARY KEY,
         subject TEXT NOT NULL,
         created_by INT NOT NULL REFERENCES person (id),
-        created_at TIMESTAMPTZ NOT NULL
+        created_at TIMESTAMPTZ NOT NULL,
+        scheduled_at TIMESTAMP NOT NULL,
+        timezone TEXT NOT NULL
     )
     `;
 
@@ -43,6 +46,8 @@ export interface MeetingReq {
     readonly subject: string;
     readonly createdBy: number;
     readonly createdAt: Instant;
+    readonly scheduledAt: LocalDateTime;
+    readonly timezone: string;
 }
 
 export interface MeetingDef {
@@ -56,7 +61,9 @@ export const meetingTable = declareTable<MeetingReq, MeetingDef>("meeting", [
     ["id", "id", SqlType.numberParser],
     ["subject", "subject", SqlType.stringParser],
     ["created_by", "createdBy", SqlType.numberParser],
-    ["created_at", "createdAt", instantParser]
+    ["created_at", "createdAt", instantParser],
+    ["scheduled_at", "scheduledAt", localDateTimeParser],
+    ["timezone", "timezone", SqlType.stringParser]
 ]);
 
 // --------------------------------------------------------------------
