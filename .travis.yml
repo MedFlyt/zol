@@ -28,7 +28,8 @@ script:
 after_success:
     - npm run report-coverage
 deploy:
-  provider: script
-  script: npm run deploy-docs
-  on:
-    branch: master
+    skip_cleanup: true
+    provider: script
+    script: npm run deploy-docs
+    on:
+        branch: master
