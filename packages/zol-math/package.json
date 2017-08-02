@@ -24,12 +24,11 @@
     "style-fix": "node ../../tools/ts-style.js './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts' --fix",
     "prebuild": "rimraf dist",
     "build": "tsc --project src && rollup -c && ts-node ../../tools/dts-merge.ts ./build/types/zol-math.d.ts -o ./dist/types/zol-math.d.ts && typedoc --tsconfig src/tsconfig.json --readme none --mode file --theme minimal --includeDeclarations --excludePrivate --excludeExternals dist/types/zol-math.d.ts --out dist/docs",
-    "build-tests": "tsc --project tests",
-    "deploy-docs": "echo TODO && false"
+    "build-tests": "tsc --project tests"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MedFly/zol.git"
+    "url": "git+https://github.com/MedFlyt/zol.git"
   },
   "author": "benny-medflyt <benny@medflyt.com>",
   "license": "MIT",
