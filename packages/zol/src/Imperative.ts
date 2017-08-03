@@ -12,16 +12,13 @@ import { SqlType } from "./SqlType";
 import { Table } from "./Table";
 
 export class Q<s> {
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): [Q<s>, s] { throw new Error(); }
+    protected dummy: [Q<s>, s];
 }
 
 // Single element (a simple box)
 type MutQuery = GenState[];
 
-export async function query<t extends object>(conn: pg.Client, q: (q: Q<any>) => MakeCols<any, t>): Promise<t[]> {
+export async function query<t extends object>(conn: pg.Client, q: (q: Q<{}>) => MakeCols<{}, t>): Promise<t[]> {
     if (Debug.enabled) {
         Debug.lastQueryMetrics.set(conn, new QueryMetricsImpl());
         // tslint:disable-next-line:no-non-null-assertion

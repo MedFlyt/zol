@@ -7,10 +7,7 @@ export class ColName {
         return <any>val;
     }
 
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): ColName { throw new Error(); }
+    protected dummy: ColName;
 }
 
 export class TableName {
@@ -22,10 +19,7 @@ export class TableName {
         return <any>val;
     }
 
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): TableName { throw new Error(); }
+    protected dummy: TableName;
 }
 
 

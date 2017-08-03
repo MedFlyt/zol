@@ -11,7 +11,7 @@ export class PGJson {
     }
 
     public static col<s>(json: object): Col<s, PGJson> {
-        return textCol(JSON.stringify(json));
+        return <any>textCol(JSON.stringify(json));
     }
 
     /**
@@ -57,8 +57,5 @@ export class PGJson {
         [key: string]: any
     };
 
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): PGJson { throw new Error(); }
+    protected dummy: PGJson;
 }

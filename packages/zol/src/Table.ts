@@ -4,10 +4,7 @@ export class Table<Req, Def> {
     public readonly tableName: TableName;
     public readonly tableCols: ColInfo[];
 
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): [Table<Req, Def>, Req, Def] { throw new Error(); }
+    protected dummy: [Table<Req, Def>, Req, Def];
 }
 
 export interface ColInfo {

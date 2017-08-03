@@ -11,10 +11,7 @@ import { SQL } from "./SQL";
  * @param a The type of the value that the Column contains
  */
 export class Col<s, a> {
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): [Col<s, a>, s, a] { throw new Error(); }
+    protected dummy: [Col<s, a>, s, a];
 }
 
 export function colWrap<s, a>(val: Exp<SQL, a>): Col<s, a> {

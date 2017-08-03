@@ -7,10 +7,9 @@ export class Query<s, a> implements PromiseLike<a> {
      */
     public unQ: State.State<GenState, a>;
 
+    protected dummy: [Query<s, a>, s, a];
+
     public constructor(fn: (resolve: (y: State.State<GenState, a> | Query<s, a>) => void) => void) {
-        if (!!false) {
-            this.dummy();
-        }
         fn(x => this.resolve(x));
     }
 
@@ -39,8 +38,6 @@ export class Query<s, a> implements PromiseLike<a> {
             }));
         });
     }
-
-    private dummy(): [Query<s, a>, s, a] { throw new Error(); }
 
     private resolve(result: State.State<GenState, a> | Query<s, a>): void {
         if (result instanceof Query) {

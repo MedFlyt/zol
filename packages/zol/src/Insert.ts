@@ -84,7 +84,7 @@ export async function insertManyReturning<Req extends object, Def extends object
     const pgParams = params.map(x => litToPgParam(x.param));
 
 
-    const names = table.tableCols.map<[ColName, string, (val: any) => any]>(x => [x.name, x.propName, x.parser]);
+    const names = table.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
     const cs = <any>toTup(names);
     const rs = finalCols(returning(cs));
 

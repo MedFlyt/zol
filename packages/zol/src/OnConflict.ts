@@ -8,10 +8,7 @@ export class ConflictTarget<Cols> {
         };
     }
 
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): [ConflictTarget<Cols>, Cols] { throw new Error(); }
+    protected dummy: [ConflictTarget<Cols>, Cols];
 }
 
 export function conflictTargetTableColumns(conflictTarget: ConflictTarget<any>, table: Table<any, any>): ColName[] {

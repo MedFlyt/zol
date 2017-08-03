@@ -40,7 +40,7 @@ export function compSql(sql: SQL): [TableName[], string, Param[]] {
     return runPP(ppSql(sql));
 }
 
-export function compInsert(tbl: TableName, names: [ColName, string, (val: any) => any][], cs: SomeCol<SQL>[][], conflictTableCols: undefined | ColName[], rs: SomeCol<SQL>[]): [string, Param[]] {
+export function compInsert(tbl: TableName, names: [ColName, string, (val: string) => any][], cs: SomeCol<SQL>[][], conflictTableCols: undefined | ColName[], rs: SomeCol<SQL>[]): [string, Param[]] {
     const [, sql, params] = runPP(State.bind(
         State.mapM(ppInsertRow, cs),
         inserts => State.bind(

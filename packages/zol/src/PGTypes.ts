@@ -6,29 +6,17 @@ export class PGDate {
     public readonly month: number;
     public readonly day: number;
 
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): PGDate { throw new Error(); }
+    protected dummy: PGDate;
 }
 
 export class PGTime {
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): PGTime { throw new Error(); }
+    protected dummy: PGTime;
 }
 
 export class PGTimeStamp {
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): PGTimeStamp { throw new Error(); }
+    protected dummy: PGTimeStamp;
 }
 
 export class PGTimeStamptz {
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): PGTimeStamptz { throw new Error(); }
+    protected dummy: PGTimeStamptz;
 }

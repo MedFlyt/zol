@@ -7,8 +7,7 @@ export class TalentAgencyId {
         return <any>val;
     }
 
-    private constructor() { this.dummy(); }
-    private dummy(): TalentAgencyId { throw new Error(); }
+    protected dummy: TalentAgencyId;
 }
 
 export class PersonId {
@@ -20,8 +19,7 @@ export class PersonId {
         return <any>val;
     }
 
-    private constructor() { this.dummy(); }
-    private dummy(): PersonId { throw new Error(); }
+    protected dummy: PersonId;
 }
 
 export class AgentId {
@@ -33,8 +31,7 @@ export class AgentId {
         return <any>val;
     }
 
-    private constructor() { this.dummy(); }
-    private dummy(): AgentId { throw new Error(); }
+    protected dummy: AgentId;
 }
 
 export class PerformerId {
@@ -46,8 +43,7 @@ export class PerformerId {
         return <any>val;
     }
 
-    private constructor() { this.dummy(); }
-    private dummy(): PerformerId { throw new Error(); }
+    protected dummy: PerformerId;
 }
 
 export class PerformerPhotoId {
@@ -59,8 +55,7 @@ export class PerformerPhotoId {
         return <any>val;
     }
 
-    private constructor() { this.dummy(); }
-    private dummy(): PerformerPhotoId { throw new Error(); }
+    protected dummy: PerformerPhotoId;
 }
 
 export class PerformerAgencyContractId {
@@ -72,8 +67,7 @@ export class PerformerAgencyContractId {
         return <any>val;
     }
 
-    private constructor() { this.dummy(); }
-    private dummy(): PerformerAgencyContractId { throw new Error(); }
+    protected dummy: PerformerAgencyContractId;
 }
 
 export class SingingSkillId {
@@ -85,8 +79,7 @@ export class SingingSkillId {
         return <any>val;
     }
 
-    private constructor() { this.dummy(); }
-    private dummy(): SingingSkillId { throw new Error(); }
+    protected dummy: SingingSkillId;
 }
 
 export class ComedySkillId {
@@ -98,8 +91,7 @@ export class ComedySkillId {
         return <any>val;
     }
 
-    private constructor() { this.dummy(); }
-    private dummy(): ComedySkillId { throw new Error(); }
+    protected dummy: ComedySkillId;
 }
 
 export class ActingSkillId {
@@ -111,8 +103,7 @@ export class ActingSkillId {
         return <any>val;
     }
 
-    private constructor() { this.dummy(); }
-    private dummy(): ActingSkillId { throw new Error(); }
+    protected dummy: ActingSkillId;
 }
 
 export class AuditionId {
@@ -124,8 +115,7 @@ export class AuditionId {
         return <any>val;
     }
 
-    private constructor() { this.dummy(); }
-    private dummy(): AuditionId { throw new Error(); }
+    protected dummy: AuditionId;
 }
 
 export class RecommendedAuditionId {
@@ -137,8 +127,7 @@ export class RecommendedAuditionId {
         return <any>val;
     }
 
-    private constructor() { this.dummy(); }
-    private dummy(): RecommendedAuditionId { throw new Error(); }
+    protected dummy: RecommendedAuditionId;
 }
 
 export class AuditionPerformanceId {
@@ -150,8 +139,7 @@ export class AuditionPerformanceId {
         return <any>val;
     }
 
-    private constructor() { this.dummy(); }
-    private dummy(): AuditionPerformanceId { throw new Error(); }
+    protected dummy: AuditionPerformanceId;
 }
 
 export class AuditionOutcomeId {
@@ -163,8 +151,7 @@ export class AuditionOutcomeId {
         return <any>val;
     }
 
-    private constructor() { this.dummy(); }
-    private dummy(): AuditionOutcomeId { throw new Error(); }
+    protected dummy: AuditionOutcomeId;
 }
 
 export class StatusUpdateId {
@@ -176,6 +163,5 @@ export class StatusUpdateId {
         return <any>val;
     }
 
-    private constructor() { this.dummy(); }
-    private dummy(): StatusUpdateId { throw new Error(); }
+    protected dummy: StatusUpdateId;
 }

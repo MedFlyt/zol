@@ -63,7 +63,7 @@ export function finalCols<s, a>(cols: object): SomeCol<SQL>[] {
 }
 
 export function compileInsert<a extends object, b extends object, c extends object>(tbl: Table<any, any>, rowValues: MakeTable<a, b>[], conflictTarget: ConflictTarget<a & b> | undefined, returning: (c: MakeCols<Write, a & b>) => MakeCols<Write, c>): [string, Param[]] {
-    const names = tbl.tableCols.map<[ColName, string, (val: any) => any]>(x => [x.name, x.propName, x.parser]);
+    const names = tbl.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
     const cs = <any>toTup(names);
     const fs = rowValues.map(finalCols);
     const rs = finalCols(returning(cs));
@@ -77,7 +77,7 @@ export function compileInsert<a extends object, b extends object, c extends obje
 }
 
 export function compileUpdate<a extends object, b extends object, c extends object>(tbl: Table<a, b>, check: (c: MakeCols<Write, a>) => Col<Write, boolean>, upd: (c: MakeCols<Write, a>) => MakeTable<a, b>, returning: ((c: MakeCols<Write, a & b>) => MakeCols<Write, c>) | undefined): [string, Param[]] {
-    const names = tbl.tableCols.map<[ColName, string, (val: any) => any]>(x => [x.name, x.propName, x.parser]);
+    const names = tbl.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
     const cs = toTup<a>(names);
     const updated: [ColName, SomeCol<SQL>][] = [];
     const fs = finalCols(upd(cs));
@@ -98,7 +98,7 @@ export function compileUpdate<a extends object, b extends object, c extends obje
 }
 
 export function compileDelete<a extends object, b extends object>(tbl: Table<a, b>, check: (c: MakeCols<Write, a>) => Col<Write, boolean>): [string, Param[]] {
-    const names = tbl.tableCols.map<[ColName, string, (val: any) => any]>(x => [x.name, x.propName, x.parser]);
+    const names = tbl.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
     const cs = toTup<a>(names);
     const predicate = colUnwrap(check(cs));
     return compDelete(tbl.tableName, predicate);

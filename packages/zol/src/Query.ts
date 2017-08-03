@@ -30,10 +30,7 @@ function mkCol<sql, a>(val: ColName, parser: (val: string) => a): Exp<sql, a> {
  * The type of [[defaultValue]]. You cannot instantiate values of this.
  */
 export class DefaultValue {
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): DefaultValue { throw new Error(); }
+    protected dummy: DefaultValue;
 }
 
 const defValue: DefaultValue = <any>{};
@@ -56,10 +53,7 @@ export type MakeCols<s, T extends object> = {
 };
 
 export class Write {
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): Write { throw new Error(); }
+    protected dummy: Write;
 }
 
 export type MakeTable<T1 extends object, T2 extends object> = {
@@ -69,13 +63,13 @@ export type MakeTable<T1 extends object, T2 extends object> = {
     };
 
 export function select<s, a extends object, b extends object>(table: Table<a, b>): Query<s, MakeCols<s, a & b>> {
-    const cs2 = table.tableCols.map<[ColName, string, (val: any) => any]>(c => [c.name, c.propName, c.parser]);
+    const cs2 = table.tableCols.map<[ColName, string, (val: string) => any]>(c => [c.name, c.propName, c.parser]);
     const result: Query<s, MakeCols<s, a & b>> = new Query(resolve => {
         resolve(
             State.bind
                 (
-                State.mapM(x => State.bind<GenState, SomeCol<SQL>, [SomeCol<SQL>, string, (val: any) => any]>(rename(mkSome(mkCol(x[0], x[2]), x[2])), y => State.pure<GenState, [SomeCol<SQL>, string, (val: any) => any]>([y, x[1], x[2]])), cs2),
-                (rns: [SomeCol<SQL>, string, (val: any) => any][]) =>
+                State.mapM(x => State.bind<GenState, SomeCol<SQL>, [SomeCol<SQL>, string, (val: string) => any]>(rename(mkSome(mkCol(x[0], x[2]), x[2])), y => State.pure<GenState, [SomeCol<SQL>, string, (val: string) => any]>([y, x[1], x[2]])), cs2),
+                (rns: [SomeCol<SQL>, string, (val: string) => any][]) =>
                     State.bind
                         (
                         State.get(),
@@ -162,8 +156,8 @@ export function aggregate<s, a extends object>(q: Query<Inner<s>, AggrCols<s, a>
                     is => {
                         const [gst, aggrs] = is;
                         return State.bind(
-                            State.mapM(x => State.bind(rename(x[0]), y => State.pure<GenState, [SomeCol<SQL>, string, (val: any) => any]>([y, x[1], x[2]])), fromTup(aggrs)),
-                            (cs: [SomeCol<SQL>, string, (val: any) => any][]) => {
+                            State.mapM(x => State.bind(rename(x[0]), y => State.pure<GenState, [SomeCol<SQL>, string, (val: string) => any]>([y, x[1], x[2]])), fromTup(aggrs)),
+                            (cs: [SomeCol<SQL>, string, (val: string) => any][]) => {
                                 const sql = state2sql(gst);
                                 const sql2: SQL = {
                                     cols: cs.map(x => x[0]),
@@ -400,8 +394,8 @@ function someColNames<a>(someCols: SomeCol<a>[]): ColName[] {
     return results;
 }
 
-function someColNames2<a>(someCols: [SomeCol<a>, string, (val: any) => any][]): [ColName, string, (val: any) => any][] {
-    const results: [ColName, string, (val: any) => any][] = [];
+function someColNames2<a>(someCols: [SomeCol<a>, string, (val: string) => any][]): [ColName, string, (val: string) => any][] {
+    const results: [ColName, string, (val: string) => any][] = [];
     for (const s of someCols) {
         const [someCol, propName, parser] = s;
         if (someCol.type === "Named") {
@@ -412,18 +406,12 @@ function someColNames2<a>(someCols: [SomeCol<a>, string, (val: any) => any][]): 
 }
 
 export class Inner<s> {
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): [Inner<s>, s] { throw new Error(); }
+    protected dummy: [Inner<s>, s];
 }
 
 // This is really Just a Col<s, a>
 export class Aggr<s, a> {
-    /* istanbul ignore next */
-    private constructor() { this.dummy(); }
-    /* istanbul ignore next */
-    private dummy(): [Aggr<s, a>, s, a] { throw new Error(); }
+    protected dummy: [Aggr<s, a>, s, a];
 }
 
 export type LeftCols<S, A> = {
@@ -451,7 +439,7 @@ function someJoin<s, a extends object, a2>(jointype: JoinType, check: any, q: Qu
         is => {
             const [join_st, res] = is; // tslint:disable-line:variable-name
             return State.bind(
-                State.mapM(x => State.bind(rename(x[0]), y => State.pure<GenState, [SomeCol<SQL>, string, (val: any) => any]>([y, x[1], x[2]])), fromTup(res)),
+                State.mapM(x => State.bind(rename(x[0]), y => State.pure<GenState, [SomeCol<SQL>, string, (val: string) => any]>([y, x[1], x[2]])), fromTup(res)),
                 cs => State.bind(
                     State.get(),
                     st => {
@@ -516,9 +504,9 @@ function someJoin<s, a extends object, a2>(jointype: JoinType, check: any, q: Qu
     });
 }
 
-function fromTup<a extends object>(c: MakeCols<any, a>): [SomeCol<SQL>, string, (val: any) => any][] {
+function fromTup<a extends object>(c: MakeCols<any, a>): [SomeCol<SQL>, string, (val: string) => any][] {
     const keys = Object.keys(c);
-    const result: [SomeCol<SQL>, string, (val: any) => any][] = [];
+    const result: [SomeCol<SQL>, string, (val: string) => any][] = [];
     for (const key of keys) {
         const col: Col<any, any> = c[key];
         const exp = colUnwrap(col);
@@ -535,7 +523,7 @@ function fromTup<a extends object>(c: MakeCols<any, a>): [SomeCol<SQL>, string, 
     return result;
 }
 
-export function toTup<a>(colNames: [ColName, string, (val: any) => any][]): a {
+export function toTup<a>(colNames: [ColName, string, (val: string) => any][]): a {
     const results: any = {};
     for (const c of colNames) {
         const [colName, propName, parser] = c;
