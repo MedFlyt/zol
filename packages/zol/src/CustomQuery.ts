@@ -4,6 +4,7 @@ export function runCustomQuery(conn: pgLib.Client, propNames: string[], propPars
     return new Promise<any[]>((resolve, reject) => {
         const customQuery = new CustomQuery(propNames, propParsers, text, values, (err: any) => {
             if (<boolean>err) {
+                err.query = text;
                 reject(err);
                 return;
             }
