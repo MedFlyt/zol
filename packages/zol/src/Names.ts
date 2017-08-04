@@ -33,6 +33,8 @@ export function allNamesInExp<a>(exp: Exp<SQL, a>): ColName[] {
         }
         case "EInQuery":
             return allNamesInExp(exp.exp).concat(allNamesInSQL(exp.sql));
+        case "EExists":
+            return allNamesInSQL(exp.sql);
         /* istanbul ignore next */
         default:
             return assertNever(exp);

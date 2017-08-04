@@ -225,6 +225,11 @@ function ppCol<a>(c: Exp<SQL, a>): PP<string> {
                     q2 => State.pure(x2 + " IN (" + q2 + ")")
                 )
             );
+        case "EExists":
+            return State.bind(
+                ppSql(c.sql),
+                q2 => State.pure("EXISTS (" + q2 + ")")
+            );
         /* istanbul ignore next */
         default:
             return assertNever(c);

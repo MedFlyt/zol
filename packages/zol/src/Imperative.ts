@@ -1,4 +1,4 @@
-import { booleanCol, Col, colUnwrap, colWrap } from "./Column";
+import { booleanCol, Col, colUnwrap, colWrap, numberCol } from "./Column";
 import { compQuery2 } from "./Compile";
 import * as Debug from "./Debug";
 import { QueryMetricsImpl } from "./Frontend";
@@ -10,6 +10,7 @@ import { Aggr, AggrCols, Inner, LeftCols, MakeCols } from "./Query";
 import { Order } from "./SQL";
 import { SqlType } from "./SqlType";
 import { Table } from "./Table";
+import { unsafeCast } from "./Unsafe";
 
 export class Q<s> {
     protected dummy: [Q<s>, s];
@@ -135,6 +136,41 @@ export function inQuery<s, a>(lhs: Col<s, a>, rhs: (q: Q<s>) => Col<s, a>): Col<
     return <any>colWrap({
         type: "EInQuery",
         exp: colUnwrap(lhs),
+        sql: compQuery2(result2, mutQ[0])[1],
+        parser: SqlType.booleanParser
+    });
+}
+
+/**
+ * The type of an [[arbitrary]] column
+ */
+export class Arbitrary {
+    protected dummy: Arbitrary;
+}
+
+/**
+ * An arbitrary column, useful for queries where the values of the returned
+ * rows are not important, such as in [[exists]] queries.
+ */
+export function arbitrary<s>(): Col<s, Arbitrary> {
+    return <any>unsafeCast(numberCol(1), "INT", SqlType.intParser);
+}
+
+/**
+ * Does the subquery have at least one row?
+ *
+ * SQL equivalent: EXISTS
+ *
+ * @param subquery The subquery should return [[arbitrary]] (since the values,
+ *                 of the resulting rows in unimportant).
+ */
+export function exists<s>(subquery: (q: Q<s>) => Col<s, Arbitrary>): Col<s, boolean> {
+    const mutQ: MutQuery = [initState];
+    const result = subquery(<any>mutQ);
+    const result2 = { val: result }; // Column name can be anything, just need to make sure there is only one
+
+    return <any>colWrap({
+        type: "EExists",
         sql: compQuery2(result2, mutQ[0])[1],
         parser: SqlType.booleanParser
     });

@@ -29,7 +29,8 @@ export type Exp<sql, a> =
     Exp.ECast<sql, a> |
     Exp.EAggrEx<sql, a> |
     Exp.EInList<sql, a> |
-    Exp.EInQuery<sql, a>;
+    Exp.EInQuery<sql, a> |
+    Exp.EExists<sql>;
 
 export namespace Exp {
     export interface ECol {
@@ -100,6 +101,11 @@ export namespace Exp {
     export interface EInQuery<sql, a> {
         readonly type: "EInQuery";
         readonly exp: Exp<sql, a>;
+        readonly sql: sql;
+    }
+
+    export interface EExists<sql> {
+        readonly type: "EExists";
         readonly sql: sql;
     }
 }
