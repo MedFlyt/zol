@@ -4,14 +4,10 @@ import { SqlType } from "./SqlType";
 
 export function e<s, a>(lhs: Col<s, a>, op: "=", rhs: Col<s, a>): Col<s, boolean>;
 export function e<s, a>(lhs: Col<s, a>, op: "!=", rhs: Col<s, a>): Col<s, boolean>;
-export function e<s, a>(lhs: Col<s, number>, op: ">", rhs: Col<s, number>): Col<s, boolean>;
-export function e<s, a>(lhs: Col<s, string>, op: ">", rhs: Col<s, string>): Col<s, boolean>;
-export function e<s, a>(lhs: Col<s, number>, op: "<", rhs: Col<s, number>): Col<s, boolean>;
-export function e<s, a>(lhs: Col<s, string>, op: "<", rhs: Col<s, string>): Col<s, boolean>;
-export function e<s, a>(lhs: Col<s, number>, op: ">=", rhs: Col<s, number>): Col<s, boolean>;
-export function e<s, a>(lhs: Col<s, string>, op: ">=", rhs: Col<s, string>): Col<s, boolean>;
-export function e<s, a>(lhs: Col<s, number>, op: "<=", rhs: Col<s, number>): Col<s, boolean>;
-export function e<s, a>(lhs: Col<s, string>, op: "<=", rhs: Col<s, string>): Col<s, boolean>;
+export function e<s, a>(lhs: Col<s, a>, op: ">", rhs: Col<s, a>): Col<s, boolean>;
+export function e<s, a>(lhs: Col<s, a>, op: "<", rhs: Col<s, a>): Col<s, boolean>;
+export function e<s, a>(lhs: Col<s, a>, op: ">=", rhs: Col<s, a>): Col<s, boolean>;
+export function e<s, a>(lhs: Col<s, a>, op: "<=", rhs: Col<s, a>): Col<s, boolean>;
 export function e<s>(lhs: Col<s, boolean>, op: "AND", rhs: Col<s, boolean>): Col<s, boolean>;
 export function e<s>(lhs: Col<s, boolean>, op: "OR", rhs: Col<s, boolean>): Col<s, boolean>;
 export function e<s>(lhs: Col<s, number>, op: "+", rhs: Col<s, number>): Col<s, number>;
