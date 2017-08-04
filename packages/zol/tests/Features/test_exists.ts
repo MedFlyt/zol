@@ -2,12 +2,10 @@ import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-sid
 
 import * as test from "blue-tape";
 import { withTestDatabase } from "../../../../helper_framework/TestDb";
-import { arbitrary, Debug, defaultValue, exists, insertMany, numberCol, order, Order, pg, query, restrict, restrictEq, select, textCol } from "../../src/zol";
+import { arbitrary, defaultValue, exists, insertMany, numberCol, order, Order, pg, query, restrict, restrictEq, select, textCol } from "../../src/zol";
 import { AddressTable, addressTable, createAddressTableSql, createPersonTableSql, PersonTable, personTable } from "./Tables";
 
 test("exists simple", t => withTestDatabase(async conn => {
-    Debug.enableDebug();
-
     await pg.query_(conn, createPersonTableSql);
     await pg.query_(conn, createAddressTableSql);
 
@@ -66,8 +64,6 @@ test("exists simple", t => withTestDatabase(async conn => {
             age: person.age
         };
     });
-
-    console.log(Debug.getLastQueryMetrics(conn).querySQL());
 
     const expected: typeof actual = [
         { name: "A", age: 30 },
