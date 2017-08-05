@@ -2,7 +2,7 @@ import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-sid
 
 import * as test from "blue-tape";
 import { withTestDatabase } from "../../../../helper_framework/TestDb";
-import { ConflictTarget, defaultValue, insert, insertMany, insertManyReturning, insertOnConflictDoNothing, insertReturning, nullCol, numberCol, order, Order, pg, query, select, textCol } from "../../src/zol";
+import { booleanCol, ConflictTarget, defaultValue, insert, insertMany, insertManyReturning, insertOnConflictDoNothing, insertOnConflictDoUpdate, insertReturning, nullCol, numberCol, Order, order, pg, query, select, textCol } from "../../src/zol";
 import { bookDefaultAuthor, BookTable, bookTable, createBookTableSql, createPersonTableSql, personTable, PersonTable } from "./Tables";
 
 test("insert select simple", t => withTestDatabase(async conn => {
@@ -262,6 +262,79 @@ test("insert on conflict", t => withTestDatabase(async conn => {
             { author: "noone", numPages: null, serial: 5, title: "A book" },
             { author: "X", numPages: 100, serial: 6, title: "Another book" },
             { author: "Y", numPages: null, serial: 7, title: "Dup" }
+        ];
+
+        t.deepEqual(rows, expected_rows);
+    }
+}));
+
+test.only("insert on conflict do update", t => withTestDatabase(async conn => {
+    await pg.query_(conn, createBookTableSql);
+
+    const vals: BookTable[] = [
+        {
+            author: defaultValue(),
+            numPages: defaultValue(),
+            serial: numberCol(5),
+            title: textCol("A book")
+        },
+        {
+            author: textCol("X"),
+            numPages: numberCol(100),
+            serial: numberCol(6),
+            title: textCol("Another book")
+        }
+    ];
+
+    await insertMany(conn, bookTable, vals);
+
+    {
+        const rows = await query(conn, q => {
+            const book = select(q, bookTable);
+            order(q, book.serial, Order.Asc);
+            return book;
+        });
+
+        const expected_rows: typeof rows = [
+            { author: "noone", numPages: null, serial: 5, title: "A book" },
+            { author: "X", numPages: 100, serial: 6, title: "Another book" }
+        ];
+
+        t.deepEqual(rows, expected_rows);
+    }
+
+    const vals2: BookTable = {
+        author: textCol("Y"),
+        numPages: nullCol(),
+        serial: numberCol(6),
+        title: textCol("Dup")
+    };
+
+    const inserted2 = await insertOnConflictDoUpdate(conn,
+        bookTable,
+        vals2,
+        ConflictTarget.tableColumns(["serial"]),
+        () => booleanCol(true),
+        (row) => {
+            const newRow: BookTable = {
+                ...row,
+                numPages: nullCol()
+            };
+            return newRow;
+        }
+    );
+    t.deepEqual(inserted2, true);
+
+    {
+        const rows = await query(conn, q => {
+            const book = select(q, bookTable);
+            order(q, book.serial, Order.Asc);
+            return book;
+        });
+
+        const expected_rows: typeof rows = [
+            { author: "noone", numPages: null, serial: 5, title: "A book" },
+            { author: "X", numPages: null, serial: 6, title: "Another book" }
         ];
 
         t.deepEqual(rows, expected_rows);

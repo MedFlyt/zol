@@ -62,17 +62,34 @@ export function finalCols<s, a>(cols: object): SomeCol<SQL>[] {
     return result;
 }
 
-export function compileInsert<a extends object, b extends object, c extends object>(tbl: Table<any, any>, rowValues: MakeTable<a, b>[], conflictTarget: ConflictTarget<a & b> | undefined, returning: (c: MakeCols<Write, a & b>) => MakeCols<Write, c>): [string, Param[]] {
+export function compileInsert<a extends object, b extends object, c extends object>(tbl: Table<any, any>, rowValues: MakeTable<a, b>[], conflictTarget: ConflictTarget<a & b> | undefined, conflictAction: [(c: MakeCols<Write, a>) => Col<Write, boolean>, (c: MakeCols<Write, a>) => MakeTable<a, b>] | undefined, returning: (c: MakeCols<Write, a & b>) => MakeCols<Write, c>): [string, Param[]] {
     const names = tbl.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
     const cs = <any>toTup(names);
     const fs = rowValues.map(finalCols);
     const rs = finalCols(returning(cs));
 
     if (conflictTarget === undefined) {
-        return compInsert(tbl.tableName, names, fs, undefined, rs);
+        return compInsert(tbl.tableName, names, fs, undefined, undefined, undefined, rs);
     } else {
         const conflictTblCols = conflictTargetTableColumns(conflictTarget, tbl);
-        return compInsert(tbl.tableName, names, fs, conflictTblCols, rs);
+        if (conflictAction === undefined) {
+            return compInsert(tbl.tableName, names, fs, conflictTblCols, undefined, undefined, rs);
+        } else {
+            const [check, upd] = conflictAction;
+
+            const names = tbl.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
+            const cs = toTup<a>(names);
+            const updated: [ColName, SomeCol<SQL>][] = [];
+            const fs2 = finalCols(upd(cs));
+            for (let i = 0; i < names.length; ++i) {
+                updated.push([
+                    names[i][0],
+                    fs2[i]
+                ]);
+            }
+            const predicate = colUnwrap(check(cs));
+            return compInsert(tbl.tableName, names, fs, conflictTblCols, predicate, updated, rs);
+        }
     }
 }
 

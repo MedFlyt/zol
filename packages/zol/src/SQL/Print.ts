@@ -40,26 +40,41 @@ export function compSql(sql: SQL): [TableName[], string, Param[]] {
     return runPP(ppSql(sql));
 }
 
-export function compInsert(tbl: TableName, names: [ColName, string, (val: string) => any][], cs: SomeCol<SQL>[][], conflictTableCols: undefined | ColName[], rs: SomeCol<SQL>[]): [string, Param[]] {
+export function compInsert(tbl: TableName, names: [ColName, string, (val: string) => any][], cs: SomeCol<SQL>[][], conflictTableCols: undefined | ColName[], p: Exp<SQL, boolean> | undefined, cs2: [ColName, SomeCol<SQL>][] | undefined, rs: SomeCol<SQL>[]): [string, Param[]] {
     const [, sql, params] = runPP(State.bind(
         State.mapM(ppInsertRow, cs),
         inserts => State.bind(
-            State.mapM(ppSomeCol, rs),
-            rs2 => {
-                let onConflict: string = "";
-                if (conflictTableCols !== undefined) {
-                    onConflict = " ON CONFLICT (" + conflictTableCols.map(fromColName).join(", ") + ")";
-                    onConflict += " DO NOTHING";
-                }
-                return State.pure([
-                    "INSERT INTO",
-                    fromTableName(tbl),
-                    "(" + names.map(x => fromColName(x[0])).join(", ") + ")",
-                    "VALUES",
-                    inserts.map(row => "(" + row.join(", ") + ")").join(", ")
-                ].join(" ") + onConflict + ppReturning(rs2));
-            })
-    )
+            cs2 === undefined ? State.pure(undefined) : State.mapM(ppUpdate, cs2),
+            updates => State.bind(
+                p === undefined ? State.pure(undefined) : ppCol(p),
+                check => State.bind(
+                    State.mapM(ppSomeCol, rs),
+                    rs2 => {
+                        let onConflict: string = "";
+                        if (conflictTableCols !== undefined) {
+                            onConflict = " ON CONFLICT (" + conflictTableCols.map(fromColName).join(", ") + ")";
+                            if (updates === undefined) {
+                                onConflict += " DO NOTHING";
+                            } else {
+                                if (check === undefined) {
+                                    throw new Error("The impossible happened");
+                                }
+                                onConflict += " DO UPDATE SET ";
+                                onConflict += set(updates);
+                                onConflict += " WHERE ";
+                                onConflict += check;
+                            }
+                        }
+                        return State.pure([
+                            "INSERT INTO",
+                            fromTableName(tbl),
+                            "(" + names.map(x => fromColName(x[0])).join(", ") + ")",
+                            "VALUES",
+                            inserts.map(row => "(" + row.join(", ") + ")").join(", ")
+                        ].join(" ") + onConflict + ppReturning(rs2));
+                    })
+            )
+        ))
     );
 
     return [sql, params];

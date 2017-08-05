@@ -1,3 +1,4 @@
+import { Col } from "./Column";
 import { compileInsert, finalCols } from "./Compile";
 import { runCustomQuery } from "./CustomQuery";
 import { litToPgParam } from "./Frontend";
@@ -64,22 +65,36 @@ export async function insertOnConflictDoUpdateReturning<Req extends object, Def 
 
 /**
  * Insert a single row into a table, with an ON CONFLICT DO UPDATE clause
+ *
+ * @param onConflictPred Which rows should be updated (the WHERE clause)
+ *
+ * @param onConflictUpdate A function that returns the new values for a row.
+ *
+ *                         You may use [[defaultValue]] on "default-able" columns.
+ *
+ *                         Should have an explicit annotation of the return type, in order to catch excess properties.
+ *                         See: <https://github.com/Microsoft/TypeScript/issues/7547#issuecomment-218017839>
+ *
+ * @return If a new row was inserted returns true.
+ *
+ *         If a conflicting row already existed but was updated returns true.
+ *
+ *         If a conflicting row already existed and was not updated returns false.
  */
-export async function insertOnConflictDoUpdate<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>, conflictTarget: ConflictTarget<Req & Def>, conflictAction: null): Promise<void> {
-    conn; // tslint:disable-line:no-unused-expression
-    table; // tslint:disable-line:no-unused-expression
-    rowValues; // tslint:disable-line:no-unused-expression
-    conflictTarget; // tslint:disable-line:no-unused-expression
-    conflictAction; // tslint:disable-line:no-unused-expression
-    throw new Error("TODO");
+export async function insertOnConflictDoUpdate<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>, conflictTarget: ConflictTarget<Req & Def>, onConflictPred: (c: MakeCols<Write, Req & Def>) => Col<Write, boolean>, onConflictUpdate: (c: MakeCols<Write, Req & Def>/* TODO: , excluded: MakeCols<Write, Req & Def>*/) => MakeTable<Req, Def>): Promise<boolean> {
+    const numRows = await insertManyOnConflictDoUpdate(conn, table, [rowValues], conflictTarget, onConflictPred, onConflictUpdate);
+    return numRows === 1;
 }
 
+// --------------------------------------------------------------------
+// insertMany variations:
+// --------------------------------------------------------------------
 
 /**
  * Insert multiple rows into a table, with a RETURNING clause
  */
 export async function insertManyReturning<Req extends object, Def extends object, Ret extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret[]> {
-    const [sqlText, params] = compileInsert(table, rowValues, undefined, returning);
+    const [sqlText, params] = compileInsert(table, rowValues, undefined, undefined, returning);
 
     const pgParams = params.map(x => litToPgParam(x.param));
 
@@ -96,7 +111,7 @@ export async function insertManyReturning<Req extends object, Def extends object
  * Insert multiple rows into a table
  */
 export async function insertMany<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[]): Promise<void> {
-    const [sqlText, params] = compileInsert(table, rowValues, undefined, () => ({}));
+    const [sqlText, params] = compileInsert(table, rowValues, undefined, undefined, () => ({}));
 
     const pgParams = params.map(x => litToPgParam(x.param));
 
@@ -121,7 +136,7 @@ export async function insertManyOnConflictDoNothingReturning<Req extends object,
  * @return The number of rows inserted
  */
 export async function insertManyOnConflictDoNothing<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>): Promise<number> {
-    const [sqlText, params] = compileInsert(table, rowValues, conflictTarget, () => ({}));
+    const [sqlText, params] = compileInsert(table, rowValues, conflictTarget, undefined, () => ({}));
 
     const pgParams = params.map(x => litToPgParam(x.param));
 
@@ -144,13 +159,23 @@ export async function insertManyOnConflictDoUpdateReturning<Req extends object, 
 
 /**
  * Insert multiple rows into a table, with an ON CONFLICT DO UPDATE clause
+ *
+ * @param onConflictPred Which rows should be updated (the WHERE clause)
+ *
+ * @param onConflictUpdate A function that returns the new values for a row.
+ *
+ *                         You may use [[defaultValue]] on "default-able" columns.
+ *
+ *                         Should have an explicit annotation of the return type, in order to catch excess properties.
+ *                         See: <https://github.com/Microsoft/TypeScript/issues/7547#issuecomment-218017839>
+ *
+ * @return The number of newly inserted rows + the number of updated rows
  */
-export async function insertManyOnConflictDoUpdate<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>, conflictAction: null): Promise<void> {
-    conn; // tslint:disable-line:no-unused-expression
-    table; // tslint:disable-line:no-unused-expression
-    rowValues; // tslint:disable-line:no-unused-expression
-    conflictTarget; // tslint:disable-line:no-unused-expression
-    conflictAction; // tslint:disable-line:no-unused-expression
-    throw new Error("TODO");
-}
+export async function insertManyOnConflictDoUpdate<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>, onConflictPred: (c: MakeCols<Write, Req & Def>) => Col<Write, boolean>, onConflictUpdate: (c: MakeCols<Write, Req & Def>/* TODO: , excluded: MakeCols<Write, Req & Def> */) => MakeTable<Req, Def>): Promise<number> {
+    const [sqlText, params] = compileInsert(table, rowValues, conflictTarget, [onConflictPred, onConflictUpdate], () => ({}));
 
+    const pgParams = params.map(x => litToPgParam(x.param));
+
+    const result = await pg.query(conn, sqlText, pgParams);
+    return result.rowCount;
+}
