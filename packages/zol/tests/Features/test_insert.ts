@@ -268,7 +268,7 @@ test("insert on conflict", t => withTestDatabase(async conn => {
     }
 }));
 
-test.only("insert on conflict do update", t => withTestDatabase(async conn => {
+test("insert on conflict do update", t => withTestDatabase(async conn => {
     await pg.query_(conn, createBookTableSql);
 
     const vals: BookTable[] = [

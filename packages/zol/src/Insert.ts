@@ -53,12 +53,13 @@ export async function insertOnConflictDoNothing<Req extends object, Def extends 
 /**
  * Insert a single row into a table, with an ON CONFLICT DO UPDATE clause, and with a RETURNING clause
  */
-export async function insertOnConflictDoUpdateReturning<Req extends object, Def extends object, Ret extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>, conflictTarget: ConflictTarget<Req & Def>, conflictAction: null, returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret> {
+export async function insertOnConflictDoUpdateReturning<Req extends object, Def extends object, Ret extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>, conflictTarget: ConflictTarget<Req & Def>, onConflictPred: (c: MakeCols<Write, Req & Def>) => Col<Write, boolean>, onConflictUpdate: (c: MakeCols<Write, Req & Def>/* TODO: , excluded: MakeCols<Write, Req & Def>*/) => MakeTable<Req, Def>, returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret> {
     conn; // tslint:disable-line:no-unused-expression
     table; // tslint:disable-line:no-unused-expression
     rowValues; // tslint:disable-line:no-unused-expression
     conflictTarget; // tslint:disable-line:no-unused-expression
-    conflictAction; // tslint:disable-line:no-unused-expression
+    onConflictPred; // tslint:disable-line:no-unused-expression
+    onConflictUpdate; // tslint:disable-line:no-unused-expression
     returning; // tslint:disable-line:no-unused-expression
     throw new Error("TODO");
 }
@@ -147,12 +148,13 @@ export async function insertManyOnConflictDoNothing<Req extends object, Def exte
 /**
  * Insert multiple rows into a table, with an ON CONFLICT DO UPDATE clause, and with a RETURNING clause
  */
-export async function insertManyOnConflictDoUpdateReturning<Req extends object, Def extends object, Ret extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>, conflictAction: null, returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret[]> {
+export async function insertManyOnConflictDoUpdateReturning<Req extends object, Def extends object, Ret extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>, onConflictPred: (c: MakeCols<Write, Req & Def>) => Col<Write, boolean>, onConflictUpdate: (c: MakeCols<Write, Req & Def>/* TODO: , excluded: MakeCols<Write, Req & Def>*/) => MakeTable<Req, Def>, returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret[]> {
     conn; // tslint:disable-line:no-unused-expression
     table; // tslint:disable-line:no-unused-expression
     rowValues; // tslint:disable-line:no-unused-expression
     conflictTarget; // tslint:disable-line:no-unused-expression
-    conflictAction; // tslint:disable-line:no-unused-expression
+    onConflictPred; // tslint:disable-line:no-unused-expression
+    onConflictUpdate; // tslint:disable-line:no-unused-expression
     returning; // tslint:disable-line:no-unused-expression
     throw new Error("TODO");
 }
