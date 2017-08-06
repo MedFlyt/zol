@@ -1,4 +1,4 @@
-import { Instant, LocalDateTime } from "js-joda/dist/js-joda";
+import { Instant, LocalDateTime } from "js-joda";
 import { Col, unsafeCast, unsafeFun2 } from "zol";
 import { instantParser, localDateTimeParser } from "./Types";
 
