@@ -12,6 +12,11 @@ function node_exe(prog) {
         : "./node_modules/.bin/" + prog;
 }
 
+function tool_path(tool) {
+    var p = path.relative(process.cwd(), __dirname);
+    return path.join(p, tool);
+}
+
 function print_usage() {
     console.log("USAGE:");
     console.log(process.argv0 + " " + process.argv[1] + " <infile.d.ts> -o <outdir>");
@@ -52,7 +57,7 @@ function main() {
         fs.writeFileSync(path.join(dirName, "tsconfig.json"), JSON.stringify(tsconfig), { encoding: "utf8" });
 
         var p = childProcess.spawnSync(
-            node_exe("typedoc"),
+            tool_path(path.join("..", node_exe("typedoc"))),
             [
                 "--tsconfig", path.join(dirName, "tsconfig.json"),
                 "--readme", "none",
