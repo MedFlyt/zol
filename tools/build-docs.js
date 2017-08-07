@@ -66,7 +66,9 @@ function main() {
             ],
             { stdio: "" });
 
-        console.log(p.stderr.toString());
+        if (p.stderr) {
+            console.error(p.stderr.toString());
+        }
         if (p.error) {
             throw p.error;
         }
