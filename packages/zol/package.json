@@ -23,7 +23,7 @@
     "style": "node ../../tools/ts-style.js './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts'",
     "style-fix": "node ../../tools/ts-style.js './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts' --fix",
     "prebuild": "rimraf dist",
-    "build": "tsc --project src && rollup -c && ts-node ../../tools/dts-merge.ts ./build/types/zol.d.ts -o ./dist/types/zol.d.ts && typedoc --out dist/docs --target es6 --readme none --mode file --theme minimal --includeDeclarations --excludePrivate --excludeExternals dist/types/zol.d.ts",
+    "build": "tsc --project src && rollup -c && ts-node ../../tools/dts-merge.ts ./build/types/zol.d.ts -o ./dist/types/zol.d.ts && node ../../tools/build-docs.js dist/types/zol.d.ts -o dist/docs",
     "build-tests": "tsc --project tests"
   },
   "repository": {
@@ -41,7 +41,6 @@
     "rollup": "0.45.2",
     "ts-node": "3.3.0",
     "tslint": "5.5.0",
-    "typedoc": "0.8.0",
     "typescript-formatter": "5.2.0",
     "typescript": "2.4.2"
   },
