@@ -1,4 +1,4 @@
-import { parseZonedDateTime } from "../src/Parsers";
+import { parseLocalDate, parseZonedDateTime } from "../src/Parsers";
 
 import "../../../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
 
@@ -32,4 +32,9 @@ test("date time with nanos and offset", async t => {
 test("date time offset minutes", async t => {
     const actual = parseZonedDateTime("2017-08-02 12:41:31.194+01:30");
     t.deepEqual(actual.toString(), "2017-08-02T12:41:31.194+01:30");
+});
+
+test("local date", async t => {
+    const actual = parseLocalDate("2017-08-02");
+    t.deepEqual(actual.toString(), "2017-08-02");
 });

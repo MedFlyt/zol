@@ -1,9 +1,9 @@
 // Ported from <https://github.com/bendrucker/postgres-date>
 
-import { ZonedDateTime, ZoneOffset } from "js-joda";
+import { LocalDate, ZonedDateTime, ZoneOffset } from "js-joda";
 
 const DATE_TIME = /(\d{1,})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/;
-// const DATE = /^(\d{1,})-(\d{2})-(\d{2})$/;
+const DATE = /^(\d{1,})-(\d{2})-(\d{2})$/;
 const TIME_ZONE = /([Z+-])(\d{2})?:?(\d{2})?:?(\d{2})?/;
 
 export function parseZonedDateTime(isoDate: string): ZonedDateTime {
@@ -32,18 +32,19 @@ export function parseZonedDateTime(isoDate: string): ZonedDateTime {
     }
 }
 
-/*
-function getDate(isoDate: string) {
-  var matches = DATE.exec(isoDate);
-  var year = parseInt(matches[1], 10)
-  var month = parseInt(matches[2], 10) - 1
-  var day = matches[3]
-  // YYYY-MM-DD will be parsed as local time
-  var date = new Date(year, month, day)
-  date.setFullYear(year)
-  return date
+export function parseLocalDate(isoDate: string): LocalDate {
+    const matches = DATE.exec(isoDate);
+
+    if (matches === null) {
+        throw new Error(`Error parsing date: ${isoDate}`);
+    }
+
+    const year = parseInt(matches[1], 10);
+    const month = parseInt(matches[2], 10);
+    const day = parseInt(matches[3], 10);
+
+    return LocalDate.of(year, month, day);
 }
-*/
 
 // match timezones:
 // Z (UTC)
