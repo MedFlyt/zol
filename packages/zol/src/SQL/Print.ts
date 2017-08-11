@@ -214,6 +214,17 @@ function ppCol<a>(c: Exp<SQL, a>): PP<string> {
                     b2 => State.pure(c.name + "(" + a2 + ", " + b2 + ")")
                 )
             );
+        case "EFun3":
+            return State.bind(
+                ppCol(c.col1),
+                a2 => State.bind(
+                    ppCol(c.col2),
+                    b2 => State.bind(
+                        ppCol(c.col3),
+                        c2 => State.pure(c.name + "(" + a2 + ", " + b2 + ", " + c2 + ")")
+                    )
+                )
+            );
         case "EAggrEx":
             return ppUnOp({
                 type: "UFun",

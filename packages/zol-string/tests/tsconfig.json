@@ -1,0 +1,7 @@
+{
+    "extends": "../../../base_tsconfig/tsconfig.json",
+    "compilerOptions": {
+        "module": "commonjs",
+        "outDir": "../build"
+    }
+}

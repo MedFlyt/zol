@@ -26,6 +26,7 @@ export type Exp<sql, a> =
     Exp.ECustomBinOp<sql, a> |
     Exp.EUnOp<sql, a> |
     Exp.EFun2<sql, a> |
+    Exp.EFun3<sql, a> |
     Exp.ECast<sql, a> |
     Exp.EAggrEx<sql, a> |
     Exp.EInList<sql, a> |
@@ -76,6 +77,14 @@ export namespace Exp {
         readonly name: string;
         readonly lhs: Exp<sql, a>;
         readonly rhs: Exp<sql, a>;
+    }
+
+    export interface EFun3<sql, a> {
+        readonly type: "EFun3";
+        readonly name: string;
+        readonly col1: Exp<sql, a>;
+        readonly col2: Exp<sql, a>;
+        readonly col3: Exp<sql, a>;
     }
 
     export interface ECast<sql, a> {

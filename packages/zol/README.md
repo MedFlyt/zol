@@ -20,4 +20,5 @@ TODO!
 
   - [zol-json](https://github.com/MedFlyt/zol/tree/master/packages/zol-json) - JSON SQL functionality
   - [zol-math](https://github.com/MedFlyt/zol/tree/master/packages/zol-math) - SQL Mathematical functions
+  - [zol-string](https://github.com/MedFlyt/zol/tree/master/packages/zol-string) - SQL string functions
   - [zol-time](https://github.com/MedFlyt/zol/tree/master/packages/zol-time) - SQL Date/Time functionality

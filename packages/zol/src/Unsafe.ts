@@ -56,7 +56,27 @@ export function unsafeFun2<s, a, b, c>(funName: string, col1: Col<s, a>, col2: C
 }
 
 /**
- * Create a named aggregate function. Like [[fun]], this function is generally
+ * Like [[unsafeFun]], but with three arguments.
+ *
+ * @param funName Name of the SQL function
+ * @param col1 First argument to the function
+ * @param col2 Second argument to the function
+ * @param col3 Third argument to the function
+ * @param parser Function that parses the raw SQL value into the return type of the function
+ */
+export function unsafeFun3<s, a, b, c, d>(funName: string, col1: Col<s, a>, col2: Col<s, b>, col3: Col<s, c>, parser: (val: string) => d): Col<s, d> {
+    return <any>colWrap({
+        type: "EFun3",
+        name: funName,
+        col1: colUnwrap(col1),
+        col2: colUnwrap(col2),
+        col3: colUnwrap(col3),
+        parser: parser
+    });
+}
+
+/**
+ * Create a named aggregate function. Like [[unsafeFun]], this function is generally
  * unsafe and should ONLY be used to implement missing backend-specific
  * functionality.
  *

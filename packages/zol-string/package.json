@@ -1,0 +1,50 @@
+{
+  "name": "zol-string",
+  "version": "0.1.6",
+  "description": "SQL string functions for Zol",
+  "keywords": [
+    "typescript",
+    "sql",
+    "query",
+    "postgresql",
+    "postgres",
+    "orm"
+  ],
+  "main": "dist/zol-string.umd.js",
+  "module": "dist/zol-string.es5.js",
+  "typings": "dist/types/zol-string.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "lint": "tslint -c ../../tslint.json --type-check --project ./src/tsconfig.json -t codeFrame && tslint -c ../../tslint.json --type-check --project ./tests/tsconfig.json -t codeFrame",
+    "lint-fix": "tslint -c ../../tslint.json --format stylish --fix './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts'",
+    "style": "node ../../tools/ts-style.js './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts'",
+    "style-fix": "node ../../tools/ts-style.js './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts' --fix",
+    "prebuild": "rimraf dist",
+    "build": "tsc --project src && rollup -c && ts-node ../../tools/dts-merge.ts ./build/types/zol-string.d.ts -o ./dist/types/zol-string.d.ts && node ../../tools/build-docs.js dist/types/zol-string.d.ts -o dist/docs",
+    "build-tests": "tsc --project tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MedFlyt/zol.git"
+  },
+  "author": "benny-medflyt <benny@medflyt.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MedFlyt/zol/issues"
+  },
+  "homepage": "https://github.com/MedFlyt/zol#readme",
+  "devDependencies": {
+    "rimraf": "2.6.1",
+    "rollup": "0.45.2",
+    "ts-node": "3.3.0",
+    "tslint": "5.5.0",
+    "typescript-formatter": "5.2.0",
+    "typescript": "2.4.2"
+  },
+  "dependencies": {
+    "zol": "^0.1.6"
+  }
+}
