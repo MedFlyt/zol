@@ -570,6 +570,8 @@ function ppOp(op: BinOp): string {
             return "||";
         case BinOp.Like:
             return "LIKE";
+        case BinOp.ILike:
+            return "ILIKE";
         /* istanbul ignore next */
         default:
             return assertNever(op);

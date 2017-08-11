@@ -102,3 +102,43 @@ export function like<s>(str: Col<s, string>, pattern: string | Col<s, string>): 
         });
     }
 }
+
+/**
+ * Returns true if the string matches the supplied pattern, using case-insensitive matching
+ *
+ * SQL equivalent: `ILIKE`
+ *
+ * @param str The string to be matched against
+ * @param pattern The pattern to use. May use special characters '%' and '_'
+ */
+export function ilike<s>(str: Col<s, string>, pattern: string): Col<s, boolean>;
+
+/**
+ * Returns true if the string matches the supplied pattern, using case-insensitive matching
+ *
+ * SQL equivalent: `ILIKE`
+ *
+ * @param str The string to be matched against
+ * @param pattern The pattern to use. May use special characters '%' and '_'
+ */
+export function ilike<s>(str: Col<s, string>, pattern: Col<s, string>): Col<s, boolean>;
+
+export function ilike<s>(str: Col<s, string>, pattern: string | Col<s, string>): Col<s, boolean> {
+    if (typeof pattern === "string") {
+        return <any>colWrap({
+            type: "EBinOp",
+            op: BinOp.ILike,
+            lhs: colUnwrap(str),
+            rhs: colUnwrap(textCol(pattern)),
+            parser: SqlType.booleanParser
+        });
+    } else {
+        return <any>colWrap({
+            type: "EBinOp",
+            op: BinOp.ILike,
+            lhs: colUnwrap(str),
+            rhs: colUnwrap(pattern),
+            parser: SqlType.booleanParser
+        });
+    }
+}

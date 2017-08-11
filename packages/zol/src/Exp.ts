@@ -168,5 +168,6 @@ export const enum BinOp {
     Mul,
     Div,
     Concat,
-    Like
+    Like,
+    ILike
 }

@@ -2,7 +2,7 @@ import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-sid
 
 import * as test from "blue-tape";
 import { withTestDatabase } from "../../../../helper_framework/TestDb";
-import { e, like, query, textCol } from "../../src/zol";
+import { e, ilike, like, query, textCol } from "../../src/zol";
 
 test("string concat", t => withTestDatabase(async conn => {
     const r1 = await query(conn, _q => {
@@ -48,6 +48,46 @@ test("string like2", t => withTestDatabase(async conn => {
     const r2 = await query(conn, _q => {
         return {
             val: like(textCol("abc"), "b_")
+        };
+    });
+
+    const expected_r2: typeof r2 = [{ val: false }];
+
+    t.deepEqual([r1, r2], [expected_r1, expected_r2]);
+}));
+
+test("string ilike", t => withTestDatabase(async conn => {
+    const r1 = await query(conn, _q => {
+        return {
+            val: ilike(textCol("aBc"), textCol("abc"))
+        };
+    });
+
+    const expected_r1: typeof r1 = [{ val: true }];
+
+    const r2 = await query(conn, _q => {
+        return {
+            val: ilike(textCol("abc"), e(textCol("_"), "||", textCol("Bc")))
+        };
+    });
+
+    const expected_r2: typeof r2 = [{ val: true }];
+
+    t.deepEqual([r1, r2], [expected_r1, expected_r2]);
+}));
+
+test("string ilike2", t => withTestDatabase(async conn => {
+    const r1 = await query(conn, _q => {
+        return {
+            val: ilike(textCol("aBc"), "_b_")
+        };
+    });
+
+    const expected_r1: typeof r1 = [{ val: true }];
+
+    const r2 = await query(conn, _q => {
+        return {
+            val: ilike(textCol("aBc"), "b_")
         };
     });
 
