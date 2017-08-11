@@ -150,37 +150,34 @@ export function aggregate<s, a extends object>(q: Query<Inner<s>, AggrCols<s, a>
     return new Query(resolve => {
         resolve(
             State.bind(
-                State.get(),
-                st => State.bind(
-                    isolate(q),
-                    is => {
-                        const [gst, aggrs] = is;
-                        return State.bind(
-                            State.mapM(x => State.bind(rename(x[0]), y => State.pure<GenState, [SomeCol<SQL>, string, (val: string) => any]>([y, x[1], x[2]])), fromTup(aggrs)),
-                            (cs: [SomeCol<SQL>, string, (val: string) => any][]) => {
-                                const sql = state2sql(gst);
-                                const sql2: SQL = {
-                                    cols: cs.map(x => x[0]),
-                                    source: {
-                                        type: "Product",
-                                        sqls: [sql]
-                                    },
-                                    restricts: [],
-                                    groups: gst.groupCols,
-                                    ordering: [],
-                                    limits: null
-                                };
-                                return State.bind(
-                                    State.put({
-                                        ...st,
-                                        sources: [sql2].concat(st.sources)
-                                    }),
-                                    () => State.pure(toTup(someColNames2(cs)))
-                                );
-                            }
-                        );
-                    }
-                )
+                isolate(q),
+                is => {
+                    const [gst, aggrs] = is;
+                    return State.bind(
+                        State.mapM(x => State.bind(rename(x[0]), y => State.pure<GenState, [SomeCol<SQL>, string, (val: string) => any]>([y, x[1], x[2]])), fromTup(aggrs)),
+                        (cs: [SomeCol<SQL>, string, (val: string) => any][]) => {
+                            const sql = state2sql(gst);
+                            const sql2: SQL = {
+                                cols: cs.map(x => x[0]),
+                                source: {
+                                    type: "Product",
+                                    sqls: [sql]
+                                },
+                                restricts: [],
+                                groups: gst.groupCols,
+                                ordering: [],
+                                limits: null
+                            };
+                            return State.bind(
+                                State.modify(st => ({
+                                    ...st,
+                                    sources: [sql2].concat(st.sources)
+                                })),
+                                () => State.pure(toTup(someColNames2(cs)))
+                            );
+                        }
+                    );
+                }
             )
         );
     });

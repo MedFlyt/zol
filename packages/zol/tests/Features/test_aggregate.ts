@@ -264,3 +264,89 @@ test("aggregate max", t => withTestDatabase(async conn => {
 
     t.deepEqual(actual, expected);
 }));
+
+test("multiple aggregates", t => withTestDatabase(async conn => {
+    await pg.query_(conn, createPersonTableSql);
+    await pg.query_(conn, createAddressTableSql);
+
+    const personVals: PersonTable[] = [
+        {
+            id: defaultValue(),
+            name: textCol("B"),
+            age: numberCol(10)
+        },
+        {
+            id: defaultValue(),
+            name: textCol("A"),
+            age: numberCol(30)
+        },
+        {
+            id: defaultValue(),
+            name: textCol("C"),
+            age: numberCol(20)
+        },
+        {
+            id: defaultValue(),
+            name: textCol("D"),
+            age: numberCol(20)
+        }
+    ];
+
+    await insertMany(conn, personTable, personVals);
+
+    const addressVals: AddressTable[] = [
+        {
+            name: textCol("A"),
+            city: textCol("Tokyo")
+        },
+        {
+            name: textCol("C"),
+            city: textCol("London")
+        },
+        {
+            name: textCol("A"),
+            city: textCol("New York")
+        }
+    ];
+
+    await insertMany(conn, addressTable, addressVals);
+
+    const actual = await query(conn, q => {
+        const person = select(q, personTable);
+
+        const aggr = aggregate(q, q => {
+            const address = select(q, addressTable);
+            const owner = groupBy(q, address.name);
+            return {
+                name: owner,
+                homes: count(address.city)
+            };
+        });
+        restrictEq(q, aggr.name, person.name);
+
+        const aggr2 = aggregate(q, q => {
+            const address = select(q, addressTable);
+            const owner = groupBy(q, address.name);
+            restrictEq(q, address.city, textCol("New York"));
+            return {
+                name: owner,
+                homes: count(address.city)
+            };
+        });
+        restrictEq(q, aggr2.name, person.name);
+
+
+        order(q, aggr.homes, Order.Desc);
+        return {
+            name: person.name,
+            homes: aggr.homes,
+            homes2: aggr2.homes
+        };
+    });
+
+    const expected: typeof actual = [
+        { name: "A", homes: 2, homes2: 1 }
+    ];
+
+    t.deepEqual(actual, expected);
+}));
