@@ -3,7 +3,7 @@ import { Col, textCol, unsafeCast } from "zol";
 import { parseLocalDate, parseZonedDateTime } from "./Parsers";
 
 export function localDateTimeCol<s>(val: LocalDateTime): Col<s, LocalDateTime> {
-    return <any>textCol(val.toString());
+    return unsafeCast(<any>textCol(val.toString()), "TIMESTAMP", localDateTimeParser);
 }
 
 export function localDateTimeParser(val: string): LocalDateTime {
@@ -12,7 +12,7 @@ export function localDateTimeParser(val: string): LocalDateTime {
 }
 
 export function instantCol<s>(val: Instant): Col<s, Instant> {
-    return <any>textCol(val.toString());
+    return unsafeCast(<any>textCol(val.toString()), "TIMESTAMPTZ", instantParser);
 }
 
 export function instantParser(val: string): Instant {
