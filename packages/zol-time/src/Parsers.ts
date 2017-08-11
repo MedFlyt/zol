@@ -1,9 +1,10 @@
 // Ported from <https://github.com/bendrucker/postgres-date>
 
-import { LocalDate, ZonedDateTime, ZoneOffset } from "js-joda";
+import { LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from "js-joda";
 
 const DATE_TIME = /(\d{1,})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/;
 const DATE = /^(\d{1,})-(\d{2})-(\d{2})$/;
+const TIME = /^(\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/;
 const TIME_ZONE = /([Z+-])(\d{2})?:?(\d{2})?:?(\d{2})?/;
 
 export function parseZonedDateTime(isoDate: string): ZonedDateTime {
@@ -44,6 +45,23 @@ export function parseLocalDate(isoDate: string): LocalDate {
     const day = parseInt(matches[3], 10);
 
     return LocalDate.of(year, month, day);
+}
+
+export function parseLocalTime(isoTime: string): LocalTime {
+    const matches = TIME.exec(isoTime);
+
+    if (matches === null) {
+        throw new Error(`Error parsing time: ${isoTime}`);
+    }
+
+    const hour = parseInt(matches[1], 10);
+    const minute = parseInt(matches[2], 10);
+    const second = parseInt(matches[3], 10);
+
+    const ss: string | undefined = <any>matches[4];
+    const nanos = (ss !== undefined) ? Math.floor(1000000000 * parseFloat(ss)) : 0;
+
+    return LocalTime.of(hour, minute, second, nanos);
 }
 
 // match timezones:
