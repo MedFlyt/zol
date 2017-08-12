@@ -4,7 +4,7 @@ import * as test from "blue-tape";
 import { Duration, Instant } from "js-joda/dist/js-joda";
 import { query } from "zol";
 import { withTestDatabase } from "../../../helper_framework/TestDb";
-import { durationBetween, instantCol } from "../src/zol-time";
+import { durationBetween, instantCol } from "../src/zol-datetime";
 
 test("between instants long time span", t => withTestDatabase(async conn => {
     const startEpoch = 1490238000;

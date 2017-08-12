@@ -4,7 +4,7 @@ import * as test from "blue-tape";
 import { LocalTime } from "js-joda/dist/js-joda";
 import { query } from "zol";
 import { withTestDatabase } from "../../../helper_framework/TestDb";
-import { localTimeCol } from "../src/zol-time";
+import { localTimeCol } from "../src/zol-datetime";
 
 test("local time simple 1", t => withTestDatabase(async conn => {
     const actual = await query(conn, _q => ({

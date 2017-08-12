@@ -1,7 +1,7 @@
 import { Instant, LocalDateTime } from "js-joda";
 import { declareTable, MakeCols, MakeTable, SqlType } from "zol";
 import { localDateTimeParser } from "../src/Types";
-import { instantParser } from "../src/zol-time";
+import { instantParser } from "../src/zol-datetime";
 
 // --------------------------------------------------------------------
 

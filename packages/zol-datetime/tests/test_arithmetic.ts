@@ -4,7 +4,7 @@ import * as test from "blue-tape";
 import { Duration, Instant, LocalDate, LocalDateTime, LocalTime, Period } from "js-joda";
 import { numberCol, query } from "zol";
 import { withTestDatabase } from "../../../helper_framework/TestDb";
-import { durationBetween, durationCol, durationDivide, durationMinus, durationMultiply, durationPlus, expandTolocalDateTime, instantAdd, instantCol, instantSubtract, localDateAdd, localDateAddDays, localDateCol, localDateSubtract, localDateSubtractDays, localDateTimeAdd, localDateTimeCol, localDateTimeSubtract, localTimeAdd, localTimeCol, localTimeSubtract, periodBetween, periodCol, truncateToLocalDate } from "../src/zol-time";
+import { durationBetween, durationCol, durationDivide, durationMinus, durationMultiply, durationPlus, expandTolocalDateTime, instantAdd, instantCol, instantSubtract, localDateAdd, localDateAddDays, localDateCol, localDateSubtract, localDateSubtractDays, localDateTimeAdd, localDateTimeCol, localDateTimeSubtract, localTimeAdd, localTimeCol, localTimeSubtract, periodBetween, periodCol, truncateToLocalDate } from "../src/zol-datetime";
 
 test("instantAdd 1", t => withTestDatabase(async conn => {
     const actual = await query(conn, _q => ({

@@ -4,7 +4,7 @@ import * as test from "blue-tape";
 import { Instant, LocalDateTime, ZonedDateTime, ZoneOffset } from "js-joda/dist/js-joda";
 import { defaultValue, insertReturning, numberCol, pg, query, restrictEq, select, textCol } from "zol";
 import { withTestDatabase } from "../../../helper_framework/TestDb";
-import { instantCol, localDateTimeCol, localDateTimeToInstant } from "../src/zol-time";
+import { instantCol, localDateTimeCol, localDateTimeToInstant } from "../src/zol-datetime";
 import { createMeetingTableSql, createPersonTableSql, meetingTable, MeetingTable, personTable, PersonTable } from "./Tables";
 
 async function createPerson(conn: pg.Client, name: string): Promise<number> {

@@ -2,7 +2,7 @@ import sourceMaps from "rollup-plugin-sourcemaps"
 const pkg = require("./package.json")
 const camelCase = require("lodash.camelcase")
 
-const libraryName = "zol-time"
+const libraryName = "zol-datetime"
 
 export default {
     entry: `build/src/${libraryName}.js`,

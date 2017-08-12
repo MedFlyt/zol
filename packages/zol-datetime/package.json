@@ -1,5 +1,5 @@
 {
-  "name": "zol-time",
+  "name": "zol-datetime",
   "version": "0.1.7",
   "description": "SQL Date/Time functionality for Zol",
   "keywords": [
@@ -10,9 +10,9 @@
     "postgres",
     "orm"
   ],
-  "main": "dist/zol-time.umd.js",
-  "module": "dist/zol-time.es5.js",
-  "typings": "dist/types/zol-time.d.ts",
+  "main": "dist/zol-datetime.umd.js",
+  "module": "dist/zol-datetime.es5.js",
+  "typings": "dist/types/zol-datetime.d.ts",
   "files": [
     "dist",
     "src"
@@ -23,7 +23,7 @@
     "style": "node ../../tools/ts-style.js './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts'",
     "style-fix": "node ../../tools/ts-style.js './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts' --fix",
     "prebuild": "rimraf dist",
-    "build": "tsc --project src && rollup -c && ts-node ../../tools/dts-merge.ts ./build/types/zol-time.d.ts -o ./dist/types/zol-time.d.ts && node ../../tools/build-docs.js dist/types/zol-time.d.ts -o dist/docs",
+    "build": "tsc --project src && rollup -c && ts-node ../../tools/dts-merge.ts ./build/types/zol-datetime.d.ts -o ./dist/types/zol-datetime.d.ts && node ../../tools/build-docs.js dist/types/zol-datetime.d.ts -o dist/docs",
     "build-tests": "tsc --project tests"
   },
   "repository": {
