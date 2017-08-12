@@ -1,7 +1,6 @@
-import { Duration, Instant, LocalDateTime } from "js-joda";
+import { Duration, Instant, LocalDateTime, Period } from "js-joda";
 import { Col, e, unsafeCast, unsafeFun2 } from "zol";
-import { durationParser } from "./Parsers";
-import { instantParser, localDateTimeParser } from "./Types";
+import { durationParser, instantParser, localDateTimeParser } from "./Types";
 
 export function instantToLocalDateTime<s>(instant: Col<s, Instant>, timezone: Col<s, string>): Col<s, LocalDateTime> {
     const asTimestamptz = unsafeCast(instant, "TIMESTAMPTZ", instantParser);
@@ -41,4 +40,22 @@ export function instantSubtract<s>(instant: Col<s, Instant>, duration: Col<s, Du
     const lhs = unsafeCast(instant, "TIMESTAMPTZ", instantParser);
     const rhs = duration;
     return unsafeCast(e(<any>lhs, "-", <any>rhs), "TIMESTAMPTZ", instantParser);
+}
+
+export function localDateTimeAdd<s>(localDateTime: Col<s, LocalDateTime>, duration: Col<s, Duration>): Col<s, LocalDateTime>;
+export function localDateTimeAdd<s>(localDateTime: Col<s, LocalDateTime>, period: Col<s, Period>): Col<s, LocalDateTime>;
+
+export function localDateTimeAdd<s>(localDateTime: Col<s, LocalDateTime>, t: Col<s, Duration> | Col<s, Period>): Col<s, LocalDateTime> {
+    const lhs = unsafeCast(localDateTime, "TIMESTAMP", localDateTimeParser);
+    const rhs = <any>t;
+    return unsafeCast(e(<any>lhs, "+", <any>rhs), "TIMESTAMP", localDateTimeParser);
+}
+
+export function localDateTimeSubtract<s>(localDateTime: Col<s, LocalDateTime>, duration: Col<s, Duration>): Col<s, LocalDateTime>;
+export function localDateTimeSubtract<s>(localDateTime: Col<s, LocalDateTime>, period: Col<s, Period>): Col<s, LocalDateTime>;
+
+export function localDateTimeSubtract<s>(localDateTime: Col<s, LocalDateTime>, t: Col<s, Duration> | Col<s, Period>): Col<s, LocalDateTime> {
+    const lhs = unsafeCast(localDateTime, "TIMESTAMP", localDateTimeParser);
+    const rhs = <any>t;
+    return unsafeCast(e(<any>lhs, "-", <any>rhs), "TIMESTAMP", localDateTimeParser);
 }

@@ -1,10 +1,10 @@
 import "../../../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
 
 import * as test from "blue-tape";
-import { Duration, Instant } from "js-joda/dist/js-joda";
+import { Duration, Instant, LocalDateTime, Period } from "js-joda";
 import { numberCol, query } from "zol";
 import { withTestDatabase } from "../../../helper_framework/TestDb";
-import { between, durationCol, durationMinus, durationMultiply, durationPlus, instantAdd, instantCol, instantSubtract } from "../src/zol-time";
+import { between, durationCol, durationMinus, durationMultiply, durationPlus, instantAdd, instantCol, instantSubtract, localDateTimeAdd, localDateTimeCol, localDateTimeSubtract, periodCol } from "../src/zol-time";
 
 test("instantAdd 1", t => withTestDatabase(async conn => {
     const actual = await query(conn, _q => ({
@@ -275,4 +275,36 @@ test("duration sneaky 2", t => withTestDatabase(async conn => {
     }));
 
     t.equal(actual[0].val.epochSecond(), 1490238000 + 82800);
+}));
+
+test("localDateTimeAdd 1", t => withTestDatabase(async conn => {
+    const actual = await query(conn, _q => ({
+        val: localDateTimeAdd(localDateTimeCol(LocalDateTime.of(2017, 2, 20, 10, 0, 0)), durationCol(Duration.ofHours(3)))
+    }));
+
+    t.equal(actual[0].val.toString(), "2017-02-20T13:00");
+}));
+
+test("localDateTimeSubtract 1", t => withTestDatabase(async conn => {
+    const actual = await query(conn, _q => ({
+        val: localDateTimeSubtract(localDateTimeCol(LocalDateTime.of(2017, 2, 20, 10, 0, 0)), durationCol(Duration.ofHours(3)))
+    }));
+
+    t.equal(actual[0].val.toString(), "2017-02-20T07:00");
+}));
+
+test("localDateTimeAdd 2", t => withTestDatabase(async conn => {
+    const actual = await query(conn, _q => ({
+        val: localDateTimeAdd(localDateTimeCol(LocalDateTime.of(2017, 2, 20, 10, 0, 0)), periodCol(Period.of(0, 1, 0)))
+    }));
+
+    t.equal(actual[0].val.toString(), "2017-03-20T10:00");
+}));
+
+test("localDateTimeSubtract 2", t => withTestDatabase(async conn => {
+    const actual = await query(conn, _q => ({
+        val: localDateTimeSubtract(localDateTimeCol(LocalDateTime.of(2017, 2, 20, 10, 0, 0)), periodCol(Period.of(0, 1, 0)))
+    }));
+
+    t.equal(actual[0].val.toString(), "2017-01-20T10:00");
 }));

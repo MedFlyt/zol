@@ -1,6 +1,6 @@
 // Ported from <https://github.com/bendrucker/postgres-date>
 
-import { Duration, LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from "js-joda";
+import { LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from "js-joda";
 
 const DATE_TIME = /^(\d{1,})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/;
 const DATE = /^(\d{1,})-(\d{2})-(\d{2})$/;
@@ -149,13 +149,4 @@ export function intervalParser(interval: string): [number, number, number, numbe
     }
 
     return [years, months, days, hours, minutes, seconds, nanos];
-}
-
-export function durationParser(interval: string): Duration {
-    const [years, months, days, hours, minutes, seconds, nanos] = intervalParser(interval);
-
-    // PostgreSQL uses conversion factors 1 month = 30 days and 1 day = 24 hours.
-    // It doesn't specify what a year is, but 365 feels right.
-    // <https://www.postgresql.org/docs/current/static/datatype-datetime.html>
-    return Duration.ofDays(years * 365 + months * 30 + days).plusHours(hours).plusMinutes(minutes).plusSeconds(seconds).plusNanos(nanos);
 }
