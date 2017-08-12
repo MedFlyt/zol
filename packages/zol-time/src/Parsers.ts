@@ -1,11 +1,14 @@
 // Ported from <https://github.com/bendrucker/postgres-date>
 
-import { LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from "js-joda";
+import { Duration, LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from "js-joda";
 
 const DATE_TIME = /(\d{1,})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/;
 const DATE = /^(\d{1,})-(\d{2})-(\d{2})$/;
 const TIME = /^(\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/;
 const TIME_ZONE = /([Z+-])(\d{2})?:?(\d{2})?:?(\d{2})?/;
+const INTERVAL_DAYS = /^(\d{1,}) days?/;
+const INTERVAL_WITH_DAYS = /^(\d{1,}) days? (\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/;
+const NEG_INTERVAL_WITH_DAYS = /^-(\d{1,}) days? -(\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/;
 
 export function parseZonedDateTime(isoDate: string): ZonedDateTime {
     const matches = DATE_TIME.exec(isoDate);
@@ -89,4 +92,74 @@ function timeZoneOffset(isoDate: string): number | null {
     }
 
     return offset * sign;
+}
+
+export function durationParser(interval: string): Duration {
+    // -34 days -04:23:02
+    {
+        const matches = NEG_INTERVAL_WITH_DAYS.exec(interval);
+        if (matches !== null) {
+            const days = parseInt(matches[1], 10);
+            const hours = parseInt(matches[2], 10);
+            const minutes = parseInt(matches[3], 10);
+            const seconds = parseInt(matches[4], 10);
+
+            const ss: string | undefined = <any>matches[5];
+            const nanos = (ss !== undefined) ? Math.floor(1000000000 * parseFloat(ss)) : 0;
+
+            return Duration.ofDays(days).plusHours(hours).plusMinutes(minutes).plusSeconds(seconds).plusNanos(nanos).negated();
+        }
+    }
+
+    const negative = interval.charAt(0) === "-";
+    if (negative) {
+        interval = interval.substring(1);
+    }
+
+    // 34 days 04:23:02
+    {
+        const matches = INTERVAL_WITH_DAYS.exec(interval);
+        if (matches !== null) {
+            const days = parseInt(matches[1], 10);
+            const hours = parseInt(matches[2], 10);
+            const minutes = parseInt(matches[3], 10);
+            const seconds = parseInt(matches[4], 10);
+
+            const ss: string | undefined = <any>matches[5];
+            const nanos = (ss !== undefined) ? Math.floor(1000000000 * parseFloat(ss)) : 0;
+
+            const res = Duration.ofDays(days).plusHours(hours).plusMinutes(minutes).plusSeconds(seconds).plusNanos(nanos);
+            return negative ? res.negated() : res;
+        }
+    }
+
+    // 04:23:02
+    {
+        // Interval with no days looks exactly like a TIME
+        const matches = TIME.exec(interval);
+        if (matches !== null) {
+            const hours = parseInt(matches[1], 10);
+            const minutes = parseInt(matches[2], 10);
+            const seconds = parseInt(matches[3], 10);
+
+            const ss: string | undefined = <any>matches[4];
+            const nanos = (ss !== undefined) ? Math.floor(1000000000 * parseFloat(ss)) : 0;
+
+            const res = Duration.ofHours(hours).plusMinutes(minutes).plusSeconds(seconds).plusNanos(nanos);
+            return negative ? res.negated() : res;
+        }
+    }
+
+    // 3 days
+    {
+        const matches = INTERVAL_DAYS.exec(interval);
+        if (matches !== null) {
+            const days = parseInt(matches[1], 10);
+
+            const res = Duration.ofDays(days);
+            return negative ? res.negated() : res;
+        }
+    }
+
+    throw new Error(`Error parsing interval: ${interval}`);
 }
