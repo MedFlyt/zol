@@ -2,13 +2,10 @@
 
 import { Duration, LocalDate, LocalTime, ZonedDateTime, ZoneOffset } from "js-joda";
 
-const DATE_TIME = /(\d{1,})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/;
+const DATE_TIME = /^(\d{1,})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/;
 const DATE = /^(\d{1,})-(\d{2})-(\d{2})$/;
-const TIME = /^(\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/;
-const TIME_ZONE = /([Z+-])(\d{2})?:?(\d{2})?:?(\d{2})?/;
-const INTERVAL_DAYS = /^(\d{1,}) days?/;
-const INTERVAL_WITH_DAYS = /^(\d{1,}) days? (\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/;
-const NEG_INTERVAL_WITH_DAYS = /^-(\d{1,}) days? -(\d{2}):(\d{2}):(\d{2})(\.\d{1,})?/;
+const TIME = /^(\d{2}):(\d{2}):(\d{2})(\.\d{1,})?$/;
+const TIME_ZONE = /([Z+-])(\d{2})?:?(\d{2})?:?(\d{2})?$/;
 
 export function parseZonedDateTime(isoDate: string): ZonedDateTime {
     const matches = DATE_TIME.exec(isoDate);
@@ -94,72 +91,71 @@ function timeZoneOffset(isoDate: string): number | null {
     return offset * sign;
 }
 
+/**
+ * years, months, days, hours, minutes, seconds, nanos
+ */
+export function intervalParser(interval: string): [number, number, number, number, number, number, number] {
+    const parts = interval.split(" ");
+    let years = 0;
+    let months = 0;
+    let days = 0;
+    let hours = 0;
+    let minutes = 0;
+    let seconds = 0;
+    let nanos = 0;
+    const numNamed = Math.floor(parts.length / 2);
+    for (let i = 0; i < numNamed; ++i) {
+        const v = parseInt(parts[i * 2], 10);
+        const unit = parts[i * 2 + 1];
+        if (unit.startsWith("year")) {
+            years = v;
+        } else if (unit.startsWith("mon")) {
+            months = v;
+        } else if (unit.startsWith("day")) {
+            days = v;
+        } else {
+            throw new Error(`Unknown unit "${unit}" parsing interval "${interval}"`);
+        }
+    }
+    if (parts.length % 2 === 1) {
+        let time = parts[parts.length - 1];
+        let negativeTime = false;
+        if (time.charAt(0) === "-") {
+            negativeTime = true;
+            time = time.substring(1);
+        } else if (time.charAt(0) === "+") {
+            time = time.substring(1);
+        }
+
+        // This part looks exactly like a TIME
+        const matches = TIME.exec(time);
+        if (matches === null) {
+            throw new Error(`Error parsing time component "${time}" parsing interval "${interval}"`);
+        }
+
+        hours = parseInt(matches[1], 10);
+        minutes = parseInt(matches[2], 10);
+        seconds = parseInt(matches[3], 10);
+
+        const ss: string | undefined = <any>matches[4];
+        nanos = (ss !== undefined) ? Math.floor(1000000000 * parseFloat(ss)) : 0;
+
+        if (negativeTime) {
+            hours = -hours;
+            minutes = -minutes;
+            seconds = -seconds;
+            nanos = -nanos;
+        }
+    }
+
+    return [years, months, days, hours, minutes, seconds, nanos];
+}
+
 export function durationParser(interval: string): Duration {
-    // -34 days -04:23:02
-    {
-        const matches = NEG_INTERVAL_WITH_DAYS.exec(interval);
-        if (matches !== null) {
-            const days = parseInt(matches[1], 10);
-            const hours = parseInt(matches[2], 10);
-            const minutes = parseInt(matches[3], 10);
-            const seconds = parseInt(matches[4], 10);
+    const [years, months, days, hours, minutes, seconds, nanos] = intervalParser(interval);
 
-            const ss: string | undefined = <any>matches[5];
-            const nanos = (ss !== undefined) ? Math.floor(1000000000 * parseFloat(ss)) : 0;
-
-            return Duration.ofDays(days).plusHours(hours).plusMinutes(minutes).plusSeconds(seconds).plusNanos(nanos).negated();
-        }
-    }
-
-    const negative = interval.charAt(0) === "-";
-    if (negative) {
-        interval = interval.substring(1);
-    }
-
-    // 34 days 04:23:02
-    {
-        const matches = INTERVAL_WITH_DAYS.exec(interval);
-        if (matches !== null) {
-            const days = parseInt(matches[1], 10);
-            const hours = parseInt(matches[2], 10);
-            const minutes = parseInt(matches[3], 10);
-            const seconds = parseInt(matches[4], 10);
-
-            const ss: string | undefined = <any>matches[5];
-            const nanos = (ss !== undefined) ? Math.floor(1000000000 * parseFloat(ss)) : 0;
-
-            const res = Duration.ofDays(days).plusHours(hours).plusMinutes(minutes).plusSeconds(seconds).plusNanos(nanos);
-            return negative ? res.negated() : res;
-        }
-    }
-
-    // 04:23:02
-    {
-        // Interval with no days looks exactly like a TIME
-        const matches = TIME.exec(interval);
-        if (matches !== null) {
-            const hours = parseInt(matches[1], 10);
-            const minutes = parseInt(matches[2], 10);
-            const seconds = parseInt(matches[3], 10);
-
-            const ss: string | undefined = <any>matches[4];
-            const nanos = (ss !== undefined) ? Math.floor(1000000000 * parseFloat(ss)) : 0;
-
-            const res = Duration.ofHours(hours).plusMinutes(minutes).plusSeconds(seconds).plusNanos(nanos);
-            return negative ? res.negated() : res;
-        }
-    }
-
-    // 3 days
-    {
-        const matches = INTERVAL_DAYS.exec(interval);
-        if (matches !== null) {
-            const days = parseInt(matches[1], 10);
-
-            const res = Duration.ofDays(days);
-            return negative ? res.negated() : res;
-        }
-    }
-
-    throw new Error(`Error parsing interval: ${interval}`);
+    // PostgreSQL uses conversion factors 1 month = 30 days and 1 day = 24 hours.
+    // It doesn't specify what a year is, but 365 feels right.
+    // <https://www.postgresql.org/docs/current/static/datatype-datetime.html>
+    return Duration.ofDays(years * 365 + months * 30 + days).plusHours(hours).plusMinutes(minutes).plusSeconds(seconds).plusNanos(nanos);
 }

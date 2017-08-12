@@ -1,4 +1,4 @@
-import { parseLocalDate, parseLocalTime, parseZonedDateTime } from "../src/Parsers";
+import { intervalParser, parseLocalDate, parseLocalTime, parseZonedDateTime } from "../src/Parsers";
 
 import "../../../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
 
@@ -112,4 +112,74 @@ test("local time 14", async t => {
 test("local time 15", async t => {
     const actual = parseLocalTime("12:00:00.620572");
     t.deepEqual(actual.toString(), "12:00:00.620572");
+});
+
+test("interval 1", async t => {
+    const actual = intervalParser("1 year");
+    t.deepEqual(actual, [1, 0, 0, 0, 0, 0, 0]);
+});
+
+test("interval 2", async t => {
+    const actual = intervalParser("+1 year");
+    t.deepEqual(actual, [1, 0, 0, 0, 0, 0, 0]);
+});
+
+test("interval 3", async t => {
+    const actual = intervalParser("-1 year");
+    t.deepEqual(actual, [-1, 0, 0, 0, 0, 0, 0]);
+});
+
+test("interval 4", async t => {
+    const actual = intervalParser("2 years");
+    t.deepEqual(actual, [2, 0, 0, 0, 0, 0, 0]);
+});
+
+test("interval 5", async t => {
+    const actual = intervalParser("+2 years");
+    t.deepEqual(actual, [2, 0, 0, 0, 0, 0, 0]);
+});
+
+test("interval 6", async t => {
+    const actual = intervalParser("-2 years");
+    t.deepEqual(actual, [-2, 0, 0, 0, 0, 0, 0]);
+});
+
+test("interval 7", async t => {
+    const actual = intervalParser("1 year 2 mons");
+    t.deepEqual(actual, [1, 2, 0, 0, 0, 0, 0]);
+});
+
+test("interval 8", async t => {
+    const actual = intervalParser("1 year 2 mons 1 day");
+    t.deepEqual(actual, [1, 2, 1, 0, 0, 0, 0]);
+});
+
+test("interval 9", async t => {
+    const actual = intervalParser("-3 years 73 days");
+    t.deepEqual(actual, [-3, 0, 73, 0, 0, 0, 0]);
+});
+
+test("interval 10", async t => {
+    const actual = intervalParser("00:00:00");
+    t.deepEqual(actual, [0, 0, 0, 0, 0, 0, 0]);
+});
+
+test("interval 11", async t => {
+    const actual = intervalParser("3 days 00:00:01");
+    t.deepEqual(actual, [0, 0, 3, 0, 0, 1, 0]);
+});
+
+test("interval 11", async t => {
+    const actual = intervalParser("1 year 1 mon 1 day 01:01:01.1");
+    t.deepEqual(actual, [1, 1, 1, 1, 1, 1, 100000000]);
+});
+
+test("interval 12", async t => {
+    const actual = intervalParser("1 year 2 mons 3 days 04:05:06.789");
+    t.deepEqual(actual, [1, 2, 3, 4, 5, 6, 789000000]);
+});
+
+test("interval 13", async t => {
+    const actual = intervalParser("-04:05:06.789");
+    t.deepEqual(actual, [0, 0, 0, -4, -5, -6, -789000000]);
 });
