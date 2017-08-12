@@ -1,6 +1,6 @@
 import { Duration, Instant, LocalDate, LocalDateTime, LocalTime, Period } from "js-joda";
 import { Col, e, SqlType, unsafeCast, unsafeFun2 } from "zol";
-import { durationParser, instantParser, localDateParser, localDateTimeParser, localTimeParser } from "./Types";
+import { durationParser, instantParser, localDateParser, localDateTimeParser, localTimeParser, periodParser } from "./Types";
 
 /**
  * When instant occurred, what time did the clocks on the wall located in timezone show?
@@ -207,4 +207,13 @@ export function localTimeAdd<s>(localTime: Col<s, LocalTime>, duration: Col<s, D
  */
 export function localTimeSubtract<s>(localTime: Col<s, LocalTime>, duration: Col<s, Duration>): Col<s, LocalTime> {
     return unsafeCast(e(<any>localTime, "-", <any>duration), "TIME", localTimeParser);
+}
+
+/**
+ * The Period between two LocalDates.
+ *
+ * SQL equivilent: `age`
+ */
+export function periodBetween<s>(startDate: Col<s, LocalDate>, endDate: Col<s, LocalDate>): Col<s, Period> {
+    return unsafeFun2("age", endDate, startDate, periodParser);
 }

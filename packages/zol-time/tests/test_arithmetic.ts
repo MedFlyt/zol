@@ -4,7 +4,7 @@ import * as test from "blue-tape";
 import { Duration, Instant, LocalDate, LocalDateTime, LocalTime, Period } from "js-joda";
 import { numberCol, query } from "zol";
 import { withTestDatabase } from "../../../helper_framework/TestDb";
-import { durationBetween, durationCol, durationDivide, durationMinus, durationMultiply, durationPlus, expandTolocalDateTime, instantAdd, instantCol, instantSubtract, localDateAdd, localDateAddDays, localDateCol, localDateSubtract, localDateSubtractDays, localDateTimeAdd, localDateTimeCol, localDateTimeSubtract, localTimeAdd, localTimeCol, localTimeSubtract, periodCol, truncateToLocalDate } from "../src/zol-time";
+import { durationBetween, durationCol, durationDivide, durationMinus, durationMultiply, durationPlus, expandTolocalDateTime, instantAdd, instantCol, instantSubtract, localDateAdd, localDateAddDays, localDateCol, localDateSubtract, localDateSubtractDays, localDateTimeAdd, localDateTimeCol, localDateTimeSubtract, localTimeAdd, localTimeCol, localTimeSubtract, periodBetween, periodCol, truncateToLocalDate } from "../src/zol-time";
 
 test("instantAdd 1", t => withTestDatabase(async conn => {
     const actual = await query(conn, _q => ({
@@ -415,4 +415,34 @@ test("localTimeSubtract 2", t => withTestDatabase(async conn => {
     }));
 
     t.equal(actual[0].val.toString(), "23:30:50");
+}));
+
+test("periodBetween 1", t => withTestDatabase(async conn => {
+    const actual = await query(conn, _q => ({
+        val: periodBetween(localDateCol(LocalDate.of(2017, 2, 20)), localDateCol(LocalDate.of(2017, 3, 20)))
+    }));
+
+    const expected: typeof actual = [{ val: Period.of(0, 1, 0) }];
+
+    t.deepEqual(actual, expected);
+}));
+
+test("periodBetween 2", t => withTestDatabase(async conn => {
+    const actual = await query(conn, _q => ({
+        val: periodBetween(localDateCol(LocalDate.of(2017, 2, 20)), localDateCol(LocalDate.of(2018, 4, 23)))
+    }));
+
+    const expected: typeof actual = [{ val: Period.of(1, 2, 3) }];
+
+    t.deepEqual(actual, expected);
+}));
+
+test("periodBetween 3", t => withTestDatabase(async conn => {
+    const actual = await query(conn, _q => ({
+        val: periodBetween(localDateCol(LocalDate.of(2017, 1, 1)), localDateCol(LocalDate.of(2000, 1, 1)))
+    }));
+
+    const expected: typeof actual = [{ val: Period.of(-17, 0, 0) }];
+
+    t.deepEqual(actual, expected);
 }));
