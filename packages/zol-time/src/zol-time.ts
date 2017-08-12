@@ -1,2 +1,2 @@
 export { instantCol, instantParser, localDateTimeCol, localDateTimeParser, localDateCol, localDateParser, localTimeCol, localTimeParser, durationCol, durationParser, periodCol, periodParser } from "./Types";
-export { instantToLocalDateTime, localDateTimeToInstant, between, durationMinus, durationMultiply, durationPlus, instantAdd, instantSubtract, localDateTimeAdd, localDateTimeSubtract } from "./Functions";
+export { instantToLocalDateTime, localDateTimeToInstant, between, durationMinus, durationMultiply, durationPlus, instantAdd, instantSubtract, localDateTimeAdd, localDateTimeSubtract, truncateToLocalDate, localDateAdd, localDateSubtract, localDateAddDays, localDateSubtractDays, localTimeAdd, localTimeSubtract } from "./Functions";
