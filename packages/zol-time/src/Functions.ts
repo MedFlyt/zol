@@ -18,3 +18,27 @@ export function between<s>(startInclusive: Col<s, Instant>, endExclusive: Col<s,
     const end = unsafeCast(endExclusive, "TIMESTAMPTZ", instantParser);
     return unsafeCast(e(<any>end, "-", <any>start), "INTERVAL", durationParser);
 }
+
+export function durationPlus<s>(lhs: Col<s, Duration>, rhs: Col<s, Duration>): Col<s, Duration> {
+    return unsafeCast(e(<any>lhs, "+", <any>rhs), "INTERVAL", durationParser);
+}
+
+export function durationMinus<s>(lhs: Col<s, Duration>, rhs: Col<s, Duration>): Col<s, Duration> {
+    return unsafeCast(e(<any>lhs, "-", <any>rhs), "INTERVAL", durationParser);
+}
+
+export function durationMultiply<s>(lhs: Col<s, Duration>, rhs: Col<s, number>): Col<s, Duration> {
+    return unsafeCast(e(<any>rhs, "*", <any>lhs), "INTERVAL", durationParser);
+}
+
+export function instantAdd<s>(instant: Col<s, Instant>, duration: Col<s, Duration>): Col<s, Instant> {
+    const lhs = unsafeCast(instant, "TIMESTAMPTZ", instantParser);
+    const rhs = duration;
+    return unsafeCast(e(<any>lhs, "+", <any>rhs), "TIMESTAMPTZ", instantParser);
+}
+
+export function instantSubtract<s>(instant: Col<s, Instant>, duration: Col<s, Duration>): Col<s, Instant> {
+    const lhs = unsafeCast(instant, "TIMESTAMPTZ", instantParser);
+    const rhs = duration;
+    return unsafeCast(e(<any>lhs, "-", <any>rhs), "TIMESTAMPTZ", instantParser);
+}

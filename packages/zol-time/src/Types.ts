@@ -1,6 +1,6 @@
-import { Instant, LocalDate, LocalDateTime, LocalTime } from "js-joda";
+import { Duration, Instant, LocalDate, LocalDateTime, LocalTime } from "js-joda";
 import { Col, textCol, unsafeCast } from "zol";
-import { parseLocalDate, parseLocalTime, parseZonedDateTime } from "./Parsers";
+import { durationParser, parseLocalDate, parseLocalTime, parseZonedDateTime } from "./Parsers";
 
 export function localDateTimeCol<s>(val: LocalDateTime): Col<s, LocalDateTime> {
     return unsafeCast(<any>textCol(val.toString()), "TIMESTAMP", localDateTimeParser);
@@ -34,4 +34,8 @@ export function localTimeCol<s>(val: LocalTime): Col<s, LocalTime> {
 
 export function localTimeParser(val: string): LocalTime {
     return parseLocalTime(val);
+}
+
+export function durationCol<s>(val: Duration): Col<s, Duration> {
+    return unsafeCast(<any>textCol(val.toString()), "INTERVAL", durationParser);
 }
