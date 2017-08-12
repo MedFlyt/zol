@@ -4,7 +4,7 @@ import * as test from "blue-tape";
 import { Duration, Instant, LocalDate, LocalDateTime, LocalTime, Period } from "js-joda";
 import { numberCol, query } from "zol";
 import { withTestDatabase } from "../../../helper_framework/TestDb";
-import { between, durationCol, durationMinus, durationMultiply, durationPlus, instantAdd, instantCol, instantSubtract, localDateAdd, localDateAddDays, localDateCol, localDateSubtract, localDateSubtractDays, localDateTimeAdd, localDateTimeCol, localDateTimeSubtract, localTimeAdd, localTimeCol, localTimeSubtract, periodCol, truncateToLocalDate } from "../src/zol-time";
+import { between, durationCol, durationDivide, durationMinus, durationMultiply, durationPlus, expandTolocalDateTime, instantAdd, instantCol, instantSubtract, localDateAdd, localDateAddDays, localDateCol, localDateSubtract, localDateSubtractDays, localDateTimeAdd, localDateTimeCol, localDateTimeSubtract, localTimeAdd, localTimeCol, localTimeSubtract, periodCol, truncateToLocalDate } from "../src/zol-time";
 
 test("instantAdd 1", t => withTestDatabase(async conn => {
     const actual = await query(conn, _q => ({
@@ -249,6 +249,16 @@ test("durationMultiply", t => withTestDatabase(async conn => {
     t.equal(actual[0].val.epochSecond(), 1490238000 + 3 * (2 * 86400 + 2));
 }));
 
+test("durationDivide", t => withTestDatabase(async conn => {
+    const actual = await query(conn, _q => {
+        return {
+            val: durationDivide(durationCol(Duration.ofHours(1)), numberCol(1.5))
+        };
+    });
+
+    t.equal(actual[0].val.toString(), "PT40M");
+}));
+
 test("duration sneaky 1", t => withTestDatabase(async conn => {
     const r = await query(conn, _q => ({
         val: between(instantCol(Instant.ofEpochSecond(1490140800)), instantCol(Instant.ofEpochSecond(1490227200)))
@@ -315,6 +325,16 @@ test("truncateToLocalDate", t => withTestDatabase(async conn => {
     }));
 
     t.equal(actual[0].val.toString(), "2017-02-20");
+}));
+
+test("expandTolocalDateTime", t => withTestDatabase(async conn => {
+    const actual = await query(conn, _q => ({
+        val: expandTolocalDateTime(localDateCol(LocalDate.of(2017, 2, 20)))
+    }));
+
+    const expected: typeof actual = [{ val: LocalDateTime.of(2017, 2, 20, 0, 0, 0) }];
+
+    t.deepEqual(actual, expected);
 }));
 
 test("localDateAddDays", t => withTestDatabase(async conn => {
