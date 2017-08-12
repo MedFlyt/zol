@@ -257,7 +257,7 @@ test("duration sneaky 1", t => withTestDatabase(async conn => {
     const duration = r[0].val;
 
     const actual = await query(conn, _q => ({
-            val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(duration))
+        val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(duration))
     }));
 
     t.equal(actual[0].val.epochSecond(), 1490238000 + 86400);
@@ -271,7 +271,7 @@ test("duration sneaky 2", t => withTestDatabase(async conn => {
     const duration = r[0].val;
 
     const actual = await query(conn, _q => ({
-            val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(duration))
+        val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(duration))
     }));
 
     t.equal(actual[0].val.epochSecond(), 1490238000 + 82800);
