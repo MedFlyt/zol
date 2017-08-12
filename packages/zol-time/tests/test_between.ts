@@ -4,7 +4,7 @@ import * as test from "blue-tape";
 import { Duration, Instant } from "js-joda/dist/js-joda";
 import { query } from "zol";
 import { withTestDatabase } from "../../../helper_framework/TestDb";
-import { between, instantCol } from "../src/zol-time";
+import { durationBetween, instantCol } from "../src/zol-time";
 
 test("between instants long time span", t => withTestDatabase(async conn => {
     const startEpoch = 1490238000;
@@ -13,7 +13,7 @@ test("between instants long time span", t => withTestDatabase(async conn => {
     const expecteds: number[] = [];
     for (let i = 0; i < 63072000; i += increment) {
         const actual = await query(conn, _q => ({
-            val: between(instantCol(Instant.ofEpochSecond(startEpoch)), instantCol(Instant.ofEpochSecond(startEpoch + i)))
+            val: durationBetween(instantCol(Instant.ofEpochSecond(startEpoch)), instantCol(Instant.ofEpochSecond(startEpoch + i)))
         }));
 
         actuals.push(actual[0].val.seconds());
@@ -30,7 +30,7 @@ test("between instants short time spans", t => withTestDatabase(async conn => {
     const expecteds: number[] = [];
     for (let i = 0; i < 3600; i += increment) {
         const actual = await query(conn, _q => ({
-            val: between(instantCol(Instant.ofEpochSecond(startEpoch)), instantCol(Instant.ofEpochSecond(startEpoch + i)))
+            val: durationBetween(instantCol(Instant.ofEpochSecond(startEpoch)), instantCol(Instant.ofEpochSecond(startEpoch + i)))
         }));
 
         actuals.push(actual[0].val.seconds());
@@ -48,7 +48,7 @@ test("between instants future short time spans", t => withTestDatabase(async con
     const expecteds: number[] = [];
     for (let i = 0; i < 3600; i += increment) {
         const actual = await query(conn, _q => ({
-            val: between(instantCol(Instant.ofEpochSecond(startEpoch)), instantCol(Instant.ofEpochSecond(startEpoch + delta + i)))
+            val: durationBetween(instantCol(Instant.ofEpochSecond(startEpoch)), instantCol(Instant.ofEpochSecond(startEpoch + delta + i)))
         }));
 
         actuals.push(actual[0].val.seconds());
@@ -65,7 +65,7 @@ test("between instants millis", t => withTestDatabase(async conn => {
     const expecteds: [number, number][] = [];
     for (let i = 0; i < 10000; i += increment) {
         const actual = await query(conn, _q => ({
-            val: between(instantCol(Instant.ofEpochMilli(startEpoch)), instantCol(Instant.ofEpochMilli(startEpoch + i)))
+            val: durationBetween(instantCol(Instant.ofEpochMilli(startEpoch)), instantCol(Instant.ofEpochMilli(startEpoch + i)))
         }));
 
         actuals.push([actual[0].val.seconds(), actual[0].val.nano()]);
@@ -82,7 +82,7 @@ test("negative between instants long time span", t => withTestDatabase(async con
     const expecteds: number[] = [];
     for (let i = 0; i < 63072000; i += increment) {
         const actual = await query(conn, _q => ({
-            val: between(instantCol(Instant.ofEpochSecond(startEpoch + i)), instantCol(Instant.ofEpochSecond(startEpoch)))
+            val: durationBetween(instantCol(Instant.ofEpochSecond(startEpoch + i)), instantCol(Instant.ofEpochSecond(startEpoch)))
         }));
 
         actuals.push(actual[0].val.seconds());
@@ -99,7 +99,7 @@ test("negative between instants short time spans", t => withTestDatabase(async c
     const expecteds: number[] = [];
     for (let i = 0; i < 3600; i += increment) {
         const actual = await query(conn, _q => ({
-            val: between(instantCol(Instant.ofEpochSecond(startEpoch + i)), instantCol(Instant.ofEpochSecond(startEpoch)))
+            val: durationBetween(instantCol(Instant.ofEpochSecond(startEpoch + i)), instantCol(Instant.ofEpochSecond(startEpoch)))
         }));
 
         actuals.push(actual[0].val.seconds());
@@ -117,7 +117,7 @@ test("negative between instants future short time spans", t => withTestDatabase(
     const expecteds: number[] = [];
     for (let i = 0; i < 3600; i += increment) {
         const actual = await query(conn, _q => ({
-            val: between(instantCol(Instant.ofEpochSecond(startEpoch + delta + i)), instantCol(Instant.ofEpochSecond(startEpoch)))
+            val: durationBetween(instantCol(Instant.ofEpochSecond(startEpoch + delta + i)), instantCol(Instant.ofEpochSecond(startEpoch)))
         }));
 
         actuals.push(actual[0].val.seconds());
@@ -134,7 +134,7 @@ test("negative between instants millis", t => withTestDatabase(async conn => {
     const expecteds: [number, number][] = [];
     for (let i = 0; i < 10000; i += increment) {
         const actual = await query(conn, _q => ({
-            val: between(instantCol(Instant.ofEpochMilli(startEpoch + i)), instantCol(Instant.ofEpochMilli(startEpoch)))
+            val: durationBetween(instantCol(Instant.ofEpochMilli(startEpoch + i)), instantCol(Instant.ofEpochMilli(startEpoch)))
         }));
 
         actuals.push([actual[0].val.seconds(), actual[0].val.nano()]);

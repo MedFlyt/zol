@@ -4,7 +4,7 @@ import * as test from "blue-tape";
 import { Duration, Instant, LocalDate, LocalDateTime, LocalTime, Period } from "js-joda";
 import { numberCol, query } from "zol";
 import { withTestDatabase } from "../../../helper_framework/TestDb";
-import { between, durationCol, durationDivide, durationMinus, durationMultiply, durationPlus, expandTolocalDateTime, instantAdd, instantCol, instantSubtract, localDateAdd, localDateAddDays, localDateCol, localDateSubtract, localDateSubtractDays, localDateTimeAdd, localDateTimeCol, localDateTimeSubtract, localTimeAdd, localTimeCol, localTimeSubtract, periodCol, truncateToLocalDate } from "../src/zol-time";
+import { durationBetween, durationCol, durationDivide, durationMinus, durationMultiply, durationPlus, expandTolocalDateTime, instantAdd, instantCol, instantSubtract, localDateAdd, localDateAddDays, localDateCol, localDateSubtract, localDateSubtractDays, localDateTimeAdd, localDateTimeCol, localDateTimeSubtract, localTimeAdd, localTimeCol, localTimeSubtract, periodCol, truncateToLocalDate } from "../src/zol-time";
 
 test("instantAdd 1", t => withTestDatabase(async conn => {
     const actual = await query(conn, _q => ({
@@ -261,7 +261,7 @@ test("durationDivide", t => withTestDatabase(async conn => {
 
 test("duration sneaky 1", t => withTestDatabase(async conn => {
     const r = await query(conn, _q => ({
-        val: between(instantCol(Instant.ofEpochSecond(1490140800)), instantCol(Instant.ofEpochSecond(1490227200)))
+        val: durationBetween(instantCol(Instant.ofEpochSecond(1490140800)), instantCol(Instant.ofEpochSecond(1490227200)))
     }));
 
     const duration = r[0].val;
@@ -275,7 +275,7 @@ test("duration sneaky 1", t => withTestDatabase(async conn => {
 
 test("duration sneaky 2", t => withTestDatabase(async conn => {
     const r = await query(conn, _q => ({
-        val: durationMinus(between(instantCol(Instant.ofEpochSecond(1490140800)), instantCol(Instant.ofEpochSecond(1490227200))), durationCol(Duration.ofHours(1)))
+        val: durationMinus(durationBetween(instantCol(Instant.ofEpochSecond(1490140800)), instantCol(Instant.ofEpochSecond(1490227200))), durationCol(Duration.ofHours(1)))
     }));
 
     const duration = r[0].val;

@@ -34,7 +34,7 @@ export function localDateTimeToInstant<s>(localDateTime: Col<s, LocalDateTime>, 
  *
  * SQL equivilent: `-`
  */
-export function between<s>(startInclusive: Col<s, Instant>, endExclusive: Col<s, Instant>): Col<s, Duration> {
+export function durationBetween<s>(startInclusive: Col<s, Instant>, endExclusive: Col<s, Instant>): Col<s, Duration> {
     const start = unsafeCast(startInclusive, "TIMESTAMPTZ", instantParser);
     const end = unsafeCast(endExclusive, "TIMESTAMPTZ", instantParser);
     return unsafeCast(e(<any>end, "-", <any>start), "INTERVAL", durationParser);
