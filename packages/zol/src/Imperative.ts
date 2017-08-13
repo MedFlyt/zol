@@ -38,6 +38,17 @@ export function select<s, a extends object, b extends object>(q: Q<s>, table: Ta
     return x;
 }
 
+/**
+ * Query an ad hoc table. Each element in the given list represents one row
+ * in the ad hoc table.
+ */
+export function selectValues<s, a extends object>(q: Q<s>, vals: MakeCols<s, a>[]): MakeCols<s, a> {
+    const mutQ: MutQuery = <any>q;
+    const [x, y] = m.selectValues<s, a>(vals).unQ.runState(mutQ[0]);
+    mutQ[0] = y;
+    return x;
+}
+
 export function restrict<s>(q: Q<s>, expr: Col<s, boolean>): void {
     const mutQ: MutQuery = <any>q;
     const [x, y] = m.restrict(expr).unQ.runState(mutQ[0]);

@@ -35,7 +35,7 @@ export namespace SqlSource {
     export interface Values {
         readonly type: "Values";
         readonly cols: SomeCol<SQL>[];
-        readonly params: Param[][];
+        readonly params: SomeCol<SQL>[][];
     }
 
     export interface EmptyTable {

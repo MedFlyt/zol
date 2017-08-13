@@ -34,7 +34,8 @@ export function rename<sql>(x: SomeCol<sql>): State.State<GenState, SomeCol<sql>
                     type: "Named",
                     colName: newName(n),
                     exp: x.exp,
-                    parser: x.parser
+                    parser: x.parser,
+                    propName: <any>undefined // doesn't look like this is needed
                 };
                 return State.pure(named);
             });

@@ -426,7 +426,24 @@ function ppSrc(s: SqlSource): PP<string> {
                 );
             }
         case "Values":
-            throw new Error("TODO");
+            return State.bind(
+                State.mapM(ppSomeCol, s.cols),
+                row2m => {
+                    const row2 = row2m.join(", ");
+                    return State.bind(
+                        State.mapM(ppRow, s.params),
+                        rows2 => State.bind(
+                            freshQueryName(),
+                            qn => State.pure(
+                                " FROM (SELECT "
+                                + ([row2].concat(rows2)).join(" UNION ALL SELECT ")
+                                + ") AS "
+                                + qn
+                            )
+                        )
+                    );
+                }
+            );
         case "Join":
             return State.bind(
                 ppSql(s.left),
@@ -452,6 +469,17 @@ function ppSrc(s: SqlSource): PP<string> {
         default:
             return assertNever(s);
     }
+}
+
+function ppRow(xs: SomeCol<SQL>[]): PP<string> {
+    const pps: PP<string>[] = [];
+    for (const x of xs) {
+        pps.push(ppLit((<Exp.ELit>x.exp).lit));
+    }
+    return State.bind(
+        State.sequence(pps),
+        ls => State.pure(ls.join(", "))
+    );
 }
 
 function ppRestricts(rs: Exp<SQL, boolean>[]): PP<string> {

@@ -2,7 +2,7 @@ import { Col, numberCol, textCol } from "../../src/Column";
 import { e } from "../../src/e";
 import { insertManyReturning } from "../../src/Insert";
 import { pg } from "../../src/pg";
-import { aggregate, count, defaultValue, groupBy, inQuery, leftJoin, limit, order, restrict, select } from "../../src/Query";
+import { aggregate, count, defaultValue, groupBy, inQuery, leftJoin, limit, order, restrict, select, selectValues } from "../../src/Query";
 import { Query, queryBind, queryPure } from "../../src/Query/Type";
 import { Order } from "../../src/SQL";
 import { update } from "../../src/Update";
@@ -179,4 +179,34 @@ export function allPersonsWithLimit<s>(offset: number, lim: number): Query<s, Pe
                         })
                 )
         ));
+}
+
+
+export function adhocTest<s>(): Query<s, {
+    foo: Col<s, string>;
+    bar: Col<s, string>;
+    blah: Col<s, number>;
+}> {
+    return queryBind(
+        selectValues<s, { foo: string, bar: string, blah: number }>([
+            {
+                foo: textCol("foo1"),
+                bar: textCol("bar1"),
+                blah: numberCol(4)
+            },
+            {
+                foo: textCol("foo2"),
+                bar: textCol("bar2"),
+                blah: numberCol(5)
+            }
+        ]),
+        person =>
+            queryBind
+                (queryPure(person.bar),
+                () =>
+                    queryPure({
+                        ...person
+                    })
+                )
+    );
 }
