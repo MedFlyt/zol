@@ -5,7 +5,7 @@ import { withTestDatabase } from "../../../helper_framework/TestDb";
 import { query } from "../src/Frontend";
 import * as m from "../src/Imperative";
 import { pg } from "../src/pg";
-import { age10Years, allPeople2, allPersons, allPersonsWithLimit, countHomes, grownups, grownupsIn, insertPeople, peopleInAddresses, setDefaultAge } from "./Queries/SimpleQueries";
+import { age10Years, allPeople2, allPersons, allPersonsWithLimit, countHomes, grownups, grownupsIn, insertPeople, peopleInAddresses, setDefaultAge, adhocTest } from "./Queries/SimpleQueries";
 import * as imp from "./Queries/SimpleQueriesImperative";
 import { createAddressSql } from "./Tables/Address";
 import { createPersonSql, personDefaultAge } from "./Tables/Person";
@@ -507,4 +507,23 @@ test("allPersonsWithLimit 4", t => withAllTables(async conn => {
     ];
 
     t.deepEqual(persons, expected);
+}));
+
+test.only("adhoc test", t => withAllTables(async conn => {
+    const actual = await query(conn, adhocTest());
+
+    const expected: typeof actual = [
+        {
+            foo: "foo1",
+            bar: "bar1",
+            blah: 4
+        },
+        {
+            foo: "foo2",
+            bar: "bar2",
+            blah: 5
+        },
+    ];
+
+    t.deepEqual(actual, expected);
 }));

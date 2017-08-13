@@ -1,5 +1,6 @@
 import { Exp } from "./Exp";
 import { SQL } from "./SQL";
+import { SqlType } from "./SqlType";
 
 /**
  * A database column. A column is often a literal column table, but can also
@@ -36,8 +37,9 @@ export function nullCol<s>(): Col<s, null> {
     return colWrap({
         type: "ELit",
         lit: {
-            type: "LNull"
-        }
+            type: "LNull",
+        },
+        parser: val => val 
     });
 }
 
@@ -47,7 +49,8 @@ export function booleanCol<s>(val: boolean): Col<s, boolean> {
         lit: {
             type: "LBool",
             value: val
-        }
+        },
+        parser: SqlType.booleanParser
     });
 }
 
@@ -57,7 +60,8 @@ export function textCol<s>(str: string): Col<s, string> {
         lit: {
             type: "LText",
             value: str
-        }
+        },
+        parser: SqlType.stringParser
     });
 }
 
@@ -67,6 +71,7 @@ export function numberCol<s>(val: number): Col<s, number> {
         lit: {
             type: "LInt",
             value: val
-        }
+        },
+        parser: SqlType.numberParser
     });
 }

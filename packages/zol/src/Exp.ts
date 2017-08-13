@@ -15,6 +15,7 @@ export namespace SomeCol {
         readonly colName: ColName;
         readonly exp: Exp<sql, any>;
         readonly parser: (val: string) => any;
+        readonly propName: string;
     }
 }
 
@@ -48,6 +49,7 @@ export namespace Exp {
     export interface ELit {
         readonly type: "ELit";
         readonly lit: SqlType.Lit;
+        readonly parser: (val: string) => any;
     }
 
     export interface EBinOp<sql, a> {

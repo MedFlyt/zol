@@ -1,8 +1,8 @@
 import { Col, colUnwrap, colWrap } from "./Column";
-import { compQuery } from "./Compile";
+import { compQuery, finalCols } from "./Compile";
 import { Exp, SomeCol } from "./Exp";
 import { GenState, rename } from "./GenState";
-import { isolate, Query, queryBind, queryPure } from "./Query/Type";
+import { isolate, Query, queryBind, queryPure, freshName } from "./Query/Type";
 import { JoinType, Order, SQL, SqlSource } from "./SQL";
 import { SqlType } from "./SqlType";
 import * as State from "./StateMonad";
@@ -97,6 +97,90 @@ export function select<s, a extends object, b extends object>(table: Table<a, b>
                         }
                         )
                 ));
+    });
+    return result;
+}
+
+/**
+ * Query an ad hoc table. Each element in the given list represents one row
+ * in the ad hoc table.
+ */
+export function selectValues<s, a extends object>(vals: MakeCols<s, a>[]): Query<s, MakeCols<s, a>> {
+    if (vals.length === 0) {
+        throw new Error("TODO");
+    }
+
+    const row = vals[0];
+    const rows = vals.slice(1);
+    const firstrow = finalCols(row);
+    const mkFirstRow = (ns: ColName[]): SomeCol<SQL>[] => {
+        const results: SomeCol<SQL>[] = [];
+        for (let i = 0; i < firstrow.length; ++i) {
+            results.push({
+                type: "Named",
+                colName: ns[i],
+                exp: firstrow[i].exp,
+                parser: firstrow[i].parser,
+                propName: (<any>firstrow[i]).propName
+            });
+        }
+        return results;
+    };
+    const rows2 = rows.map(finalCols);
+    const result: Query<s, MakeCols<s, a>> = new Query(resolve => {
+        resolve(
+            State.bind(
+                State.mapM(() => freshName(), firstrow),
+                names => {
+                    const rns: SomeCol<SQL>[] = [];
+                    let i = 0;
+                    for (const n of names) {
+                        rns.push({
+                            type: "Named",
+                            colName: n,
+                            exp: {
+                                type: "ECol",
+                                colName: n,
+                                parser: () => { throw new Error("ECol parser") }
+                            },
+                            parser: (<any>firstrow[i]).parser,
+                            propName: (<any>firstrow[i]).propName
+                        });
+                        i++;
+                    }
+                    const row2 = mkFirstRow(names);
+                    return State.bind(
+                        State.get(),
+                        s => {
+                            const s2: SQL = {
+                                cols: rns,
+                                source: {
+                                    type: "Values",
+                                    cols: row2,
+                                    params: rows2
+                                },
+                                restricts: [],
+                                groups: [],
+                                ordering: [],
+                                limits: null
+                            };
+                            return State.bind(
+                                State.put({
+                                    ...s,
+                                    sources: [s2].concat(s.sources)
+                                }),
+                                () => {
+                                    const ts: [ColName, string, (val: string) => any][] = [];
+                                    for (const r of rns) {
+                                        ts.push([(<SomeCol.Named<SQL>>r).colName, (<SomeCol.Named<SQL>>r).propName, r.parser]);
+                                    }
+                                    return State.pure(toTup(ts))
+                                }
+                            )
+                        }
+                    );
+                }
+            ));
     });
     return result;
 }
@@ -351,7 +435,8 @@ export function inList<s, a>(lhs: Col<s, a>, rhs: Col<s, a>[]): Col<s, boolean> 
             lit: {
                 type: "LBool",
                 value: false
-            }
+            },
+            parser: SqlType.booleanParser
         });
     } else {
         return <any>colWrap({

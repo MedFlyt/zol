@@ -1,5 +1,6 @@
 import { GenState, initState } from "../GenState";
 import * as State from "../StateMonad";
+import { ColName } from "../Types";
 
 export class Query<s, a> implements PromiseLike<a> {
     /**
@@ -99,5 +100,31 @@ export function isolate<s, a>(q: Query<s, a>): State.State<GenState, [GenState, 
                 )
             )
         )
+    );
+}
+
+/**
+ * Get a guaranteed unique identifier.
+ */
+export function freshId(): State.State<GenState, number> {
+    return State.bind(
+        State.get(),
+        st => State.bind(
+            State.put({
+                ...st,
+                nameSupply: st.nameSupply + 1
+            }),
+            () => State.pure(st.nameSupply)
+        )
+    );
+}
+
+/**
+ * Get a guaranteed unique column name.
+ */
+export function freshName(): State.State<GenState, ColName> {
+    return State.bind(
+        freshId(),
+        n => State.pure(ColName.wrap("tmp_" + n))
     );
 }
