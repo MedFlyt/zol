@@ -5,7 +5,7 @@ import { withTestDatabase } from "../../../helper_framework/TestDb";
 import { query } from "../src/Frontend";
 import * as m from "../src/Imperative";
 import { pg } from "../src/pg";
-import { age10Years, allPeople2, allPersons, allPersonsWithLimit, countHomes, grownups, grownupsIn, insertPeople, peopleInAddresses, setDefaultAge, adhocTest } from "./Queries/SimpleQueries";
+import { adhocTest, age10Years, allPeople2, allPersons, allPersonsWithLimit, countHomes, grownups, grownupsIn, insertPeople, peopleInAddresses, setDefaultAge } from "./Queries/SimpleQueries";
 import * as imp from "./Queries/SimpleQueriesImperative";
 import { createAddressSql } from "./Tables/Address";
 import { createPersonSql, personDefaultAge } from "./Tables/Person";
@@ -522,7 +522,7 @@ test.only("adhoc test", t => withAllTables(async conn => {
             foo: "foo2",
             bar: "bar2",
             blah: 5
-        },
+        }
     ];
 
     t.deepEqual(actual, expected);

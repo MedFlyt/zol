@@ -2,7 +2,7 @@ import { Col, colUnwrap, colWrap } from "./Column";
 import { compQuery, finalCols } from "./Compile";
 import { Exp, SomeCol } from "./Exp";
 import { GenState, rename } from "./GenState";
-import { isolate, Query, queryBind, queryPure, freshName } from "./Query/Type";
+import { freshName, isolate, Query, queryBind, queryPure } from "./Query/Type";
 import { JoinType, Order, SQL, SqlSource } from "./SQL";
 import { SqlType } from "./SqlType";
 import * as State from "./StateMonad";
@@ -107,7 +107,33 @@ export function select<s, a extends object, b extends object>(table: Table<a, b>
  */
 export function selectValues<s, a extends object>(vals: MakeCols<s, a>[]): Query<s, MakeCols<s, a>> {
     if (vals.length === 0) {
-        throw new Error("TODO");
+        const result: Query<s, MakeCols<s, a>> = new Query(resolve => {
+            resolve(
+                State.bind(
+                    State.get(),
+                    st => {
+                        const s2: SQL = {
+                            cols: [],
+                            source: {
+                                type: "EmptyTable"
+                            },
+                            restricts: [],
+                            groups: [],
+                            ordering: [],
+                            limits: null
+                        };
+                        return State.bind(
+                            State.put({
+                                ...st,
+                                sources: [s2].concat(st.sources)
+                            }),
+                            () => State.pure(<any>{})
+                        );
+                    }
+                )
+            );
+        });
+        return result;
     }
 
     const row = vals[0];
@@ -141,7 +167,7 @@ export function selectValues<s, a extends object>(vals: MakeCols<s, a>[]): Query
                             exp: {
                                 type: "ECol",
                                 colName: n,
-                                parser: () => { throw new Error("ECol parser") }
+                                parser: () => { throw new Error("ECol parser"); }
                             },
                             parser: (<any>firstrow[i]).parser,
                             propName: (<any>firstrow[i]).propName
@@ -174,9 +200,9 @@ export function selectValues<s, a extends object>(vals: MakeCols<s, a>[]): Query
                                     for (const r of rns) {
                                         ts.push([(<SomeCol.Named<SQL>>r).colName, (<SomeCol.Named<SQL>>r).propName, r.parser]);
                                     }
-                                    return State.pure(toTup(ts))
+                                    return State.pure(toTup(ts));
                                 }
-                            )
+                            );
                         }
                     );
                 }

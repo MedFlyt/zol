@@ -37,9 +37,9 @@ export function nullCol<s>(): Col<s, null> {
     return colWrap({
         type: "ELit",
         lit: {
-            type: "LNull",
+            type: "LNull"
         },
-        parser: val => val 
+        parser: val => val
     });
 }
 
@@ -47,8 +47,8 @@ export function booleanCol<s>(val: boolean): Col<s, boolean> {
     return colWrap({
         type: "ELit",
         lit: {
-            type: "LBool",
-            value: val
+            type: "LText",
+            value: val ? "t" : "f"
         },
         parser: SqlType.booleanParser
     });
