@@ -23,6 +23,8 @@ export function allNamesInExp<a>(exp: Exp<SQL, a>): ColName[] {
             return allNamesInExp(exp.col1).concat(allNamesInExp(exp.col2)).concat(allNamesInExp(exp.col3));
         case "ECast":
             return allNamesInExp(exp.exp);
+        case "EIfThenElse":
+            return allNamesInExp(exp.expIf).concat(allNamesInExp(exp.expThen)).concat(allNamesInExp(exp.expElse));
         case "EAggrEx":
             return allNamesInExp(exp.exp);
         case "EInList": {

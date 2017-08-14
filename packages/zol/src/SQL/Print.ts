@@ -235,6 +235,17 @@ function ppCol<a>(c: Exp<SQL, a>): PP<string> {
                 ppCol(c.exp),
                 x2 => State.pure("CAST(" + x2 + " AS " + c.sqlType + ")")
             );
+        case "EIfThenElse":
+            return State.bind(
+                ppCol(c.expIf),
+                a2 => State.bind(
+                    ppCol(c.expThen),
+                    b2 => State.bind(
+                        ppCol(c.expElse),
+                        c2 => State.pure("CASE WHEN " + a2 + " THEN " + b2 + " ELSE " + c2 + " END")
+                    )
+                )
+            );
         case "EInList":
             return State.bind(
                 ppCol(c.exp),

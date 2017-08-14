@@ -29,6 +29,7 @@ export type Exp<sql, a> =
     Exp.EFun2<sql, a> |
     Exp.EFun3<sql, a> |
     Exp.ECast<sql, a> |
+    Exp.EIfThenElse<sql, a> |
     Exp.EAggrEx<sql, a> |
     Exp.EInList<sql, a> |
     Exp.EInQuery<sql, a> |
@@ -93,6 +94,14 @@ export namespace Exp {
         readonly type: "ECast";
         readonly exp: Exp<sql, a>;
         readonly sqlType: string;
+        readonly parser: (val: string) => any;
+    }
+
+    export interface EIfThenElse<sql, a> {
+        readonly type: "EIfThenElse";
+        readonly expIf: Exp<sql, a>;
+        readonly expThen: Exp<sql, a>;
+        readonly expElse: Exp<sql, a>;
         readonly parser: (val: string) => any;
     }
 

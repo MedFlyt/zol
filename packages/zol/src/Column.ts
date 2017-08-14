@@ -75,3 +75,22 @@ export function numberCol<s>(val: number): Col<s, number> {
         parser: SqlType.numberParser
     });
 }
+
+/**
+ * Perform a conditional on a column
+ *
+ * SQL equivalent: `CASE`
+ */
+export function ifThenElse<s, a>(if_: Col<s, boolean>, then: Col<s, a>, else_: Col<s, a>): Col<s, a> {
+    return colWrap({
+        type: "EIfThenElse",
+        expIf: <any>colUnwrap(if_),
+        expThen: colUnwrap(then),
+        expElse: colUnwrap(else_),
+
+        // the "then" and "else_" columns are of the same type, so they
+        // (supposedly) have the same parser, so we can arbitrarily pick
+        // either one:
+        parser: (<any>colUnwrap(then)).parser
+    });
+}
