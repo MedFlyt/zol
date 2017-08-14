@@ -1,6 +1,6 @@
 {
   "name": "zol",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Type safe composable SQL abstraction layer",
   "keywords": [
     "typescript",
