@@ -29,7 +29,7 @@ test("ifThenElse simple 2", t => withTestDatabase(async conn => {
     t.deepEqual(actual, expected);
 }));
 
-test("inQuery simple", t => withTestDatabase(async conn => {
+test("ifThenElse nested", t => withTestDatabase(async conn => {
     await pg.query_(conn, createPersonTableSql);
 
     const personVals: PersonTable[] = [

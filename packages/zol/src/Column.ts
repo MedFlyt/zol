@@ -1,4 +1,5 @@
 import { Exp } from "./Exp";
+import { isNull } from "./Operators";
 import { SQL } from "./SQL";
 import { SqlType } from "./SqlType";
 
@@ -93,4 +94,17 @@ export function ifThenElse<s, a>(if_: Col<s, boolean>, then: Col<s, a>, else_: C
         // either one:
         parser: (<any>colUnwrap(then)).parser
     });
+}
+
+/**
+ * If the nullable column Column `nullable` is NULL then return the
+ * replacement column, otherwise map the underlying column using the
+ * provided function.
+ *
+ * @param nullable A nullable column to match against
+ * @param replacement This is the value that will be returned if the nullable column is NULL
+ * @param f This function will be called if the nullable column is not null, and its result will be returned
+ */
+export function matchNullable<s, a, b>(nullable: Col<s, a | null>, replacement: Col<s, b>, f: <s2>(col: Col<s2, a>) => Col<s2, b>): Col<s, b> {
+    return ifThenElse(isNull(nullable), replacement, f(<any>nullable));
 }
