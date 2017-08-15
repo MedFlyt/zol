@@ -1,4 +1,4 @@
-import { Col, SqlType, textCol, unsafeBinOp } from "zol";
+import { Col, SqlType, textCol, unsafeBinOp, unsafeCast, unsafeFunN } from "zol";
 
 /**
  * PostgreSQL `JSON` or `JSONB` type
@@ -11,7 +11,7 @@ export class PGJson {
     }
 
     public static col<s>(json: object): Col<s, PGJson> {
-        return <any>textCol(JSON.stringify(json));
+        return unsafeCast(textCol(JSON.stringify(json)), "JSONB", PGJson.parser);
     }
 
     /**
@@ -50,6 +50,15 @@ export class PGJson {
         return unsafeBinOp("->>", lhs, rhs, SqlType.stringParser);
     }
 
+    public static buildObject<s>(values: PGJson.Build<s>[]): Col<s, PGJson> {
+        const args: Col<s, any>[] = [];
+        for (const v of values) {
+            args.push(v.key);
+            args.push(v.value);
+        }
+        return unsafeFunN("json_build_object", args, PGJson.parser);
+    }
+
     /**
      * The actual JSON object
      */
@@ -58,4 +67,11 @@ export class PGJson {
     };
 
     protected dummy: PGJson;
+}
+
+export namespace PGJson {
+    export interface Build<s> {
+        key: Col<s, string>;
+        value: Col<s, any>;
+    }
 }

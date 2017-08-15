@@ -21,6 +21,14 @@ export function allNamesInExp<a>(exp: Exp<SQL, a>): ColName[] {
             return allNamesInExp(exp.lhs).concat(allNamesInExp(exp.rhs));
         case "EFun3":
             return allNamesInExp(exp.col1).concat(allNamesInExp(exp.col2)).concat(allNamesInExp(exp.col3));
+        case "EFunN":
+            {
+                let names: ColName[] = [];
+                for (const c of exp.cols) {
+                    names = names.concat(allNamesInExp(c));
+                }
+                return names;
+            }
         case "ECast":
             return allNamesInExp(exp.exp);
         case "EIfThenElse":

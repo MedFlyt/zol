@@ -28,6 +28,7 @@ export type Exp<sql, a> =
     Exp.EUnOp<sql, a> |
     Exp.EFun2<sql, a> |
     Exp.EFun3<sql, a> |
+    Exp.EFunN<sql, a> |
     Exp.ECast<sql, a> |
     Exp.EIfThenElse<sql, a> |
     Exp.EAggrEx<sql, a> |
@@ -88,6 +89,12 @@ export namespace Exp {
         readonly col1: Exp<sql, a>;
         readonly col2: Exp<sql, a>;
         readonly col3: Exp<sql, a>;
+    }
+
+    export interface EFunN<sql, a> {
+        readonly type: "EFunN";
+        readonly name: string;
+        readonly cols: Exp<sql, a>[];
     }
 
     export interface ECast<sql, a> {

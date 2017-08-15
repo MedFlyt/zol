@@ -13,4 +13,4 @@ export { isNull, isNotNull, not, restrictEq, like, ilike } from "./Operators";
 export { e } from "./e";
 export { Debug } from "./Debug";
 export { SqlType } from "./SqlType";
-export { unsafeCast, unsafeFun, unsafeFun2, unsafeFun3, unsafeAggr, unsafeBinOp } from "./Unsafe";
+export { unsafeCast, unsafeFun, unsafeFun2, unsafeFun3, unsafeFunN, unsafeAggr, unsafeBinOp } from "./Unsafe";
