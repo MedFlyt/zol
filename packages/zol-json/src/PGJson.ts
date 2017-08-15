@@ -56,7 +56,7 @@ export class PGJson {
             args.push(v.key);
             args.push(v.value);
         }
-        return unsafeFunN("json_build_object", args, PGJson.parser);
+        return unsafeFunN("jsonb_build_object", args, PGJson.parser);
     }
 
     /**
