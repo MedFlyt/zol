@@ -490,7 +490,7 @@ function ppSrc(s: SqlSource): PP<string> {
 function ppRow(xs: SomeCol<SQL>[]): PP<string> {
     const pps: PP<string>[] = [];
     for (const x of xs) {
-        pps.push(ppLit((<Exp.ELit>x.exp).lit));
+        pps.push(ppCol(x.exp));
     }
     return State.bind(
         State.sequence(pps),

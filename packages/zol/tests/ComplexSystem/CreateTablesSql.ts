@@ -36,7 +36,7 @@ CREATE TABLE performer_agency_contract (
     id SERIAL4 PRIMARY KEY,
     performer_id INT4 NOT NULL REFERENCES performer (id),
     talent_agency_id INT4 NOT NULL REFERENCES talent_agency (id),
-    signed_at TIMESTAMPTZ NOT NULL,
+    signed_at TEXT NOT NULL,
     terminated_at TIMESTAMPTZ,
 
     UNIQUE (performer_id, talent_agency_id)
@@ -64,7 +64,7 @@ CREATE TABLE acting_skill (
 CREATE TABLE audition (
     id SERIAL4 PRIMARY KEY,
     title TEXT NOT NULL,
-    time TIMESTAMP NOT NULL,
+    time TEXT NOT NULL,
     sex TEXT,
     CHECK (sex IN ('MALE', 'FEMALE'))
 );
@@ -82,7 +82,7 @@ CREATE TABLE audition_performance (
     audition_id INT4 NOT NULL REFERENCES audition (id),
     performer_id INT4 NOT NULL REFERENCES performer (id),
     referred_by_agent_id INT4 REFERENCES agent (id),
-    auditioned_at TIMESTAMPTZ NOT NULL,
+    auditioned_at TEXT NOT NULL,
 
     UNIQUE (performer_id, audition_id)
 );
@@ -91,7 +91,7 @@ CREATE TABLE audition_outcome (
     id SERIAL4 PRIMARY KEY,
     audition_id INT4 NOT NULL REFERENCES audition (id) UNIQUE,
     winning_performance_id INT4 NOT NULL REFERENCES audition_performance (id),
-    decided_at TIMESTAMPTZ NOT NULL
+    decided_at TEXT NOT NULL
 );
 
 CREATE TABLE status_update (
