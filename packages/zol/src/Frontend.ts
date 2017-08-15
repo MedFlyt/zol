@@ -63,13 +63,19 @@ export async function query2<t extends object>(conn: pg.Client, _n: number, sql:
     }
     const rows = await runCustomQuery(conn, sql.cols.map((s: any) => s.propName), sql.cols.map((s: any) => s.parser), sqlText, pgParams);
     if (Debug.enabled) {
-        // tslint:disable-next-line:no-non-null-assertion
-        (<QueryMetricsImpl>Debug.lastQueryMetrics.get(conn)!).setStage4BeforeParseQueryResults();
+        const m = Debug.lastQueryMetrics.get(conn);
+        if (m !== undefined) {
+            // tslint:disable-next-line:no-non-null-assertion
+            (<QueryMetricsImpl>m).setStage4BeforeParseQueryResults();
+        }
     }
 
     if (Debug.enabled) {
-        // tslint:disable-next-line:no-non-null-assertion
-        (<QueryMetricsImpl>Debug.lastQueryMetrics.get(conn)!).setStage5End();
+        const m = Debug.lastQueryMetrics.get(conn);
+        if (m !== undefined) {
+            // tslint:disable-next-line:no-non-null-assertion
+            (<QueryMetricsImpl>m).setStage5End();
+        }
     }
     return rows;
 }
