@@ -209,3 +209,36 @@ export function order<s, a>(q: Q<s>, col: Col<s, a>, order: Order): void {
     mutQ[0] = y;
     return x;
 }
+
+/**
+ * Similar to [[query]], but when you are certain that the query will always return
+ * exactly 1 row.
+ *
+ * For example: COUNT(*) style queries
+ */
+export async function queryOne<t extends object>(conn: pg.Client, q: (q: Q<{}>) => MakeCols<{}, t>): Promise<t> {
+    const rows = await query(conn, q);
+    if (rows.length !== 1) {
+        throw new Error(`Expected query to return 1 row, but got ${rows.length}`);
+    }
+
+    return rows[0];
+}
+
+/**
+ * Similar to [[query]], but when you are certain that the query will always return
+ * either 1 row or 0 rows.
+ *
+ * For example: queries that are restricted on some primary key
+ */
+export async function queryOneOrNone<t extends object>(conn: pg.Client, q: (q: Q<{}>) => MakeCols<{}, t>): Promise<t | null> {
+    const rows = await query(conn, q);
+    if (rows.length === 0) {
+        return null;
+    }
+    if (rows.length === 1) {
+        return rows[0];
+    }
+
+    throw new Error(`Expected query to return 1 or 0 rows, but got ${rows.length}`);
+}
