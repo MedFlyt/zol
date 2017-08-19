@@ -118,3 +118,17 @@ export function unsafeBinOp<s, a, b, c>(opName: string, lhs: Col<s, a>, rhs: Col
         parser: parser
     });
 }
+
+/**
+ * This is very unsafe. Can easily lead to SQL injections if used without care
+ *
+ * @param fragments
+ * @param parser
+ */
+export function unsafeRaw<s, a>(fragments: (string | Col<s, any>)[], parser: (val: string) => a): Col<s, a> {
+    return <any>colWrap({
+        type: "ERaw",
+        fragments: <any>fragments,
+        parser: parser
+    });
+}

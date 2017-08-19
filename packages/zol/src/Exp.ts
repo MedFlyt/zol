@@ -30,6 +30,7 @@ export type Exp<sql, a> =
     Exp.EFun3<sql, a> |
     Exp.EFunN<sql, a> |
     Exp.ECast<sql, a> |
+    Exp.ERaw<sql, a> |
     Exp.EIfThenElse<sql, a> |
     Exp.EAggrEx<sql, a> |
     Exp.EInList<sql, a> |
@@ -101,6 +102,12 @@ export namespace Exp {
         readonly type: "ECast";
         readonly exp: Exp<sql, a>;
         readonly sqlType: string;
+        readonly parser: (val: string) => any;
+    }
+
+    export interface ERaw<sql, a> {
+        readonly type: "ERaw";
+        readonly fragments: (Exp<sql, a> | string)[];
         readonly parser: (val: string) => any;
     }
 

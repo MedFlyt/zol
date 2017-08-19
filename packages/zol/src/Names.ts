@@ -33,6 +33,16 @@ export function allNamesInExp<a>(exp: Exp<SQL, a>): ColName[] {
             return allNamesInExp(exp.exp);
         case "EIfThenElse":
             return allNamesInExp(exp.expIf).concat(allNamesInExp(exp.expThen)).concat(allNamesInExp(exp.expElse));
+        case "ERaw":
+            {
+                let names: ColName[] = [];
+                for (const f of exp.fragments) {
+                    if (typeof f !== "string") {
+                        names = names.concat(allNamesInExp(f));
+                    }
+                }
+                return names;
+            }
         case "EAggrEx":
             return allNamesInExp(exp.exp);
         case "EInList": {

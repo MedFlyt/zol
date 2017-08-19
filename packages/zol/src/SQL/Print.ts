@@ -251,6 +251,23 @@ function ppCol<a>(c: Exp<SQL, a>): PP<string> {
                     )
                 )
             );
+        case "ERaw":
+            return State.bind(
+                State.mapM(ppCol, c.fragments.filter(f => typeof f !== "string")),
+                cs2 => {
+                    let str = "";
+                    let i = 0;
+                    for (const f of c.fragments) {
+                        if (typeof f === "string") {
+                            str += f;
+                        } else {
+                            str += cs2[i];
+                            i++;
+                        }
+                    }
+                    return State.pure(str);
+                }
+            );
         case "EInList":
             return State.bind(
                 ppCol(c.exp),
