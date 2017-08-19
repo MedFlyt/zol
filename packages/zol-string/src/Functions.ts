@@ -1,4 +1,4 @@
-import { Col, SqlType, unsafeFun, unsafeFun2, unsafeFun3 } from "zol";
+import { Col, SqlType, Unsafe } from "zol";
 
 /**
  * Number of characters in string
@@ -6,7 +6,7 @@ import { Col, SqlType, unsafeFun, unsafeFun2, unsafeFun3 } from "zol";
  * SQL equivalent: char_length, length
  */
 export function charLength<s>(str: Col<s, string>): Col<s, number> {
-    return unsafeFun("char_length", str, SqlType.intParser);
+    return Unsafe.unsafeFun("char_length", str, SqlType.intParser);
 }
 
 /**
@@ -15,7 +15,7 @@ export function charLength<s>(str: Col<s, string>): Col<s, number> {
  * SQL equivalent: lower
  */
 export function lower<s>(str: Col<s, string>): Col<s, string> {
-    return unsafeFun("lower", str, SqlType.stringParser);
+    return Unsafe.unsafeFun("lower", str, SqlType.stringParser);
 }
 
 /**
@@ -24,7 +24,7 @@ export function lower<s>(str: Col<s, string>): Col<s, string> {
  * SQL equivalent: upper
  */
 export function upper<s>(str: Col<s, string>): Col<s, string> {
-    return unsafeFun("upper", str, SqlType.stringParser);
+    return Unsafe.unsafeFun("upper", str, SqlType.stringParser);
 }
 
 /**
@@ -34,7 +34,7 @@ export function upper<s>(str: Col<s, string>): Col<s, string> {
  * SQL equivalent: strpos, position
  */
 export function strpos<s>(haystack: Col<s, string>, needle: Col<s, string>): Col<s, number> {
-    return unsafeFun2("strpos", haystack, needle, SqlType.intParser);
+    return Unsafe.unsafeFun2("strpos", haystack, needle, SqlType.intParser);
 }
 
 /**
@@ -55,9 +55,9 @@ export function substr<s>(str: Col<s, string>, from: Col<s, number>, count: Col<
 
 export function substr<s>(str: Col<s, string>, from: Col<s, number>, count?: Col<s, number>): Col<s, string> {
     if (count === undefined) {
-        return unsafeFun2("substr", str, from, SqlType.stringParser);
+        return Unsafe.unsafeFun2("substr", str, from, SqlType.stringParser);
     } else {
-        return unsafeFun3("substr", str, from, count, SqlType.stringParser);
+        return Unsafe.unsafeFun3("substr", str, from, count, SqlType.stringParser);
     }
 }
 
@@ -70,7 +70,7 @@ export function substr<s>(str: Col<s, string>, from: Col<s, number>, count?: Col
  * SQL equivalent: chr
  */
 export function chr<s>(code: Col<s, number>): Col<s, string> {
-    return unsafeFun("chr", code, SqlType.stringParser);
+    return Unsafe.unsafeFun("chr", code, SqlType.stringParser);
 }
 
 /**
@@ -90,9 +90,9 @@ export function btrim<s>(str: Col<s, string>, characters: Col<s, string>): Col<s
 
 export function btrim<s>(str: Col<s, string>, characters?: Col<s, string>): Col<s, string> {
     if (characters === undefined) {
-        return unsafeFun("btrim", str, SqlType.stringParser);
+        return Unsafe.unsafeFun("btrim", str, SqlType.stringParser);
     } else {
-        return unsafeFun2("btrim", str, characters, SqlType.stringParser);
+        return Unsafe.unsafeFun2("btrim", str, characters, SqlType.stringParser);
     }
 }
 
@@ -113,9 +113,9 @@ export function ltrim<s>(str: Col<s, string>, characters: Col<s, string>): Col<s
 
 export function ltrim<s>(str: Col<s, string>, characters?: Col<s, string>): Col<s, string> {
     if (characters === undefined) {
-        return unsafeFun("ltrim", str, SqlType.stringParser);
+        return Unsafe.unsafeFun("ltrim", str, SqlType.stringParser);
     } else {
-        return unsafeFun2("ltrim", str, characters, SqlType.stringParser);
+        return Unsafe.unsafeFun2("ltrim", str, characters, SqlType.stringParser);
     }
 }
 
@@ -136,9 +136,9 @@ export function rtrim<s>(str: Col<s, string>, characters: Col<s, string>): Col<s
 
 export function rtrim<s>(str: Col<s, string>, characters?: Col<s, string>): Col<s, string> {
     if (characters === undefined) {
-        return unsafeFun("rtrim", str, SqlType.stringParser);
+        return Unsafe.unsafeFun("rtrim", str, SqlType.stringParser);
     } else {
-        return unsafeFun2("rtrim", str, characters, SqlType.stringParser);
+        return Unsafe.unsafeFun2("rtrim", str, characters, SqlType.stringParser);
     }
 }
 
@@ -148,5 +148,5 @@ export function rtrim<s>(str: Col<s, string>, characters?: Col<s, string>): Col<
  * SQL equivalent: to_hex
  */
 export function toHex<s>(num: Col<s, number>): Col<s, string> {
-    return unsafeFun("to_hex", num, SqlType.stringParser);
+    return Unsafe.unsafeFun("to_hex", num, SqlType.stringParser);
 }

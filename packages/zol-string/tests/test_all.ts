@@ -1,12 +1,12 @@
 import "../../../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
 
 import * as test from "blue-tape";
-import { Col, numberCol, query, SqlType, textCol, unsafeCast } from "zol";
+import { Col, numberCol, query, SqlType, textCol, Unsafe } from "zol";
 import { withTestDatabase } from "../../../helper_framework/TestDb";
 import { btrim, charLength, chr, lower, ltrim, rtrim, strpos, substr, toHex, upper } from "../src/zol-string";
 
 function bigintCol<s>(val: number): Col<s, number> {
-    return unsafeCast(numberCol(val), "BIGINT", SqlType.numberParser);
+    return Unsafe.unsafeCast(numberCol(val), "BIGINT", SqlType.numberParser);
 }
 
 test("charLength", t => withTestDatabase(async conn => {

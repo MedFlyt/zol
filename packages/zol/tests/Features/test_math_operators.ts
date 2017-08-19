@@ -2,10 +2,10 @@ import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-sid
 
 import * as test from "blue-tape";
 import { withTestDatabase } from "../../../../helper_framework/TestDb";
-import { Col, e, numberCol, query, SqlType, unsafeCast } from "../../src/zol";
+import { Col, e, numberCol, query, SqlType, Unsafe } from "../../src/zol";
 
 function intCol<s>(val: number): Col<s, number> {
-    return unsafeCast(numberCol(val), "INT", SqlType.numberParser);
+    return Unsafe.unsafeCast(numberCol(val), "INT", SqlType.numberParser);
 }
 
 test("math add", t => withTestDatabase(async conn => {

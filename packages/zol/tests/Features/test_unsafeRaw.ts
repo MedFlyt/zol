@@ -2,20 +2,20 @@ import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-sid
 
 import * as test from "blue-tape";
 import { withTestDatabase } from "../../../../helper_framework/TestDb";
-import { Col, query, SqlType, textCol, unsafeBinOp, unsafeCast, unsafeRaw } from "../../src/zol";
+import { Col, query, SqlType, textCol, Unsafe } from "../../src/zol";
 
 type JSON = string;
 
 function jsonCol<s>(val: any): Col<s, JSON> {
-    return unsafeCast(textCol(JSON.stringify(val)), "JSONB", v => v);
+    return Unsafe.unsafeCast(textCol(JSON.stringify(val)), "JSONB", v => v);
 }
 
 function jsonToTextArray<s>(json: Col<s, JSON>): Col<s, string> {
-    return unsafeRaw(["ARRAY(SELECT jsonb_array_elements_text(", json, "))"], val => val);
+    return Unsafe.unsafeRaw(["ARRAY(SELECT jsonb_array_elements_text(", json, "))"], val => val);
 }
 
 function arraysOverlap<s>(a: Col<s, string>, b: Col<s, string>): Col<s, boolean> {
-    return unsafeBinOp("&&", a, b, SqlType.booleanParser);
+    return Unsafe.unsafeBinOp("&&", a, b, SqlType.booleanParser);
 }
 
 test("unsafeRaw 1", t => withTestDatabase(async conn => {

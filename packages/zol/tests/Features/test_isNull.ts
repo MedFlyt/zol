@@ -2,7 +2,7 @@ import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-sid
 
 import * as test from "blue-tape";
 import { withTestDatabase } from "../../../../helper_framework/TestDb";
-import { isNotNull, isNull, nullCol, numberCol, query, SqlType, unsafeCast } from "../../src/zol";
+import { isNotNull, isNull, nullCol, numberCol, query, SqlType, Unsafe } from "../../src/zol";
 
 test("not expression", t => withTestDatabase(async conn => {
     const r1 = await query(conn, _q => {
@@ -19,7 +19,7 @@ test("not expression", t => withTestDatabase(async conn => {
 
     const r2 = await query(conn, _q => {
         return {
-            val: isNull(unsafeCast(numberCol(4), "INT", SqlType.numberParser))
+            val: isNull(Unsafe.unsafeCast(numberCol(4), "INT", SqlType.numberParser))
         };
     });
 

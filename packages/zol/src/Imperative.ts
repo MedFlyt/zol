@@ -10,7 +10,7 @@ import { Aggr, AggrCols, Inner, LeftCols, MakeCols } from "./Query";
 import { Order } from "./SQL";
 import { SqlType } from "./SqlType";
 import { Table } from "./Table";
-import { unsafeCast } from "./Unsafe";
+import { Unsafe } from "./Unsafe";
 
 export class Q<s> {
     protected dummy: [Q<s>, s];
@@ -164,7 +164,7 @@ export class Arbitrary {
  * rows are not important, such as in [[exists]] queries.
  */
 export function arbitrary<s>(): Col<s, Arbitrary> {
-    return <any>unsafeCast(numberCol(1), "INT", SqlType.intParser);
+    return <any>Unsafe.unsafeCast(numberCol(1), "INT", SqlType.intParser);
 }
 
 /**

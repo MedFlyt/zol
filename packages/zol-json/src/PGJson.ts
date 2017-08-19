@@ -1,4 +1,4 @@
-import { Col, SqlType, textCol, unsafeBinOp, unsafeCast, unsafeFunN } from "zol";
+import { Col, SqlType, textCol, Unsafe } from "zol";
 
 /**
  * PostgreSQL `JSON` or `JSONB` type
@@ -11,7 +11,7 @@ export class PGJson {
     }
 
     public static col<s>(json: object): Col<s, PGJson> {
-        return unsafeCast(textCol(JSON.stringify(json)), "JSONB", PGJson.parser);
+        return Unsafe.unsafeCast(textCol(JSON.stringify(json)), "JSONB", PGJson.parser);
     }
 
     /**
@@ -20,7 +20,7 @@ export class PGJson {
      * This is the PostgreSQL `->` operator
      */
     public static arrayElem<s>(lhs: Col<s, PGJson>, rhs: Col<s, number>): Col<s, PGJson | null> {
-        return unsafeBinOp("->", lhs, rhs, PGJson.parser);
+        return Unsafe.unsafeBinOp("->", lhs, rhs, PGJson.parser);
     }
 
     /**
@@ -29,7 +29,7 @@ export class PGJson {
      * This is the PostgreSQL `->` operator
      */
     public static objField<s>(lhs: Col<s, PGJson>, rhs: Col<s, string>): Col<s, PGJson | null> {
-        return unsafeBinOp("->", lhs, rhs, PGJson.parser);
+        return Unsafe.unsafeBinOp("->", lhs, rhs, PGJson.parser);
     }
 
     /**
@@ -38,7 +38,7 @@ export class PGJson {
      * This is the PostgreSQL `->>` operator
      */
     public static arrayElemAsText<s>(lhs: Col<s, PGJson>, rhs: Col<s, number>): Col<s, string | null> {
-        return unsafeBinOp("->>", lhs, rhs, SqlType.stringParser);
+        return Unsafe.unsafeBinOp("->>", lhs, rhs, SqlType.stringParser);
     }
 
     /**
@@ -47,7 +47,7 @@ export class PGJson {
      * This is the PostgreSQL `->>` operator
      */
     public static objFieldAsText<s>(lhs: Col<s, PGJson>, rhs: Col<s, string>): Col<s, string | null> {
-        return unsafeBinOp("->>", lhs, rhs, SqlType.stringParser);
+        return Unsafe.unsafeBinOp("->>", lhs, rhs, SqlType.stringParser);
     }
 
     public static buildObject<s>(values: PGJson.Build<s>[]): Col<s, PGJson> {
@@ -56,7 +56,7 @@ export class PGJson {
             args.push(v.key);
             args.push(v.value);
         }
-        return unsafeFunN("jsonb_build_object", args, PGJson.parser);
+        return Unsafe.unsafeFunN("jsonb_build_object", args, PGJson.parser);
     }
 
     /**

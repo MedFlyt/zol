@@ -2,7 +2,7 @@ import { Exp } from "./Exp";
 import { isNull } from "./Operators";
 import { SQL } from "./SQL";
 import { SqlType } from "./SqlType";
-import { unsafeCast } from "./Unsafe";
+import { Unsafe } from "./Unsafe";
 
 /**
  * A database column. A column is often a literal column table, but can also
@@ -57,7 +57,7 @@ export function booleanCol<s>(val: boolean): Col<s, boolean> {
 }
 
 export function textCol<s>(str: string): Col<s, string> {
-    return unsafeCast(colWrap({
+    return Unsafe.unsafeCast(colWrap({
         type: "ELit",
         lit: {
             type: "LText",

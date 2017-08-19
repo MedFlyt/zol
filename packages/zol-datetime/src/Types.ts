@@ -1,9 +1,9 @@
 import { Duration, Instant, LocalDate, LocalDateTime, LocalTime, Period } from "js-joda";
-import { Col, textCol, unsafeCast } from "zol";
+import { Col, textCol, Unsafe } from "zol";
 import { intervalParser, parseLocalDate, parseLocalTime, parseZonedDateTime } from "./Parsers";
 
 export function localDateTimeCol<s>(val: LocalDateTime): Col<s, LocalDateTime> {
-    return unsafeCast(<any>textCol(val.toString()), "TIMESTAMP", localDateTimeParser);
+    return Unsafe.unsafeCast(<any>textCol(val.toString()), "TIMESTAMP", localDateTimeParser);
 }
 
 export function localDateTimeParser(val: string): LocalDateTime {
@@ -12,7 +12,7 @@ export function localDateTimeParser(val: string): LocalDateTime {
 }
 
 export function instantCol<s>(val: Instant): Col<s, Instant> {
-    return unsafeCast(<any>textCol(val.toString()), "TIMESTAMPTZ", instantParser);
+    return Unsafe.unsafeCast(<any>textCol(val.toString()), "TIMESTAMPTZ", instantParser);
 }
 
 export function instantParser(val: string): Instant {
@@ -21,7 +21,7 @@ export function instantParser(val: string): Instant {
 }
 
 export function localDateCol<s>(val: LocalDate): Col<s, LocalDate> {
-    return unsafeCast(<any>textCol(val.toString()), "DATE", localDateParser);
+    return Unsafe.unsafeCast(<any>textCol(val.toString()), "DATE", localDateParser);
 }
 
 export function localDateParser(val: string): LocalDate {
@@ -29,7 +29,7 @@ export function localDateParser(val: string): LocalDate {
 }
 
 export function localTimeCol<s>(val: LocalTime): Col<s, LocalTime> {
-    return unsafeCast(<any>textCol(val.toString()), "TIME", localTimeParser);
+    return Unsafe.unsafeCast(<any>textCol(val.toString()), "TIME", localTimeParser);
 }
 
 export function localTimeParser(val: string): LocalTime {
@@ -37,7 +37,7 @@ export function localTimeParser(val: string): LocalTime {
 }
 
 export function durationCol<s>(val: Duration): Col<s, Duration> {
-    return unsafeCast(<any>textCol(val.toString()), "INTERVAL", durationParser);
+    return Unsafe.unsafeCast(<any>textCol(val.toString()), "INTERVAL", durationParser);
 }
 
 /**
@@ -53,7 +53,7 @@ export function durationParser(interval: string): Duration {
 }
 
 export function periodCol<s>(val: Period): Col<s, Period> {
-    return unsafeCast(<any>textCol(val.toString()), "INTERVAL", periodParser);
+    return Unsafe.unsafeCast(<any>textCol(val.toString()), "INTERVAL", periodParser);
 }
 
 /**

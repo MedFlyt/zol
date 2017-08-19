@@ -2,7 +2,7 @@ import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-sid
 
 import * as test from "blue-tape";
 import { withTestDatabase } from "../../../../helper_framework/TestDb";
-import { Col, Q, query, SqlType, textCol, unsafeCast } from "../../src/zol";
+import { Col, Q, query, SqlType, textCol, Unsafe } from "../../src/zol";
 
 test("cast", t => withTestDatabase(async conn => {
     const selectString = <s>(_q: Q<s>) => {
@@ -12,7 +12,7 @@ test("cast", t => withTestDatabase(async conn => {
     };
     const actual = await query(conn, q => {
         const str = selectString(q);
-        const numCol: Col<{}, number> = unsafeCast(str.val, "INT", SqlType.numberParser);
+        const numCol: Col<{}, number> = Unsafe.unsafeCast(str.val, "INT", SqlType.numberParser);
         return {
             val: numCol
         };
