@@ -46,14 +46,14 @@ export function nullCol<s>(): Col<s, null> {
 }
 
 export function booleanCol<s>(val: boolean): Col<s, boolean> {
-    return colWrap({
+    return Unsafe.unsafeCast(colWrap({
         type: "ELit",
         lit: {
             type: "LText",
             value: val ? "t" : "f"
         },
         parser: SqlType.booleanParser
-    });
+    }), "BOOLEAN", SqlType.booleanParser);
 }
 
 export function textCol<s>(str: string): Col<s, string> {
