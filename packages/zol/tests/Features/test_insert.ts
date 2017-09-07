@@ -2,7 +2,7 @@ import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-sid
 
 import * as test from "blue-tape";
 import { withTestDatabase } from "../../../../helper_framework/TestDb";
-import { booleanCol, ConflictTarget, defaultValue, insert, insertMany, insertManyReturning, insertOnConflictDoNothing, insertOnConflictDoUpdate, insertReturning, nullCol, numberCol, Order, order, pg, query, select, textCol } from "../../src/zol";
+import { booleanCol, ConflictTarget, defaultValue, insert, insertMany, insertManyOnConflictDoNothing, insertManyReturning, insertOnConflictDoNothing, insertOnConflictDoUpdate, insertReturning, nullCol, numberCol, Order, order, pg, query, select, textCol } from "../../src/zol";
 import { bookDefaultAuthor, BookTable, bookTable, createBookTableSql, createPersonTableSql, personTable, PersonTable } from "./Tables";
 
 test("insert select simple", t => withTestDatabase(async conn => {
@@ -107,7 +107,10 @@ test("insert book default values returning", t => withTestDatabase(async conn =>
         title: textCol("A book")
     };
 
-    const returned = await insertReturning(conn, bookTable, vals, row => ({ author: row.author, numPages: row.numPages }));
+    const returned = await insertReturning(conn, bookTable, vals, row => ({
+        author: row.author,
+        numPages: row.numPages
+    }));
 
     const expected_returned: typeof returned = {
         author: bookDefaultAuthor,
@@ -146,7 +149,10 @@ test("insert many book default values returning", t => withTestDatabase(async co
         }
     ];
 
-    const returned = await insertManyReturning(conn, bookTable, vals, row => ({ author: row.author, numPages: row.numPages }));
+    const returned = await insertManyReturning(conn, bookTable, vals, row => ({
+        author: row.author,
+        numPages: row.numPages
+    }));
 
     const expected_returned: typeof returned = [
         {
@@ -341,6 +347,60 @@ test("insert on conflict do update", t => withTestDatabase(async conn => {
     }
 }));
 
+
+test("insertManyReturning empty insert", t => withTestDatabase(async conn => {
+    await pg.query_(conn, createBookTableSql);
+
+    const vals: BookTable[] = [];
+
+    const actual = await insertManyReturning(conn, bookTable, vals, row => ({
+        author: row.author,
+        numPages: row.numPages
+    }));
+
+    const expected: typeof actual = [];
+
+    t.deepEqual(actual, expected);
+}));
+
+test("insertMany empty insert", t => withTestDatabase(async conn => {
+    await pg.query_(conn, createBookTableSql);
+
+    const vals: BookTable[] = [];
+
+    await insertMany(conn, bookTable, vals);
+
+    t.assert(true);
+}));
+
+test("insertManyOnConflictDoNothing empty insert", t => withTestDatabase(async conn => {
+    await pg.query_(conn, createBookTableSql);
+
+    const vals: BookTable[] = [];
+
+    await insertManyOnConflictDoNothing(conn, bookTable, vals, ConflictTarget.tableColumns(["serial"]));
+
+    t.assert(true);
+}));
+
+// TODO Get this test working:
+// test("insertManyOnConflictDoUpdate empty insert", t => withTestDatabase(async conn => {
+//     await pg.query_(conn, createBookTableSql);
+//
+//     const vals: BookTable[] = [];
+//
+//     await insertManyOnConflictDoUpdate(conn, bookTable, vals, ConflictTarget.tableColumns(["serial"]),
+//         () => booleanCol(true),
+//         (row) => {
+//             const newRow: BookTable = {
+//                 ...row,
+//             };
+//             return newRow;
+//         }
+//     );
+//
+//     t.assert(true);
+// }));
 
 // insert,
 // insert_,

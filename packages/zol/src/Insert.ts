@@ -95,6 +95,10 @@ export async function insertOnConflictDoUpdate<Req extends object, Def extends o
  * Insert multiple rows into a table, with a RETURNING clause
  */
 export async function insertManyReturning<Req extends object, Def extends object, Ret extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret[]> {
+    if (rowValues.length === 0) {
+        return [];
+    }
+
     const [sqlText, params] = compileInsert(table, rowValues, undefined, undefined, returning);
 
     const pgParams = params.map(x => litToPgParam(x.param));
@@ -112,6 +116,10 @@ export async function insertManyReturning<Req extends object, Def extends object
  * Insert multiple rows into a table
  */
 export async function insertMany<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[]): Promise<void> {
+    if (rowValues.length === 0) {
+        return;
+    }
+
     const [sqlText, params] = compileInsert(table, rowValues, undefined, undefined, () => ({}));
 
     const pgParams = params.map(x => litToPgParam(x.param));
@@ -137,6 +145,10 @@ export async function insertManyOnConflictDoNothingReturning<Req extends object,
  * @return The number of rows inserted
  */
 export async function insertManyOnConflictDoNothing<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>): Promise<number> {
+    if (rowValues.length === 0) {
+        return 0;
+    }
+
     const [sqlText, params] = compileInsert(table, rowValues, conflictTarget, undefined, () => ({}));
 
     const pgParams = params.map(x => litToPgParam(x.param));
@@ -174,6 +186,10 @@ export async function insertManyOnConflictDoUpdateReturning<Req extends object, 
  * @return The number of newly inserted rows + the number of updated rows
  */
 export async function insertManyOnConflictDoUpdate<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>, onConflictPred: (c: MakeCols<Write, Req & Def>) => Col<Write, boolean>, onConflictUpdate: (c: MakeCols<Write, Req & Def>/* TODO: , excluded: MakeCols<Write, Req & Def> */) => MakeTable<Req, Def>): Promise<number> {
+    if (rowValues.length === 0) {
+        return 0;
+    }
+
     const [sqlText, params] = compileInsert(table, rowValues, conflictTarget, [onConflictPred, onConflictUpdate], () => ({}));
 
     const pgParams = params.map(x => litToPgParam(x.param));
