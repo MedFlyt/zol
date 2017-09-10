@@ -3,7 +3,7 @@ import { compQuery, finalCols, freshScope } from "./Compile";
 import { Exp, SomeCol } from "./Exp";
 import { GenState, rename } from "./GenState";
 import { freshName, isolate, Query, queryBind, queryPure } from "./Query/Type";
-import { JoinType, Order, SQL, SqlSource } from "./SQL";
+import { JoinType, Order, SQL, sqlFrom } from "./SQL";
 import { SqlType } from "./SqlType";
 import * as State from "./StateMonad";
 import { Table } from "./Table";
@@ -74,18 +74,10 @@ export function select<s, a extends object, b extends object>(table: Table<a, b>
                         (
                         State.get(),
                         st => {
-                            const newSource: SQL = {
-                                cols: rns.map(x => x[0]),
-                                source: {
-                                    type: "TableName",
-                                    tableName: table.tableName
-                                },
-                                restricts: [],
-                                groups: [],
-                                ordering: [],
-                                limits: null,
-                                distinct: false
-                            };
+                            const newSource = sqlFrom(rns.map(x => x[0]), {
+                                type: "TableName",
+                                tableName: table.tableName
+                            });
                             const st2: GenState = {
                                 ...st,
                                 sources: [newSource].concat(st.sources)
@@ -113,17 +105,9 @@ export function selectValues<s, a extends object>(vals: MakeCols<s, a>[]): Query
                 State.bind(
                     State.get(),
                     st => {
-                        const s2: SQL = {
-                            cols: [],
-                            source: {
-                                type: "EmptyTable"
-                            },
-                            restricts: [],
-                            groups: [],
-                            ordering: [],
-                            limits: null,
-                            distinct: false
-                        };
+                        const s2 = sqlFrom([], {
+                            type: "EmptyTable"
+                        });
                         return State.bind(
                             State.put({
                                 ...st,
@@ -180,19 +164,11 @@ export function selectValues<s, a extends object>(vals: MakeCols<s, a>[]): Query
                     return State.bind(
                         State.get(),
                         s => {
-                            const s2: SQL = {
-                                cols: rns,
-                                source: {
-                                    type: "Values",
-                                    cols: row2,
-                                    params: rows2
-                                },
-                                restricts: [],
-                                groups: [],
-                                ordering: [],
-                                limits: null,
-                                distinct: false
-                            };
+                            const s2 = sqlFrom(rns, {
+                                type: "Values",
+                                cols: row2,
+                                params: rows2
+                            });
                             return State.bind(
                                 State.put({
                                     ...s,
@@ -228,31 +204,21 @@ export function restrict<s>(expr: Col<s, boolean>): Query<s, void> {
                         return {
                             ...st,
                             sources: [{
-                                cols: st.sources[0].cols,
-                                source: st.sources[0].source,
-                                restricts: [colUnwrap(expr)].concat(st.sources[0].restricts),
-                                groups: st.sources[0].groups,
-                                ordering: st.sources[0].ordering,
-                                limits: st.sources[0].limits,
-                                distinct: st.sources[0].distinct
+                                ...st.sources[0],
+                                restricts: [colUnwrap(expr)].concat(st.sources[0].restricts)
                             }]
                         };
                     } else {
-                        const source2: SQL = {
-                            cols: allCols(st.sources),
-                            source: {
-                                type: "Product",
-                                sqls: st.sources
-                            },
-                            restricts: [colUnwrap(expr)],
-                            groups: [],
-                            ordering: [],
-                            limits: null,
-                            distinct: false
-                        };
+                        const source2 = sqlFrom(allCols(st.sources), {
+                            type: "Product",
+                            sqls: st.sources
+                        });
                         return {
                             ...st,
-                            sources: [source2]
+                            sources: [{
+                                ...source2,
+                                restricts: [colUnwrap(expr)]
+                            }]
                         };
                     }
                 })()))
@@ -271,23 +237,17 @@ export function aggregate<s, a extends object>(q: Query<Inner<s>, AggrCols<s, a>
                     return State.bind(
                         State.mapM(x => State.bind(rename(x[0]), y => State.pure<GenState, [SomeCol<SQL>, string, (val: string) => any]>([y, x[1], x[2]])), fromTup(aggrs)),
                         (cs: [SomeCol<SQL>, string, (val: string) => any][]) => {
-                            const sql = state2sql(gst);
-                            const sql2: SQL = {
-                                cols: cs.map(x => x[0]),
-                                source: {
+                            const sql: SQL = {
+                                ...sqlFrom(cs.map(x => x[0]), {
                                     type: "Product",
-                                    sqls: [sql]
-                                },
-                                restricts: [],
-                                groups: gst.groupCols,
-                                ordering: [],
-                                limits: null,
-                                distinct: false
+                                    sqls: [state2sql(gst)]
+                                }),
+                                groups: gst.groupCols
                             };
                             return State.bind(
                                 State.modify(st => ({
                                     ...st,
-                                    sources: [sql2].concat(st.sources)
+                                    sources: [sql].concat(st.sources)
                                 })),
                                 () => State.pure(toTup(someColNames2(cs)))
                             );
@@ -332,34 +292,22 @@ export function limit<s, a extends object>(from: number, to: number, q: Query<In
                         State.get(),
                         st => {
                             let sql: SQL;
-                            if (lim_st.sources.length === 1) {
-                                sql = {
-                                    cols: lim_st.sources[0].cols,
-                                    source: lim_st.sources[0].source,
-                                    restricts: lim_st.sources[0].restricts,
-                                    groups: lim_st.sources[0].groups,
-                                    ordering: lim_st.sources[0].ordering,
-                                    limits: [from, to],
-                                    distinct: lim_st.sources[0].distinct
-                                };
+                            if (lim_st.sources.length === 1 && lim_st.sources[0].limits === null) {
+                                sql = lim_st.sources[0];
                             } else {
-                                sql = {
-                                    cols: allCols(lim_st.sources),
-                                    source: {
-                                        type: "Product",
-                                        sqls: lim_st.sources
-                                    },
-                                    restricts: [],
-                                    groups: [],
-                                    ordering: [],
-                                    limits: [from, to],
-                                    distinct: false
-                                };
+                                sql = sqlFrom(allCols(lim_st.sources), {
+                                    type: "Product",
+                                    sqls: lim_st.sources
+                                });
                             }
+                            const sql2: SQL = {
+                                ...sql,
+                                limits: [from, to]
+                            };
                             return State.bind(
                                 State.put({
                                     ...st,
-                                    sources: [sql].concat(st.sources)
+                                    sources: [sql2].concat(st.sources)
                                 }),
                                 () => State.pure(<any>res)
                             );
@@ -382,34 +330,24 @@ export function order<s, a>(col: Col<s, a>, order: Order): Query<s, void> {
                         exp: colUnwrap(col),
                         parser: (_val: string) => { throw new Error("TODO"); }
                     }];
+                    const sql = sqlFrom(allCols(st.sources), {
+                        type: "Product",
+                        sqls: st.sources
+                    });
                     if (st.sources.length === 1) {
                         return State.put({
                             ...st,
                             sources: [{
-                                cols: st.sources[0].cols,
-                                source: st.sources[0].source,
-                                restricts: st.sources[0].restricts,
-                                groups: st.sources[0].groups,
-                                ordering: [newOrder].concat(st.sources[0].ordering),
-                                limits: st.sources[0].limits,
-                                distinct: st.sources[0].distinct
+                                ...sql,
+                                ordering: [newOrder].concat(sql.ordering)
                             }]
                         });
                     } else {
-                        const newSource: SqlSource = {
-                            type: "Product",
-                            sqls: st.sources
-                        };
                         return State.put({
                             ...st,
                             sources: [{
-                                cols: allCols(st.sources),
-                                source: newSource,
-                                restricts: [],
-                                groups: [],
-                                ordering: [newOrder],
-                                limits: null,
-                                distinct: false
+                                ...sql,
+                                ordering: [newOrder]
                             }]
                         });
                     }
@@ -427,40 +365,27 @@ export function distinct<s, a>(quer: Query<s, a>): Query<s, a> {
                     const [inner_st, res] = i;
                     return State.bind(
                         State.get(),
-                        st => {
-                            let sql: SQL;
-                            if (inner_st.sources.length === 1) {
-                                sql = {
-                                    cols: inner_st.sources[0].cols,
-                                    source: inner_st.sources[0].source,
-                                    restricts: inner_st.sources[0].restricts,
-                                    groups: inner_st.sources[0].groups,
-                                    ordering: inner_st.sources[0].ordering,
-                                    limits: inner_st.sources[0].limits,
-                                    distinct: true
-                                };
-                            } else {
-                                sql = {
-                                    cols: allCols(inner_st.sources),
-                                    source: {
-                                        type: "Product",
-                                        sqls: inner_st.sources
-                                    },
-                                    restricts: [],
-                                    groups: [],
-                                    ordering: [],
-                                    limits: null,
-                                    distinct: true
-                                };
-                            }
-                            return State.bind(
-                                State.put({
-                                    ...st,
-                                    sources: [sql]
-                                }),
-                                () => State.pure(res)
-                            );
-                        }
+                        st => State.bind(
+                            (
+                                inner_st.sources.length === 1
+                                    ? State.put({
+                                        ...st,
+                                        sources: [{
+                                            ...inner_st.sources[0],
+                                            distinct: true
+                                        }]
+                                    })
+                                    : State.put({
+                                        ...st,
+                                        sources: [sqlFrom(allCols(inner_st.sources), {
+                                            type: "Product",
+                                            sqls: inner_st.sources
+                                        })]
+                                    })
+                            ),
+                            () => State.pure(res)
+                        )
+
                     );
                 }
             )
@@ -612,18 +537,10 @@ function someJoin<s, a extends object, a2>(jointype: JoinType, check: any, q: Qu
                     st => {
                         const nameds = someColNames2(cs);
                         const left = state2sql(st);
-                        const right: SQL = {
-                            cols: cs.map(x => x[0]),
-                            source: {
-                                type: "Product",
-                                sqls: [state2sql(join_st)]
-                            },
-                            restricts: [],
-                            groups: [],
-                            ordering: [],
-                            limits: null,
-                            distinct: false
-                        };
+                        const right = sqlFrom(cs.map(x => x[0]), {
+                            type: "Product",
+                            sqls: [state2sql(join_st)]
+                        });
                         const on: Col<s, boolean> = check(toTup(nameds));
                         let outCols: SomeCol<SQL>[] = [];
                         for (const c of cs) {
@@ -641,25 +558,16 @@ function someJoin<s, a extends object, a2>(jointype: JoinType, check: any, q: Qu
                             }
                         }
                         outCols = outCols.concat(allCols([left]));
-                        const sql: SQL = {
-                            cols: outCols,
-                            source: {
-                                type: "Join",
-                                joinType: jointype,
-                                exp: colUnwrap(on),
-                                left: left,
-                                right: right
-                            },
-                            restricts: [],
-                            groups: [],
-                            ordering: [],
-                            limits: null,
-                            distinct: false
-                        };
                         return State.bind(
                             State.put({
                                 ...st,
-                                sources: [sql]
+                                sources: [sqlFrom(outCols, {
+                                    type: "Join",
+                                    joinType: jointype,
+                                    exp: colUnwrap(on),
+                                    left: left,
+                                    right: right
+                                })]
                             }),
                             () => State.pure(toTup(nameds))
                         );

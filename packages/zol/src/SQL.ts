@@ -58,6 +58,21 @@ export interface SQL {
     readonly distinct: boolean;
 }
 
+/**
+ * Build a plain SQL query with the given columns and source, with no filters, ordering, etc.
+ */
+export function sqlFrom(cs: SomeCol<SQL>[], src: SqlSource): SQL {
+    return {
+        cols: cs,
+        source: src,
+        restricts: [],
+        groups: [],
+        ordering: [],
+        limits: null,
+        distinct: false
+    };
+}
+
 export const enum Order {
     Asc,
     Desc
