@@ -2,10 +2,10 @@ import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-sid
 
 import * as test from "blue-tape";
 import { withTestDatabase } from "../../../../helper_framework/TestDb";
-import { e, ifThenElse, insertMany, matchNullable, nullCol, numberCol, Order, order, pg, query, select, textCol } from "../../src/zol";
+import { e, ifThenElse, insertMany, matchNull, nullCol, numberCol, Order, order, pg, query, select, textCol } from "../../src/zol";
 import { bookTable, BookTable, createBookTableSql } from "./Tables";
 
-test("matchNullable", t => withTestDatabase(async conn => {
+test("matchNull", t => withTestDatabase(async conn => {
     await pg.query_(conn, createBookTableSql);
 
     const vals: BookTable[] = [
@@ -34,7 +34,7 @@ test("matchNullable", t => withTestDatabase(async conn => {
     const actual = await query(conn, q => {
         const book = select(q, bookTable);
         const pagesResult =
-            matchNullable(book.numPages, textCol("Unknown pages"), p => ifThenElse(e(p, "<", numberCol(100)), textCol("Short Book"), textCol("Long Book")));
+            matchNull(book.numPages, textCol("Unknown pages"), p => ifThenElse(e(p, "<", numberCol(100)), textCol("Short Book"), textCol("Long Book")));
         order(q, book.serial, Order.Asc);
         return {
             title: book.title,
