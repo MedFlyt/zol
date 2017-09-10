@@ -41,7 +41,7 @@ export function query<t extends object>(conn: pg.Client, q: Query<any, MakeCols<
         // tslint:disable-next-line:no-non-null-assertion
         (<QueryMetricsImpl>Debug.lastQueryMetrics.get(conn)!).setStage1BeforeCompileQuery();
     }
-    const [n, sql] = compQuery(q);
+    const [n, sql] = compQuery(0, q);
     return query2(conn, n, sql);
 }
 

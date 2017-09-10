@@ -1,6 +1,6 @@
 import { Col, colUnwrap } from "./Column";
 import { SomeCol } from "./Exp";
-import { GenState } from "./GenState";
+import { GenState, Scope } from "./GenState";
 import { ConflictTarget, conflictTargetTableColumns } from "./OnConflict";
 import { MakeCols, MakeTable, toTup, Write } from "./Query";
 import { Query, runQueryM } from "./Query/Type";
@@ -15,8 +15,8 @@ import { ColName } from "./Types";
  *
  * Groups are ignored, as they are only used by `aggregate`.
  */
-export function compQuery<a>(q: Query<any, a>): [number, SQL] {
-    const [cs, st] = runQueryM(q);
+export function compQuery<a>(scope: Scope, q: Query<any, a>): [number, SQL] {
+    const [cs, st] = runQueryM(scope, q);
     return compQuery2(cs, st);
 }
 
@@ -38,6 +38,13 @@ export function compQuery2<a>(cs: a, st: GenState): [number, SQL] {
         limits: null
     };
     return [n, s];
+}
+
+let scopeSupply: Scope = 1;
+
+export function freshScope(): Scope {
+    scopeSupply++;
+    return scopeSupply - 1;
 }
 
 /**

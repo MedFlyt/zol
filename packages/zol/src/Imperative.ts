@@ -1,5 +1,5 @@
 import { booleanCol, Col, colUnwrap, colWrap, numberCol } from "./Column";
-import { compQuery2 } from "./Compile";
+import { compQuery2, freshScope } from "./Compile";
 import * as Debug from "./Debug";
 import { QueryMetricsImpl } from "./Frontend";
 import * as Frontend from "./Frontend";
@@ -25,7 +25,7 @@ export async function query<t extends object>(conn: pg.Client, q: (q: Q<{}>) => 
         // tslint:disable-next-line:no-non-null-assertion
         (<QueryMetricsImpl>Debug.lastQueryMetrics.get(conn)!).setStage1BeforeCompileQuery();
     }
-    const mutQ: MutQuery = [initState];
+    const mutQ: MutQuery = [initState(0)];
     const result = q(<any>mutQ);
     const [n, sql] = compQuery2(result, mutQ[0]);
     return Frontend.query2<t>(conn, n, sql);
@@ -140,7 +140,7 @@ export function groupBy<s, a>(q: Q<Inner<s>>, col: Col<Inner<s>, a>): Aggr<Inner
 }
 
 export function inQuery<s, a>(lhs: Col<s, a>, rhs: (q: Q<s>) => Col<s, a>): Col<s, boolean> {
-    const mutQ: MutQuery = [initState];
+    const mutQ: MutQuery = [initState(freshScope())];
     const result = rhs(<any>mutQ);
     const result2 = { val: result }; // Column name can be anything, just need to make sure there is only one
 
@@ -176,7 +176,7 @@ export function arbitrary<s>(): Col<s, Arbitrary> {
  *                 of the resulting rows in unimportant).
  */
 export function exists<s>(subquery: (q: Q<s>) => Col<s, Arbitrary>): Col<s, boolean> {
-    const mutQ: MutQuery = [initState];
+    const mutQ: MutQuery = [initState(freshScope())];
     const result = subquery(<any>mutQ);
     const result2 = { val: result }; // Column name can be anything, just need to make sure there is only one
 

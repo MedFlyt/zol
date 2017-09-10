@@ -1,4 +1,4 @@
-import { GenState, initState } from "../GenState";
+import { GenState, initState, Name, Scope, showName } from "../GenState";
 import * as State from "../StateMonad";
 import { ColName } from "../Types";
 
@@ -55,8 +55,8 @@ export class Query<s, a> implements PromiseLike<a> {
 /**
  * Run a query computation from an initial state.
  */
-export function runQueryM<s, a>(query: Query<s, a>): [a, GenState] {
-    return query.unQ.runState(initState);
+export function runQueryM<s, a>(scope: Scope, query: Query<s, a>): [a, GenState] {
+    return query.unQ.runState(initState(scope));
 }
 
 export function queryPure<s, a>(a: a): Query<s, a> {
@@ -83,7 +83,7 @@ export function isolate<s, a>(q: Query<s, a>): State.State<GenState, [GenState, 
         State.get(),
         st => State.bind(
             State.put({
-                ...initState,
+                ...initState(st.nameScope),
                 nameSupply: st.nameSupply
             }),
             () => State.bind(
@@ -106,7 +106,7 @@ export function isolate<s, a>(q: Query<s, a>): State.State<GenState, [GenState, 
 /**
  * Get a guaranteed unique identifier.
  */
-export function freshId(): State.State<GenState, number> {
+export function freshId(): State.State<GenState, Name> {
     return State.bind(
         State.get(),
         st => State.bind(
@@ -114,7 +114,10 @@ export function freshId(): State.State<GenState, number> {
                 ...st,
                 nameSupply: st.nameSupply + 1
             }),
-            () => State.pure(st.nameSupply)
+            () => State.pure({
+                scope: st.nameScope,
+                ident: st.nameSupply
+            })
         )
     );
 }
@@ -125,6 +128,6 @@ export function freshId(): State.State<GenState, number> {
 export function freshName(): State.State<GenState, ColName> {
     return State.bind(
         freshId(),
-        n => State.pure(ColName.wrap("tmp_" + n))
+        n => State.pure(ColName.wrap("tmp_" + showName(n)))
     );
 }
