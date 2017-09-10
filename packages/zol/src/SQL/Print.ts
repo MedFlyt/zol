@@ -415,7 +415,7 @@ function ppSql(sql: SQL): PP<string> {
                                     };
 
                                     return State.pure(
-                                        "SELECT " + result(cs2) +
+                                        "SELECT " + (sql.distinct ? "DISTINCT " : "") + result(cs2) +
                                         src2 +
                                         r2 +
                                         gs2 +

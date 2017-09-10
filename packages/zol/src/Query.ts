@@ -83,7 +83,8 @@ export function select<s, a extends object, b extends object>(table: Table<a, b>
                                 restricts: [],
                                 groups: [],
                                 ordering: [],
-                                limits: null
+                                limits: null,
+                                distinct: false
                             };
                             const st2: GenState = {
                                 ...st,
@@ -120,7 +121,8 @@ export function selectValues<s, a extends object>(vals: MakeCols<s, a>[]): Query
                             restricts: [],
                             groups: [],
                             ordering: [],
-                            limits: null
+                            limits: null,
+                            distinct: false
                         };
                         return State.bind(
                             State.put({
@@ -188,7 +190,8 @@ export function selectValues<s, a extends object>(vals: MakeCols<s, a>[]): Query
                                 restricts: [],
                                 groups: [],
                                 ordering: [],
-                                limits: null
+                                limits: null,
+                                distinct: false
                             };
                             return State.bind(
                                 State.put({
@@ -230,7 +233,8 @@ export function restrict<s>(expr: Col<s, boolean>): Query<s, void> {
                                 restricts: [colUnwrap(expr)].concat(st.sources[0].restricts),
                                 groups: st.sources[0].groups,
                                 ordering: st.sources[0].ordering,
-                                limits: st.sources[0].limits
+                                limits: st.sources[0].limits,
+                                distinct: st.sources[0].distinct
                             }]
                         };
                     } else {
@@ -243,7 +247,8 @@ export function restrict<s>(expr: Col<s, boolean>): Query<s, void> {
                             restricts: [colUnwrap(expr)],
                             groups: [],
                             ordering: [],
-                            limits: null
+                            limits: null,
+                            distinct: false
                         };
                         return {
                             ...st,
@@ -276,7 +281,8 @@ export function aggregate<s, a extends object>(q: Query<Inner<s>, AggrCols<s, a>
                                 restricts: [],
                                 groups: gst.groupCols,
                                 ordering: [],
-                                limits: null
+                                limits: null,
+                                distinct: false
                             };
                             return State.bind(
                                 State.modify(st => ({
@@ -333,7 +339,8 @@ export function limit<s, a extends object>(from: number, to: number, q: Query<In
                                     restricts: lim_st.sources[0].restricts,
                                     groups: lim_st.sources[0].groups,
                                     ordering: lim_st.sources[0].ordering,
-                                    limits: [from, to]
+                                    limits: [from, to],
+                                    distinct: lim_st.sources[0].distinct
                                 };
                             } else {
                                 sql = {
@@ -345,8 +352,8 @@ export function limit<s, a extends object>(from: number, to: number, q: Query<In
                                     restricts: [],
                                     groups: [],
                                     ordering: [],
-                                    limits: [from, to]
-
+                                    limits: [from, to],
+                                    distinct: false
                                 };
                             }
                             return State.bind(
@@ -384,7 +391,8 @@ export function order<s, a>(col: Col<s, a>, order: Order): Query<s, void> {
                                 restricts: st.sources[0].restricts,
                                 groups: st.sources[0].groups,
                                 ordering: [newOrder].concat(st.sources[0].ordering),
-                                limits: st.sources[0].limits
+                                limits: st.sources[0].limits,
+                                distinct: st.sources[0].distinct
                             }]
                         });
                     } else {
@@ -400,11 +408,62 @@ export function order<s, a>(col: Col<s, a>, order: Order): Query<s, void> {
                                 restricts: [],
                                 groups: [],
                                 ordering: [newOrder],
-                                limits: null
+                                limits: null,
+                                distinct: false
                             }]
                         });
                     }
                 })
+        );
+    });
+}
+
+export function distinct<s, a>(quer: Query<s, a>): Query<s, a> {
+    return new Query(resolve => {
+        resolve(
+            State.bind(
+                isolate(quer),
+                i => {
+                    const [inner_st, res] = i;
+                    return State.bind(
+                        State.get(),
+                        st => {
+                            let sql: SQL;
+                            if (inner_st.sources.length === 1) {
+                                sql = {
+                                    cols: inner_st.sources[0].cols,
+                                    source: inner_st.sources[0].source,
+                                    restricts: inner_st.sources[0].restricts,
+                                    groups: inner_st.sources[0].groups,
+                                    ordering: inner_st.sources[0].ordering,
+                                    limits: inner_st.sources[0].limits,
+                                    distinct: true
+                                };
+                            } else {
+                                sql = {
+                                    cols: allCols(inner_st.sources),
+                                    source: {
+                                        type: "Product",
+                                        sqls: inner_st.sources
+                                    },
+                                    restricts: [],
+                                    groups: [],
+                                    ordering: [],
+                                    limits: null,
+                                    distinct: true
+                                };
+                            }
+                            return State.bind(
+                                State.put({
+                                    ...st,
+                                    sources: [sql]
+                                }),
+                                () => State.pure(res)
+                            );
+                        }
+                    );
+                }
+            )
         );
     });
 }
@@ -562,7 +621,8 @@ function someJoin<s, a extends object, a2>(jointype: JoinType, check: any, q: Qu
                             restricts: [],
                             groups: [],
                             ordering: [],
-                            limits: null
+                            limits: null,
+                            distinct: false
                         };
                         const on: Col<s, boolean> = check(toTup(nameds));
                         let outCols: SomeCol<SQL>[] = [];
@@ -593,7 +653,8 @@ function someJoin<s, a extends object, a2>(jointype: JoinType, check: any, q: Qu
                             restricts: [],
                             groups: [],
                             ordering: [],
-                            limits: null
+                            limits: null,
+                            distinct: false
                         };
                         return State.bind(
                             State.put({

@@ -55,6 +55,7 @@ export interface SQL {
     readonly groups: SomeCol<SQL>[];
     readonly ordering: [Order, SomeCol<SQL>][];
     readonly limits: [number, number] | null;
+    readonly distinct: boolean;
 }
 
 export const enum Order {

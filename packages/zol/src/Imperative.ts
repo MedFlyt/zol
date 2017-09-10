@@ -210,6 +210,22 @@ export function order<s, a>(q: Q<s>, col: Col<s, a>, order: Order): void {
     return x;
 }
 
+export function distinct<s, a extends object>(q: Q<s>, query: (q: Q<s>) => MakeCols<s, a>): MakeCols<s, a> {
+    const mutQ: MutQuery = <any>q;
+    const qr = {
+        unQ: {
+            runState: (x: GenState): [a, GenState] => {
+                const mutQ2: MutQuery = [x];
+                const result = query(<any>mutQ2);
+                return [result, mutQ2[0]];
+            }
+        }
+    };
+    const [x, y] = m.distinct(<any>qr).unQ.runState(mutQ[0]);
+    mutQ[0] = y;
+    return <any>x;
+}
+
 /**
  * Similar to [[query]], but when you are certain that the query will always return
  * exactly 1 row.

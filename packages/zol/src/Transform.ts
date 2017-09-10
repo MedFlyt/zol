@@ -155,7 +155,8 @@ export function state2sql(g: GenState): SQL {
             restricts: g.staticRestricts,
             groups: [],
             ordering: [],
-            limits: null
+            limits: null,
+            distinct: false
         };
     }
 }

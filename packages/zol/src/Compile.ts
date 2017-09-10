@@ -35,7 +35,8 @@ export function compQuery2<a>(cs: a, st: GenState): [number, SQL] {
         restricts: [],
         groups: [],
         ordering: [],
-        limits: null
+        limits: null,
+        distinct: false
     };
     return [n, s];
 }
