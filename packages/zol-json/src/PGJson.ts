@@ -20,7 +20,7 @@ export class PGJson {
      * This is the PostgreSQL `->` operator
      */
     public static arrayElem<s>(lhs: Col<s, PGJson>, rhs: Col<s, number>): Col<s, PGJson | null> {
-        return Unsafe.unsafeBinOp("->", lhs, rhs, PGJson.parser);
+        return Unsafe.unsafeBinOp("->", lhs, Unsafe.unsafeCast(rhs, "INT", SqlType.intParser), PGJson.parser);
     }
 
     /**
@@ -38,7 +38,7 @@ export class PGJson {
      * This is the PostgreSQL `->>` operator
      */
     public static arrayElemAsText<s>(lhs: Col<s, PGJson>, rhs: Col<s, number>): Col<s, string | null> {
-        return Unsafe.unsafeBinOp("->>", lhs, rhs, SqlType.stringParser);
+        return Unsafe.unsafeBinOp("->>", lhs, Unsafe.unsafeCast(rhs, "INT", SqlType.intParser), SqlType.stringParser);
     }
 
     /**

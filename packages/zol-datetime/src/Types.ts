@@ -12,7 +12,7 @@ export function localDateTimeParser(val: string): LocalDateTime {
 }
 
 export function instantCol<s>(val: Instant): Col<s, Instant> {
-    return Unsafe.unsafeCast(<any>textCol(val.toString()), "TIMESTAMPTZ", instantParser);
+    return Unsafe.unsafeCast(<any>textCol(val.toString()), "TIMESTAMP", instantParser);
 }
 
 export function instantParser(val: string): Instant {
