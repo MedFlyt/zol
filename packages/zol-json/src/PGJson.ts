@@ -10,7 +10,7 @@ export class PGJson {
         };
     }
 
-    public static col<s>(json: object): Col<s, PGJson> {
+    public static col<s>(json: any): Col<s, PGJson> {
         return Unsafe.unsafeCast(textCol(JSON.stringify(json)), "JSONB", PGJson.parser);
     }
 
@@ -62,9 +62,7 @@ export class PGJson {
     /**
      * The actual JSON object
      */
-    public readonly data: {
-        [key: string]: any
-    };
+    public readonly data: any;
 
     protected dummy: PGJson;
 }
