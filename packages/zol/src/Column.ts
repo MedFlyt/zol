@@ -105,6 +105,6 @@ export function ifThenElse<s, a>(if_: Col<s, boolean>, then: Col<s, a>, else_: C
  * @param replacement This is the value that will be returned if the nullable column is NULL
  * @param f This function will be called if the nullable column is not null, and its result will be returned
  */
-export function matchNull<s, a, b>(nullable: Col<s, a | null>, replacement: Col<s, b>, f: <s2>(col: Col<s2, a>) => Col<s2, b>): Col<s, b> {
-    return ifThenElse(isNull(nullable), replacement, f(<any>nullable));
+export function matchNull<s, s2, a, b>(nullable: Col<s, a | null>, replacement: Col<s, b>, f: (col: Col<s2, a>) => Col<s2, b>): Col<s, b> {
+    return ifThenElse(isNull(nullable), replacement, <any>f(<any>nullable));
 }
