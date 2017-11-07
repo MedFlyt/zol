@@ -463,7 +463,8 @@ export function inQuery<s, a>(lhs: Col<s, a>, rhs: Query<s, Col<s, a>>): Col<s, 
     return <any>colWrap({
         type: "EInQuery",
         exp: colUnwrap(lhs),
-        sql: compQuery(freshScope(), q2)[1]
+        sql: compQuery(freshScope(), q2)[1],
+        parser: SqlType.booleanParser
     });
 }
 
@@ -587,8 +588,8 @@ function fromTup<a extends object>(c: MakeCols<any, a>): [SomeCol<SQL>, string, 
     for (const key of keys) {
         const col: Col<any, any> = c[key];
         const exp = colUnwrap(col);
-        if (!(exp.type === "ECol" || exp.type === "EAggrEx")) {
-            throw new Error("Expected ECol or EAggrEx, got: " + exp.type);
+        if (exp.type === "ETblCol") {
+            throw new Error("Unexpected exp type:: " + exp.type);
         }
         result.push([{
             type: "Some",

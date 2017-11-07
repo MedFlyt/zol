@@ -68,6 +68,7 @@ export namespace Exp {
         readonly op: string;
         readonly lhs: Exp<sql, a>;
         readonly rhs: Exp<sql, a>;
+        readonly parser: (val: string) => any;
     }
 
     export interface EUnOp<sql, a> {
@@ -82,6 +83,7 @@ export namespace Exp {
         readonly name: string;
         readonly lhs: Exp<sql, a>;
         readonly rhs: Exp<sql, a>;
+        readonly parser: (val: string) => any;
     }
 
     export interface EFun3<sql, a> {
@@ -90,12 +92,14 @@ export namespace Exp {
         readonly col1: Exp<sql, a>;
         readonly col2: Exp<sql, a>;
         readonly col3: Exp<sql, a>;
+        readonly parser: (val: string) => any;
     }
 
     export interface EFunN<sql, a> {
         readonly type: "EFunN";
         readonly name: string;
         readonly cols: Exp<sql, a>[];
+        readonly parser: (val: string) => any;
     }
 
     export interface ECast<sql, a> {
@@ -130,17 +134,20 @@ export namespace Exp {
         readonly type: "EInList";
         readonly exp: Exp<sql, a>;
         readonly exps: Exp<sql, a>[];
+        readonly parser: (val: string) => any;
     }
 
     export interface EInQuery<sql, a> {
         readonly type: "EInQuery";
         readonly exp: Exp<sql, a>;
         readonly sql: sql;
+        readonly parser: (val: string) => any;
     }
 
     export interface EExists<sql> {
         readonly type: "EExists";
         readonly sql: sql;
+        readonly parser: (val: string) => any;
     }
 }
 
