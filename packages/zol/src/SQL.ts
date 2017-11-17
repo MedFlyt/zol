@@ -74,6 +74,21 @@ export function sqlFrom(cs: SomeCol<SQL>[], src: SqlSource): SQL {
 }
 
 export const enum Order {
+    /**
+     * Equivalent to [[AscNullsLast]]
+     */
     Asc,
-    Desc
+
+    /**
+     * Equivalent to [[DescNullsFirst]]
+     */
+    Desc,
+
+    AscNullsLast,
+
+    DescNullsFirst,
+
+    AscNullsFirst,
+
+    DescNullsLast
 }

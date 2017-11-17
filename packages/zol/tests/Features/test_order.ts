@@ -2,7 +2,7 @@ import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-sid
 
 import * as test from "blue-tape";
 import { withTestDatabase } from "../../../../helper_framework/TestDb";
-import { defaultValue, insertMany, numberCol, order, Order, pg, query, select, textCol } from "../../src/zol";
+import { defaultValue, insertMany, nullCol, numberCol, order, Order, pg, query, select, selectValues, textCol } from "../../src/zol";
 import { createPersonTableSql, PersonTable, personTable } from "./Tables";
 
 test("order by simple", t => withTestDatabase(async conn => {
@@ -358,6 +358,86 @@ test("order by two fields3", t => withTestDatabase(async conn => {
             name: "B",
             age: 10
         }
+    ];
+
+    t.deepEqual(actual, expected);
+}));
+
+test("order by AscNullsFirst", t => withTestDatabase(async conn => {
+    const actual = await query(conn, q => {
+        const row = selectValues<{}, { val: string | null; }>(q, [
+            { val: textCol("a") },
+            { val: nullCol() },
+            { val: textCol("b") }
+        ]);
+        order(q, row.val, Order.AscNullsFirst);
+        return row;
+    });
+
+    const expected: typeof actual = [
+        { val: null },
+        { val: "a" },
+        { val: "b" }
+    ];
+
+    t.deepEqual(actual, expected);
+}));
+
+test("order by AscNullsLast", t => withTestDatabase(async conn => {
+    const actual = await query(conn, q => {
+        const row = selectValues<{}, { val: string | null; }>(q, [
+            { val: textCol("a") },
+            { val: nullCol() },
+            { val: textCol("b") }
+        ]);
+        order(q, row.val, Order.AscNullsLast);
+        return row;
+    });
+
+    const expected: typeof actual = [
+        { val: "a" },
+        { val: "b" },
+        { val: null }
+    ];
+
+    t.deepEqual(actual, expected);
+}));
+
+test("order by DescNullsFirst", t => withTestDatabase(async conn => {
+    const actual = await query(conn, q => {
+        const row = selectValues<{}, { val: string | null; }>(q, [
+            { val: textCol("a") },
+            { val: nullCol() },
+            { val: textCol("b") }
+        ]);
+        order(q, row.val, Order.DescNullsFirst);
+        return row;
+    });
+
+    const expected: typeof actual = [
+        { val: null },
+        { val: "b" },
+        { val: "a" }
+    ];
+
+    t.deepEqual(actual, expected);
+}));
+
+test("order by DescNullsLast", t => withTestDatabase(async conn => {
+    const actual = await query(conn, q => {
+        const row = selectValues<{}, { val: string | null; }>(q, [
+            { val: textCol("a") },
+            { val: nullCol() },
+            { val: textCol("b") }
+        ]);
+        order(q, row.val, Order.DescNullsLast);
+        return row;
+    });
+
+    const expected: typeof actual = [
+        { val: "b" },
+        { val: "a" },
+        { val: null }
     ];
 
     t.deepEqual(actual, expected);

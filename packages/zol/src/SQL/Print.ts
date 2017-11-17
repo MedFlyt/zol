@@ -558,9 +558,15 @@ function ppOrder(os: [Order, SomeCol<SQL>][]): PP<string> {
 function ppOrd(order: Order): string {
     switch (order) {
         case Order.Asc:
+        case Order.AscNullsLast:
             return "ASC";
         case Order.Desc:
+        case Order.DescNullsFirst:
             return "DESC";
+        case Order.AscNullsFirst:
+            return "ASC NULLS FIRST";
+        case Order.DescNullsLast:
+            return "DESC NULLS LAST";
         /* istanbul ignore next */
         default:
             return assertNever(order);
