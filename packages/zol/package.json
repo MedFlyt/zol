@@ -37,7 +37,7 @@
   },
   "homepage": "https://github.com/MedFlyt/zol#readme",
   "devDependencies": {
-    "rimraf": "2.6.1",
+    "rimraf": "2.6.2",
     "rollup": "0.45.2",
     "ts-node": "3.3.0",
     "tslint": "5.5.0",
@@ -45,7 +45,7 @@
     "typescript": "2.4.2"
   },
   "dependencies": {
-    "@types/pg": "^6.1.43",
-    "pg": "^7.0.2"
+    "@types/pg": "7.1.5",
+    "pg": "7.4.0"
   }
 }
