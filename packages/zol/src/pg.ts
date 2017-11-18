@@ -10,7 +10,8 @@ export namespace pg {
      *                   "postgres://myuser:mypassword@localhost:5432/dbname"
      */
     export function connectPg(connection: string): Promise<Client> {
-        const client = new pgLib.Client(connection);
+        // TODO Remove <any> cast when this PR is merged: <https://github.com/DefinitelyTyped/DefinitelyTyped/pull/21610>
+        const client = new pgLib.Client(<any>connection);
         return new Promise<Client>((resolve, reject) => {
             client.connect(err => {
                 if (<boolean>(<any>err)) {
