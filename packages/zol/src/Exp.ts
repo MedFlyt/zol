@@ -144,9 +144,9 @@ export namespace Exp {
         readonly parser: (val: string) => any;
     }
 
-    export interface EExists<sql> {
+    export interface EExists<sql2> {
         readonly type: "EExists";
-        readonly sql: sql;
+        readonly sql: sql2;
         readonly parser: (val: string) => any;
     }
 }

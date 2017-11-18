@@ -24,8 +24,8 @@ export function declareTable<Req extends object, Def extends object>(tableName: 
     for (const key of keys) {
         tableCols.push({
             propName: key,
-            name: ColName.wrap(columns[key][0]),
-            parser: columns[key][1]
+            name: ColName.wrap(columns[<any>key][0]),
+            parser: columns[<any>key][1]
         });
     }
     return <any>{
