@@ -235,7 +235,7 @@ export function aggregate<s, a extends object>(q: Query<Inner<s>, AggrCols<s, a>
                 is => {
                     const [gst, aggrs] = is;
                     return State.bind(
-                        State.mapM(x => State.bind(rename(x[0]), y => State.pure<GenState, [SomeCol<SQL>, string, (val: string) => any]>([y, x[1], x[2]])), fromTup(aggrs)),
+                        State.mapM(x => State.bind(rename(<any>x[0]), y => State.pure<GenState, [SomeCol<SQL>, string, (val: string) => any]>([<any>y, x[1], x[2]])), fromTup(<any>aggrs)),
                         (cs: [SomeCol<SQL>, string, (val: string) => any][]) => {
                             const sql: SQL = {
                                 ...sqlFrom(cs.map(x => x[0]), {
@@ -586,7 +586,7 @@ function fromTup<a extends object>(c: MakeCols<any, a>): [SomeCol<SQL>, string, 
     const keys = Object.keys(c);
     const result: [SomeCol<SQL>, string, (val: string) => any][] = [];
     for (const key of keys) {
-        const col: Col<any, any> = c[<any>key];
+        const col: Col<any, any> = (<any>c)[key];
         const exp = colUnwrap(col);
         if (exp.type === "ETblCol") {
             throw new Error("Unexpected exp type:: " + exp.type);
