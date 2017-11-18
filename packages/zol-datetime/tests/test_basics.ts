@@ -1,7 +1,7 @@
 import "../../../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
 
 import * as test from "blue-tape";
-import { Instant, LocalDateTime, ZonedDateTime, ZoneOffset } from "js-joda/dist/js-joda";
+import { Instant, LocalDateTime, ZonedDateTime, ZoneOffset } from "js-joda";
 import { defaultValue, insertReturning, numberCol, pg, query, restrictEq, select, textCol } from "zol";
 import { withTestDatabase } from "../../../helper_framework/TestDb";
 import { instantCol, localDateTimeCol, localDateTimeToInstant } from "../src/zol-datetime";

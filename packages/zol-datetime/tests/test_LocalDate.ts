@@ -1,7 +1,7 @@
 import "../../../helper_framework/boot"; // tslint:disable-line:no-import-side-effect
 
 import * as test from "blue-tape";
-import { LocalDate } from "js-joda/dist/js-joda";
+import { LocalDate } from "js-joda";
 import { query } from "zol";
 import { withTestDatabase } from "../../../helper_framework/TestDb";
 import { localDateCol } from "../src/zol-datetime";
