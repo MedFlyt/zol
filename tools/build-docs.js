@@ -67,7 +67,8 @@ function main() {
                 "--excludePrivate",
                 "--excludeExternals",
                 "--excludeNotExported",
-                "--out", args.outDir
+                "--out", args.outDir,
+                path.join(dirName, path.basename(args.inFile))
             ],
             { stdio: "" });
 
