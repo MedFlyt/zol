@@ -25,10 +25,6 @@ export function colUnwrap<s, a>(val: Col<s, a>): Exp<SQL, a> {
     return <any>val;
 }
 
-export type ManyCols<s> = object;
-
-export type Cols<s, a> = Col<s, a> | ManyCols<s>;
-
 export function liftC2<s, a, b, c>(f: (x: Exp<SQL, a>, y: Exp<SQL, b>) => Exp<SQL, c>): ((x: Col<s, a>, y: Col<s, b>) => Col<s, c>) {
     return (x: Col<s, a>, y: Col<s, b>): Col<s, c> => {
         return colWrap(f(colUnwrap(x), colUnwrap(y)));
