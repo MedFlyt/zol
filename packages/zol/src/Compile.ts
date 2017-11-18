@@ -72,7 +72,7 @@ export function finalCols<s, a>(cols: object): SomeCol<SQL>[] {
 
 export function compileInsert<a extends object, b extends object, c extends object>(tbl: Table<any, any>, rowValues: MakeTable<a, b>[], conflictTarget: ConflictTarget<a & b> | undefined, conflictAction: [(c: MakeCols<Write, a>) => Col<Write, boolean>, (c: MakeCols<Write, a>) => MakeTable<a, b>] | undefined, returning: (c: MakeCols<Write, a & b>) => MakeCols<Write, c>): [string, Param[]] {
     const names = tbl.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
-    const cs = <any>toTup(names);
+    const cs = <any>toTup(names); // tslint:disable-line:no-unnecessary-type-assertion
     const fs = rowValues.map(finalCols);
     const rs = finalCols(returning(cs));
 
@@ -116,7 +116,7 @@ export function compileUpdate<a extends object, b extends object, c extends obje
     if (returning === undefined) {
         return compUpdate(tbl.tableName, predicate, updated, []);
     } else {
-        const cs = <any>toTup(names);
+        const cs = <any>toTup(names); // tslint:disable-line:no-unnecessary-type-assertion
         const rs = finalCols(returning(cs));
         return compUpdate(tbl.tableName, predicate, updated, rs);
     }

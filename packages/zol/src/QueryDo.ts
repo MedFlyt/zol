@@ -1,7 +1,7 @@
 import { Query } from "./Query/Type";
 
 declare var global: any;
-(<any>global).Promise = Query;
+(<any>global).Promise = Query; // tslint:disable-line:no-unnecessary-type-assertion
 
 export function doQ<S, T>(f: () => Promise<T>): Query<S, T> {
     console.log("doQ start");

@@ -43,11 +43,19 @@ function runWithChunkedArgs(args, action) {
     }
 }
 
-function tsformat_files(files) {
+function tsformat_files(tsfmtConfig, files) {
     runWithChunkedArgs(files, function (chunked) {
         var p = childProcess.spawnSync(
             node_exe("tsfmt"),
-            ["-r"].concat(chunked),
+            [
+                "-r",
+                "--no-tsconfig",
+                "--no-tslint",
+                "--no-editorconfig",
+                "--no-vscode"
+            ]
+                .concat(tsfmtConfig ? ["--useTsfmt", "../../tsfmt.json"] : [])
+                .concat(chunked),
             { stdio: "" });
 
         if (p.error) {
@@ -69,7 +77,7 @@ function tslint_files(files) {
     });
 }
 
-function check_files(files, fix) {
+function check_files(files, fix, tsfmtConfig) {
     var foundErrors = false;
 
     var tmpobj = tmp.dirSync({ unsafeCleanup: true });
@@ -82,9 +90,7 @@ function check_files(files, fix) {
             fs.copySync(file, file_mirror(file));
         });
 
-        var p;
-
-        tsformat_files(files.map(file_mirror));
+        tsformat_files(tsfmtConfig, files.map(file_mirror));
         tslint_files(files.map(file_mirror));
 
         files.forEach(function (file) {
@@ -121,13 +127,14 @@ function check_files(files, fix) {
 
 function print_usage() {
     console.log("USAGE:");
-    console.log(process.argv0 + " " + process.argv[1] + " [--fix]");
+    console.log(process.argv0 + " " + process.argv[1] + " [--fix] [--tsfmt-config TSFMT_CFG] ...<glob-patterns>");
     process.exit(1);
 }
 
 function parse_args() {
     var fix = false;
     var patterns = [];
+    var tsfmtConfig = null;
     var i;
 
     if (process.argv.length === 2) {
@@ -137,6 +144,12 @@ function parse_args() {
     for (i = 2; i < process.argv.length; ++i) {
         if (process.argv[i] === "--fix") {
             fix = true;
+        } else if (process.argv[i] === "--tsfmt-config") {
+            if (process.argv.length < i + 2) {
+                print_usage();
+            }
+            tsfmtConfig = process.argv[i + 1];
+            ++i;
         } else {
             patterns.push(process.argv[i]);
         }
@@ -144,6 +157,7 @@ function parse_args() {
 
     return {
         fix: fix,
+        tsfmtConfig: tsfmtConfig,
         patterns: patterns
     }
 }
@@ -173,7 +187,7 @@ function main() {
             process.exit(1);
         }
 
-        var foundErrors = check_files(matches, args.fix);
+        var foundErrors = check_files(matches, args.fix, args.tsfmtConfig);
         if (foundErrors) {
             process.exit(1);
         }

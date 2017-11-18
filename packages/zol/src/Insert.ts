@@ -105,7 +105,7 @@ export async function insertManyReturning<Req extends object, Def extends object
 
 
     const names = table.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
-    const cs = <any>toTup(names);
+    const cs = <any>toTup(names); // tslint:disable-line:no-unnecessary-type-assertion
     const rs = finalCols(returning(cs));
 
     const rows = await runCustomQuery(conn, rs.map((r: any) => r.propName), rs.map((r: any) => r.parser), sqlText, pgParams);

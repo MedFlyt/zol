@@ -22,7 +22,7 @@ export const personTable = declareTable<PersonReq, PersonDef>("person", {
 });
 
 class StupidBenchmark extends QueryBenchmark {
-    constructor(private conn: pg.Client) {
+    public constructor(private conn: pg.Client) {
         super();
     }
 

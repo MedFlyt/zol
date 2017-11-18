@@ -34,7 +34,7 @@ export const personTable = declareTable<LargeReq, {}>("large", {
 });
 
 export class HugeResultsBenchmark extends QueryBenchmark {
-    constructor(private conn: pg.Client) {
+    public constructor(private conn: pg.Client) {
         super();
     }
 

@@ -18,10 +18,10 @@
     "src"
   ],
   "scripts": {
-    "lint": "tslint -c ../../tslint.json --type-check --project ./src/tsconfig.json -t codeFrame && tslint -c ../../tslint.json --type-check --project ./tests/tsconfig.json -t codeFrame",
+    "lint": "tslint -c ../../tslint.json --project ./src/tsconfig.json -t codeFrame && tslint -c ../../tslint.json --project ./tests/tsconfig.json -t codeFrame",
     "lint-fix": "tslint -c ../../tslint.json --format stylish --fix './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts'",
-    "style": "node ../../tools/ts-style.js './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts'",
-    "style-fix": "node ../../tools/ts-style.js './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts' --fix",
+    "style": "node ../../tools/ts-style.js --tsfmt-config ../../tsfmt.json './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts'",
+    "style-fix": "node ../../tools/ts-style.js --tsfmt-config ../../tsfmt.json './src/**/*.ts' './tests/**/*.ts' './benchmarks/**/*.ts' --fix",
     "prebuild": "rimraf dist",
     "build": "tsc --project src && rollup -c && ts-node ../../tools/dts-merge.ts ./build/types/zol-datetime.d.ts -o ./dist/types/zol-datetime.d.ts && node ../../tools/build-docs.js dist/types/zol-datetime.d.ts -o dist/docs",
     "build-tests": "tsc --project tests"
@@ -40,7 +40,7 @@
     "rimraf": "2.6.2",
     "rollup": "0.51.7",
     "ts-node": "3.3.0",
-    "tslint": "5.5.0",
+    "tslint": "5.8.0",
     "typescript-formatter": "7.0.0",
     "typescript": "2.4.2"
   },

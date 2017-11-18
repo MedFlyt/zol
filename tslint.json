@@ -25,7 +25,7 @@
         "no-string-literal": false,
         "no-switch-case-fall-through": true,
         "object-literal-key-quotes": [true, "consistent"],
-        "object-literal-shorthand": false,
+        "object-literal-shorthand": [true, "never"],
         "object-literal-sort-keys": false,
         "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
         "triple-equals": true,
@@ -36,7 +36,9 @@
             "check-operator",
             "check-module",
             "check-separator",
+            "check-rest-spread",
             "check-type",
+            "check-type-operator",
             "check-preblock"
         ],
 
@@ -55,8 +57,13 @@
         "no-reference-import": true,
         "no-irregular-whitespace": true,
         "switch-default": true, // <https://github.com/palantir/tslint/issues/3076>
-        "no-unnecessary-type-assertion": false, // TODO This is good, but tslint seems to flag some false positives
+        "no-unnecessary-type-assertion": true,
         "no-shadowed-variable": false, // TODO This is actually good but we use too many shadows
-        "unified-signatures": false // TODO Not sure how I really feel about this one
+        "unified-signatures": false, // TODO Not sure how I really feel about this one
+        "no-implicit-dependencies": false,
+        "no-submodule-imports": [true, "source-map-support/register"],
+        "no-duplicate-imports": false, // Remove this line when this is resolved: <https://github.com/palantir/tslint/issues/3418>
+        "member-access": [true, "check-accessor", "check-constructor", "check-parameter-property"],
+        "no-parameter-reassignment": true
     }
 }

@@ -83,11 +83,11 @@ async function createAgents(conn: pg.Client, talentAgencies: TalentAgencies): Pr
     const wesley = await createAgent(conn, talentAgencies.wayneEnterprises, "Wesley", "wesley@wayneenterprises.com");
 
     return {
-        victor,
-        valencia,
-        walton,
-        wanita,
-        wesley
+        victor: victor,
+        valencia: valencia,
+        walton: walton,
+        wanita: wanita,
+        wesley: wesley
     };
 }
 
@@ -99,11 +99,11 @@ async function createPerformers(conn: pg.Client): Promise<Performers> {
     const elvis = await createPerformer(conn, "Elvis", Sex.MALE, 175);
 
     return {
-        abe,
-        bernetta,
-        colin,
-        darlene,
-        elvis
+        abe: abe,
+        bernetta: bernetta,
+        colin: colin,
+        darlene: darlene,
+        elvis: elvis
     };
 }
 
@@ -181,9 +181,9 @@ async function insertInitialData(conn: pg.Client): Promise<Data> {
     await createAuditions(conn, performers, agents);
 
     return {
-        talentAgencies,
-        agents,
-        performers
+        talentAgencies: talentAgencies,
+        agents: agents,
+        performers: performers
     };
 }
 
