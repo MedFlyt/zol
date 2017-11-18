@@ -5,12 +5,12 @@ const camelCase = require("lodash.camelcase")
 const libraryName = "zol-math"
 
 export default {
-    entry: `build/src/${libraryName}.js`,
-    targets: [
-        { dest: pkg.main, moduleName: camelCase(libraryName), format: "umd" },
-        { dest: pkg.module, format: "es" }
+    input: `build/src/${libraryName}.js`,
+    output: [
+        { file: pkg.main, format: "umd", name: camelCase(libraryName) },
+        { file: pkg.module, format: "es" }
     ],
-    sourceMap: true,
+    sourcemap: true,
     // Indicate here external modules you don't wanna include in your bundle (i.e.: "lodash")
     external: [
         "zol"
