@@ -48,6 +48,10 @@ export function freshScope(): Scope {
     return scopeSupply - 1;
 }
 
+export function resetScope(): void {
+    scopeSupply = 1;
+}
+
 /**
  * @param cols object whose fields are all of type Col<s, a>
  */

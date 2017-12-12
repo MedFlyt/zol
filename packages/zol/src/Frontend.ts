@@ -1,5 +1,5 @@
 import { assertNever } from "./assertNever";
-import { compQuery } from "./Compile";
+import { compQuery, resetScope } from "./Compile";
 import { runCustomQuery } from "./CustomQuery";
 import * as Debug from "./Debug";
 import { pg } from "./pg";
@@ -41,6 +41,10 @@ export function query<t extends object>(conn: pg.Client, q: Query<any, MakeCols<
         // tslint:disable-next-line:no-non-null-assertion
         (<QueryMetricsImpl>Debug.lastQueryMetrics.get(conn)!).setStage1BeforeCompileQuery();
     }
+
+    // This ensures that the generated SQL will be the same for identical queries
+    resetScope();
+
     const [n, sql] = compQuery(0, q);
     return query2(conn, n, sql);
 }

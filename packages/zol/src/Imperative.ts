@@ -1,5 +1,5 @@
 import { booleanCol, Col, colUnwrap, colWrap, numberCol } from "./Column";
-import { compQuery2, freshScope } from "./Compile";
+import { compQuery2, freshScope, resetScope } from "./Compile";
 import * as Debug from "./Debug";
 import { QueryMetricsImpl } from "./Frontend";
 import * as Frontend from "./Frontend";
@@ -25,6 +25,10 @@ export async function query<t extends object>(conn: pg.Client, q: (q: Q<{}>) => 
         // tslint:disable-next-line:no-non-null-assertion
         (<QueryMetricsImpl>Debug.lastQueryMetrics.get(conn)!).setStage1BeforeCompileQuery();
     }
+
+    // This ensures that the generated SQL will be the same for identical queries
+    resetScope();
+
     const mutQ: MutQuery = [initState(0)];
     const result = q(<any>mutQ);
     const [n, sql] = compQuery2(result, mutQ[0]);
