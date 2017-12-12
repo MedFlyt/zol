@@ -36,7 +36,7 @@ test("instant simple", t => withTestDatabase(async conn => {
     await pg.query_(conn, createMeetingTableSql);
 
     const linkId = await createPerson(conn, "Link");
-    const meetingId = await createMeeting(conn, "Standup", Instant.ofEpochSecond(1501673200), linkId, LocalDateTime.of(2017, 08, 1, 10, 0), "America/New_York");
+    const meetingId = await createMeeting(conn, "Standup", Instant.ofEpochSecond(1501673200), linkId, LocalDateTime.of(2017, 8, 1, 10, 0), "America/New_York");
 
     const r1 = await query(conn, q => {
         const meeting = select(q, meetingTable);
@@ -53,7 +53,7 @@ test("local date time simple", t => withTestDatabase(async conn => {
     await pg.query_(conn, createMeetingTableSql);
 
     const linkId = await createPerson(conn, "Link");
-    const meetingId = await createMeeting(conn, "Standup", Instant.ofEpochSecond(1501673200), linkId, LocalDateTime.of(2017, 08, 1, 10, 0), "America/New_York");
+    const meetingId = await createMeeting(conn, "Standup", Instant.ofEpochSecond(1501673200), linkId, LocalDateTime.of(2017, 8, 1, 10, 0), "America/New_York");
 
     const r1 = await query(conn, q => {
         const meeting = select(q, meetingTable);
@@ -70,7 +70,7 @@ test("convert local date time to instant", t => withTestDatabase(async conn => {
     await pg.query_(conn, createMeetingTableSql);
 
     const linkId = await createPerson(conn, "Link");
-    const meetingId = await createMeeting(conn, "Standup", Instant.ofEpochSecond(1501673200), linkId, LocalDateTime.of(2017, 08, 1, 10, 0), "America/New_York");
+    const meetingId = await createMeeting(conn, "Standup", Instant.ofEpochSecond(1501673200), linkId, LocalDateTime.of(2017, 8, 1, 10, 0), "America/New_York");
 
     const r1 = await query(conn, q => {
         const meeting = select(q, meetingTable);
