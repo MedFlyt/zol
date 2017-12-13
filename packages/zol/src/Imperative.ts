@@ -19,7 +19,10 @@ export class Q<s> {
 // Single element (a simple box)
 type MutQuery = GenState[];
 
-export async function query<t extends object>(conn: pg.Client, q: (q: Q<{}>) => MakeCols<{}, t>): Promise<t[]> {
+/**
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
+ */
+export async function query<t extends object>(sqlTag: string | undefined, conn: pg.Client, q: (q: Q<{}>) => MakeCols<{}, t>): Promise<t[]> {
     if (Debug.enabled) {
         Debug.lastQueryMetrics.set(conn, new QueryMetricsImpl());
         // tslint:disable-next-line:no-non-null-assertion
@@ -32,7 +35,7 @@ export async function query<t extends object>(conn: pg.Client, q: (q: Q<{}>) => 
     const mutQ: MutQuery = [initState(0)];
     const result = q(<any>mutQ);
     const [n, sql] = compQuery2(result, mutQ[0]);
-    return Frontend.query2<t>(conn, n, sql);
+    return Frontend.query2<t>(sqlTag, conn, n, sql);
 }
 
 export function select<s, a extends object, b extends object>(q: Q<s>, table: Table<a, b>): MakeCols<s, a & b> {
@@ -235,9 +238,11 @@ export function distinct<s, a extends object>(q: Q<s>, query: (q: Q<s>) => MakeC
  * exactly 1 row.
  *
  * For example: COUNT(*) style queries
+ *
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
  */
-export async function queryOne<t extends object>(conn: pg.Client, q: (q: Q<{}>) => MakeCols<{}, t>): Promise<t> {
-    const rows = await query(conn, q);
+export async function queryOne<t extends object>(sqlTag: string | undefined, conn: pg.Client, q: (q: Q<{}>) => MakeCols<{}, t>): Promise<t> {
+    const rows = await query(sqlTag, conn, q);
     if (rows.length !== 1) {
         throw new Error(`Expected query to return 1 row, but got ${rows.length}`);
     }
@@ -250,9 +255,11 @@ export async function queryOne<t extends object>(conn: pg.Client, q: (q: Q<{}>) 
  * either 1 row or 0 rows.
  *
  * For example: queries that are restricted on some primary key
+ *
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
  */
-export async function queryOneOrNone<t extends object>(conn: pg.Client, q: (q: Q<{}>) => MakeCols<{}, t>): Promise<t | null> {
-    const rows = await query(conn, q);
+export async function queryOneOrNone<t extends object>(sqlTag: string | undefined, conn: pg.Client, q: (q: Q<{}>) => MakeCols<{}, t>): Promise<t | null> {
+    const rows = await query(sqlTag, conn, q);
     if (rows.length === 0) {
         return null;
     }

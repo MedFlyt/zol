@@ -35,7 +35,7 @@ export class QueryMetricsImpl extends Debug.Debug.QueryMetrics {
     }
 }
 
-export function query<t extends object>(conn: pg.Client, q: Query<any, MakeCols<any, t>>): Promise<t[]> {
+export function query<t extends object>(sqlTag: string | undefined, conn: pg.Client, q: Query<any, MakeCols<any, t>>): Promise<t[]> {
     if (Debug.enabled) {
         Debug.lastQueryMetrics.set(conn, new QueryMetricsImpl());
         // tslint:disable-next-line:no-non-null-assertion
@@ -46,10 +46,10 @@ export function query<t extends object>(conn: pg.Client, q: Query<any, MakeCols<
     resetScope();
 
     const [n, sql] = compQuery(0, q);
-    return query2(conn, n, sql);
+    return query2(sqlTag, conn, n, sql);
 }
 
-export async function query2<t extends object>(conn: pg.Client, _n: number, sql: SQL): Promise<t[]> {
+export async function query2<t extends object>(sqlTag: string | undefined, conn: pg.Client, _n: number, sql: SQL): Promise<t[]> {
     if (Debug.enabled) {
         // tslint:disable-next-line:no-non-null-assertion
         (<QueryMetricsImpl>Debug.lastQueryMetrics.get(conn)!).setStage2BeforeCompileSql();
@@ -65,7 +65,7 @@ export async function query2<t extends object>(conn: pg.Client, _n: number, sql:
         // tslint:disable-next-line:no-non-null-assertion
         (<QueryMetricsImpl>Debug.lastQueryMetrics.get(conn)!).setStage3BeforeRunQuery();
     }
-    const rows = await runCustomQuery(conn, sql.cols.map((s: any) => s.propName), sql.cols.map((s: any) => s.parser), sqlText, pgParams);
+    const rows = await runCustomQuery(conn, sql.cols.map((s: any) => s.propName), sql.cols.map((s: any) => s.parser), tagSql(sqlTag, sqlText), pgParams);
     if (Debug.enabled) {
         const m = Debug.lastQueryMetrics.get(conn);
         if (m !== undefined) {
@@ -82,6 +82,10 @@ export async function query2<t extends object>(conn: pg.Client, _n: number, sql:
         }
     }
     return rows;
+}
+
+export function tagSql(sqlTag: string | undefined, sqlText: string): string {
+    return (sqlTag !== undefined && sqlTag !== "") ? (`/* ${sqlTag} */ ${sqlText}`) : sqlText;
 }
 
 export function litToPgParam(lit: Lit): any {

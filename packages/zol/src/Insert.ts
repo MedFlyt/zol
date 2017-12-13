@@ -1,7 +1,7 @@
 import { Col } from "./Column";
 import { compileInsert, finalCols } from "./Compile";
 import { runCustomQuery } from "./CustomQuery";
-import { litToPgParam } from "./Frontend";
+import { litToPgParam, tagSql } from "./Frontend";
 import { ConflictTarget } from "./OnConflict";
 import { pg } from "./pg";
 import { MakeCols, MakeTable, toTup, Write } from "./Query";
@@ -10,9 +10,11 @@ import { ColName } from "./Types";
 
 /**
  * Insert a single row into a table, with a RETURNING clause
+ *
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
  */
-export async function insertReturning<Req extends object, Def extends object, Ret extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>, returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret> {
-    const inserted = await insertManyReturning(conn, table, [rowValues], returning);
+export async function insertReturning<Req extends object, Def extends object, Ret extends object>(sqlTag: string | undefined, conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>, returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret> {
+    const inserted = await insertManyReturning(sqlTag, conn, table, [rowValues], returning);
     /* istanbul ignore if */
     if (inserted.length !== 1) {
         throw new Error("The Impossible Happened. INSERT expected to return one row, but returned " + inserted.length);
@@ -23,15 +25,20 @@ export async function insertReturning<Req extends object, Def extends object, Re
 
 /**
  * Insert a single row into a table
+ *
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
  */
-export async function insert<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>): Promise<void> {
-    await insertMany(conn, table, [rowValues]);
+export async function insert<Req extends object, Def extends object>(sqlTag: string | undefined, conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>): Promise<void> {
+    await insertMany(sqlTag, conn, table, [rowValues]);
 }
 
 /**
  * Insert a single row into a table, with an ON CONFLICT DO NOTHING clause, and with a RETURNING clause
+ *
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
  */
-export async function insertOnConflictDoNothingReturning<Req extends object, Def extends object, Ret extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>, conflictTarget: ConflictTarget<Req & Def>, returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret> {
+export async function insertOnConflictDoNothingReturning<Req extends object, Def extends object, Ret extends object>(sqlTag: string | undefined, conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>, conflictTarget: ConflictTarget<Req & Def>, returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret> {
+    sqlTag; // tslint:disable-line:no-unused-expression
     conn; // tslint:disable-line:no-unused-expression
     table; // tslint:disable-line:no-unused-expression
     rowValues; // tslint:disable-line:no-unused-expression
@@ -43,17 +50,21 @@ export async function insertOnConflictDoNothingReturning<Req extends object, Def
 /**
  * Insert a single row into a table, with an ON CONFLICT DO NOTHING clause
  *
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
  * @return true if the row was inserted
  */
-export async function insertOnConflictDoNothing<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>, conflictTarget: ConflictTarget<Req & Def>): Promise<boolean> {
-    const numRows = await insertManyOnConflictDoNothing(conn, table, [rowValues], conflictTarget);
+export async function insertOnConflictDoNothing<Req extends object, Def extends object>(sqlTag: string | undefined, conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>, conflictTarget: ConflictTarget<Req & Def>): Promise<boolean> {
+    const numRows = await insertManyOnConflictDoNothing(sqlTag, conn, table, [rowValues], conflictTarget);
     return numRows === 1;
 }
 
 /**
  * Insert a single row into a table, with an ON CONFLICT DO UPDATE clause, and with a RETURNING clause
+ *
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
  */
-export async function insertOnConflictDoUpdateReturning<Req extends object, Def extends object, Ret extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>, conflictTarget: ConflictTarget<Req & Def>, onConflictPred: (c: MakeCols<Write, Req & Def>) => Col<Write, boolean>, onConflictUpdate: (c: MakeCols<Write, Req & Def>/* TODO: , excluded: MakeCols<Write, Req & Def>*/) => MakeTable<Req, Def>, returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret> {
+export async function insertOnConflictDoUpdateReturning<Req extends object, Def extends object, Ret extends object>(sqlTag: string | undefined, conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>, conflictTarget: ConflictTarget<Req & Def>, onConflictPred: (c: MakeCols<Write, Req & Def>) => Col<Write, boolean>, onConflictUpdate: (c: MakeCols<Write, Req & Def>/* TODO: , excluded: MakeCols<Write, Req & Def>*/) => MakeTable<Req, Def>, returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret> {
+    sqlTag; // tslint:disable-line:no-unused-expression
     conn; // tslint:disable-line:no-unused-expression
     table; // tslint:disable-line:no-unused-expression
     rowValues; // tslint:disable-line:no-unused-expression
@@ -67,6 +78,7 @@ export async function insertOnConflictDoUpdateReturning<Req extends object, Def 
 /**
  * Insert a single row into a table, with an ON CONFLICT DO UPDATE clause
  *
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
  * @param onConflictPred Which rows should be updated (the WHERE clause)
  *
  * @param onConflictUpdate A function that returns the new values for a row.
@@ -82,8 +94,8 @@ export async function insertOnConflictDoUpdateReturning<Req extends object, Def 
  *
  *         If a conflicting row already existed and was not updated returns false.
  */
-export async function insertOnConflictDoUpdate<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>, conflictTarget: ConflictTarget<Req & Def>, onConflictPred: (c: MakeCols<Write, Req & Def>) => Col<Write, boolean>, onConflictUpdate: (c: MakeCols<Write, Req & Def>/* TODO: , excluded: MakeCols<Write, Req & Def>*/) => MakeTable<Req, Def>): Promise<boolean> {
-    const numRows = await insertManyOnConflictDoUpdate(conn, table, [rowValues], conflictTarget, onConflictPred, onConflictUpdate);
+export async function insertOnConflictDoUpdate<Req extends object, Def extends object>(sqlTag: string | undefined, conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>, conflictTarget: ConflictTarget<Req & Def>, onConflictPred: (c: MakeCols<Write, Req & Def>) => Col<Write, boolean>, onConflictUpdate: (c: MakeCols<Write, Req & Def>/* TODO: , excluded: MakeCols<Write, Req & Def>*/) => MakeTable<Req, Def>): Promise<boolean> {
+    const numRows = await insertManyOnConflictDoUpdate(sqlTag, conn, table, [rowValues], conflictTarget, onConflictPred, onConflictUpdate);
     return numRows === 1;
 }
 
@@ -93,8 +105,10 @@ export async function insertOnConflictDoUpdate<Req extends object, Def extends o
 
 /**
  * Insert multiple rows into a table, with a RETURNING clause
+ *
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
  */
-export async function insertManyReturning<Req extends object, Def extends object, Ret extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret[]> {
+export async function insertManyReturning<Req extends object, Def extends object, Ret extends object>(sqlTag: string | undefined, conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret[]> {
     if (rowValues.length === 0) {
         return [];
     }
@@ -108,14 +122,16 @@ export async function insertManyReturning<Req extends object, Def extends object
     const cs = <any>toTup(names); // tslint:disable-line:no-unnecessary-type-assertion
     const rs = finalCols(returning(cs));
 
-    const rows = await runCustomQuery(conn, rs.map((r: any) => r.propName), rs.map((r: any) => r.parser), sqlText, pgParams);
+    const rows = await runCustomQuery(conn, rs.map((r: any) => r.propName), rs.map((r: any) => r.parser), tagSql(sqlTag, sqlText), pgParams);
     return rows;
 }
 
 /**
  * Insert multiple rows into a table
+ *
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
  */
-export async function insertMany<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[]): Promise<void> {
+export async function insertMany<Req extends object, Def extends object>(sqlTag: string | undefined, conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[]): Promise<void> {
     if (rowValues.length === 0) {
         return;
     }
@@ -124,13 +140,16 @@ export async function insertMany<Req extends object, Def extends object>(conn: p
 
     const pgParams = params.map(x => litToPgParam(x.param));
 
-    await pg.query(conn, sqlText, pgParams);
+    await pg.query(conn, tagSql(sqlTag, sqlText), pgParams);
 }
 
 /**
  * Insert multiple rows into a table, with an ON CONFLICT DO NOTHING clause, and with a RETURNING clause
+ *
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
  */
-export async function insertManyOnConflictDoNothingReturning<Req extends object, Def extends object, Ret extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>, returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret[]> {
+export async function insertManyOnConflictDoNothingReturning<Req extends object, Def extends object, Ret extends object>(sqlTag: string | undefined, conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>, returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret[]> {
+    sqlTag; // tslint:disable-line:no-unused-expression
     conn; // tslint:disable-line:no-unused-expression
     table; // tslint:disable-line:no-unused-expression
     rowValues; // tslint:disable-line:no-unused-expression
@@ -144,7 +163,7 @@ export async function insertManyOnConflictDoNothingReturning<Req extends object,
  *
  * @return The number of rows inserted
  */
-export async function insertManyOnConflictDoNothing<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>): Promise<number> {
+export async function insertManyOnConflictDoNothing<Req extends object, Def extends object>(sqlTag: string | undefined, conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>): Promise<number> {
     if (rowValues.length === 0) {
         return 0;
     }
@@ -153,14 +172,17 @@ export async function insertManyOnConflictDoNothing<Req extends object, Def exte
 
     const pgParams = params.map(x => litToPgParam(x.param));
 
-    const result = await pg.query(conn, sqlText, pgParams);
+    const result = await pg.query(conn, tagSql(sqlTag, sqlText), pgParams);
     return result.rowCount;
 }
 
 /**
  * Insert multiple rows into a table, with an ON CONFLICT DO UPDATE clause, and with a RETURNING clause
+ *
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
  */
-export async function insertManyOnConflictDoUpdateReturning<Req extends object, Def extends object, Ret extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>, onConflictPred: (c: MakeCols<Write, Req & Def>) => Col<Write, boolean>, onConflictUpdate: (c: MakeCols<Write, Req & Def>/* TODO: , excluded: MakeCols<Write, Req & Def>*/) => MakeTable<Req, Def>, returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret[]> {
+export async function insertManyOnConflictDoUpdateReturning<Req extends object, Def extends object, Ret extends object>(sqlTag: string | undefined, conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>, onConflictPred: (c: MakeCols<Write, Req & Def>) => Col<Write, boolean>, onConflictUpdate: (c: MakeCols<Write, Req & Def>/* TODO: , excluded: MakeCols<Write, Req & Def>*/) => MakeTable<Req, Def>, returning: (c: MakeCols<Write, Req & Def>) => MakeCols<Write, Ret>): Promise<Ret[]> {
+    sqlTag; // tslint:disable-line:no-unused-expression
     conn; // tslint:disable-line:no-unused-expression
     table; // tslint:disable-line:no-unused-expression
     rowValues; // tslint:disable-line:no-unused-expression
@@ -174,6 +196,7 @@ export async function insertManyOnConflictDoUpdateReturning<Req extends object, 
 /**
  * Insert multiple rows into a table, with an ON CONFLICT DO UPDATE clause
  *
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
  * @param onConflictPred Which rows should be updated (the WHERE clause)
  *
  * @param onConflictUpdate A function that returns the new values for a row.
@@ -185,7 +208,7 @@ export async function insertManyOnConflictDoUpdateReturning<Req extends object, 
  *
  * @return The number of newly inserted rows + the number of updated rows
  */
-export async function insertManyOnConflictDoUpdate<Req extends object, Def extends object>(conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>, onConflictPred: (c: MakeCols<Write, Req & Def>) => Col<Write, boolean>, onConflictUpdate: (c: MakeCols<Write, Req & Def>/* TODO: , excluded: MakeCols<Write, Req & Def> */) => MakeTable<Req, Def>): Promise<number> {
+export async function insertManyOnConflictDoUpdate<Req extends object, Def extends object>(sqlTag: string | undefined, conn: pg.Client, table: Table<Req, Def>, rowValues: MakeTable<Req, Def>[], conflictTarget: ConflictTarget<Req & Def>, onConflictPred: (c: MakeCols<Write, Req & Def>) => Col<Write, boolean>, onConflictUpdate: (c: MakeCols<Write, Req & Def>/* TODO: , excluded: MakeCols<Write, Req & Def> */) => MakeTable<Req, Def>): Promise<number> {
     if (rowValues.length === 0) {
         return 0;
     }
@@ -194,6 +217,6 @@ export async function insertManyOnConflictDoUpdate<Req extends object, Def exten
 
     const pgParams = params.map(x => litToPgParam(x.param));
 
-    const result = await pg.query(conn, sqlText, pgParams);
+    const result = await pg.query(conn, tagSql(sqlTag, sqlText), pgParams);
     return result.rowCount;
 }
