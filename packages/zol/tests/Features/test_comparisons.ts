@@ -5,7 +5,7 @@ import { withTestDatabase } from "../../../../helper_framework/TestDb";
 import { e, query, textCol } from "../../src/zol";
 
 test("comparison equal", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: e(textCol("a"), "=", textCol("b"))
         };
@@ -17,7 +17,7 @@ test("comparison equal", t => withTestDatabase(async conn => {
         }
     ];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: e(textCol("a"), "=", textCol("a"))
         };
@@ -33,7 +33,7 @@ test("comparison equal", t => withTestDatabase(async conn => {
 }));
 
 test("comparison not equal", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: e(textCol("a"), "!=", textCol("b"))
         };
@@ -45,7 +45,7 @@ test("comparison not equal", t => withTestDatabase(async conn => {
         }
     ];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: e(textCol("a"), "!=", textCol("a"))
         };
@@ -61,7 +61,7 @@ test("comparison not equal", t => withTestDatabase(async conn => {
 }));
 
 test("comparison greater than", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: e(textCol("a"), ">", textCol("b"))
         };
@@ -73,7 +73,7 @@ test("comparison greater than", t => withTestDatabase(async conn => {
         }
     ];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: e(textCol("b"), ">", textCol("a"))
         };
@@ -85,7 +85,7 @@ test("comparison greater than", t => withTestDatabase(async conn => {
         }
     ];
 
-    const r3 = await query(conn, _q => {
+    const r3 = await query("", conn, _q => {
         return {
             val: e(textCol("a"), ">", textCol("a"))
         };
@@ -101,7 +101,7 @@ test("comparison greater than", t => withTestDatabase(async conn => {
 }));
 
 test("comparison less than", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: e(textCol("a"), "<", textCol("b"))
         };
@@ -113,7 +113,7 @@ test("comparison less than", t => withTestDatabase(async conn => {
         }
     ];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: e(textCol("b"), "<", textCol("a"))
         };
@@ -125,7 +125,7 @@ test("comparison less than", t => withTestDatabase(async conn => {
         }
     ];
 
-    const r3 = await query(conn, _q => {
+    const r3 = await query("", conn, _q => {
         return {
             val: e(textCol("a"), "<", textCol("a"))
         };
@@ -141,7 +141,7 @@ test("comparison less than", t => withTestDatabase(async conn => {
 }));
 
 test("comparison greater than equal", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: e(textCol("a"), ">=", textCol("b"))
         };
@@ -153,7 +153,7 @@ test("comparison greater than equal", t => withTestDatabase(async conn => {
         }
     ];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: e(textCol("b"), ">=", textCol("a"))
         };
@@ -165,7 +165,7 @@ test("comparison greater than equal", t => withTestDatabase(async conn => {
         }
     ];
 
-    const r3 = await query(conn, _q => {
+    const r3 = await query("", conn, _q => {
         return {
             val: e(textCol("a"), ">=", textCol("a"))
         };
@@ -181,7 +181,7 @@ test("comparison greater than equal", t => withTestDatabase(async conn => {
 }));
 
 test("comparison less than equal", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: e(textCol("a"), "<=", textCol("b"))
         };
@@ -193,7 +193,7 @@ test("comparison less than equal", t => withTestDatabase(async conn => {
         }
     ];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: e(textCol("b"), "<=", textCol("a"))
         };
@@ -205,7 +205,7 @@ test("comparison less than equal", t => withTestDatabase(async conn => {
         }
     ];
 
-    const r3 = await query(conn, _q => {
+    const r3 = await query("", conn, _q => {
         return {
             val: e(textCol("a"), "<=", textCol("a"))
         };

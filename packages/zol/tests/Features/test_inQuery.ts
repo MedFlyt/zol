@@ -36,7 +36,7 @@ test("inQuery simple", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, personVals);
+    await insertMany("", conn, personTable, personVals);
 
     const addressVals: AddressTable[] = [
         {
@@ -53,9 +53,9 @@ test("inQuery simple", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, addressTable, addressVals);
+    await insertMany("", conn, addressTable, addressVals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
         restrict(q, inQuery(person.name, q => {
             const address = select(q, addressTable);
@@ -103,7 +103,7 @@ test("inQuery renaming", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, personVals);
+    await insertMany("", conn, personTable, personVals);
 
     const addressVals: AddressTable[] = [
         {
@@ -120,9 +120,9 @@ test("inQuery renaming", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, addressTable, addressVals);
+    await insertMany("", conn, addressTable, addressVals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
         restrict(q, inQuery(intCol(1), q => {
             const person2 = select(q, personTable);

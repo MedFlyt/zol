@@ -14,12 +14,12 @@ test("insert select simple", t => withTestDatabase(async conn => {
         age: numberCol(20)
     };
 
-    await insertReturning(conn, personTable, vals,
+    await insertReturning("", conn, personTable, vals,
         row => ({
             id: row.id
         }));
 
-    const r1 = await query(conn, q => {
+    const r1 = await query("", conn, q => {
         const person = select(q, personTable);
         return {
             name: person.name,
@@ -46,7 +46,7 @@ test.skip("insert returning empty", _t => withTestDatabase(async conn => {
         age: numberCol(20)
     };
 
-    await insertReturning(conn, personTable, vals, () => ({}));
+    await insertReturning("", conn, personTable, vals, () => ({}));
 }));
 
 test("insert book simple", t => withTestDatabase(async conn => {
@@ -59,9 +59,9 @@ test("insert book simple", t => withTestDatabase(async conn => {
         title: textCol("A book")
     };
 
-    await insert(conn, bookTable, vals);
+    await insert("", conn, bookTable, vals);
 
-    const actual = await query(conn, q => select(q, bookTable));
+    const actual = await query("", conn, q => select(q, bookTable));
 
     const expected: typeof actual = [{
         author: "X",
@@ -83,9 +83,9 @@ test("insert book default values", t => withTestDatabase(async conn => {
         title: textCol("A book")
     };
 
-    await insert(conn, bookTable, vals);
+    await insert("", conn, bookTable, vals);
 
-    const actual = await query(conn, q => select(q, bookTable));
+    const actual = await query("", conn, q => select(q, bookTable));
 
     const expected: typeof actual = [{
         author: bookDefaultAuthor,
@@ -107,7 +107,7 @@ test("insert book default values returning", t => withTestDatabase(async conn =>
         title: textCol("A book")
     };
 
-    const returned = await insertReturning(conn, bookTable, vals, row => ({
+    const returned = await insertReturning("", conn, bookTable, vals, row => ({
         author: row.author,
         numPages: row.numPages
     }));
@@ -119,7 +119,7 @@ test("insert book default values returning", t => withTestDatabase(async conn =>
 
     t.deepEqual(returned, expected_returned);
 
-    const actual = await query(conn, q => select(q, bookTable));
+    const actual = await query("", conn, q => select(q, bookTable));
 
     const expected: typeof actual = [{
         author: bookDefaultAuthor,
@@ -149,7 +149,7 @@ test("insert many book default values returning", t => withTestDatabase(async co
         }
     ];
 
-    const returned = await insertManyReturning(conn, bookTable, vals, row => ({
+    const returned = await insertManyReturning("", conn, bookTable, vals, row => ({
         author: row.author,
         numPages: row.numPages
     }));
@@ -167,7 +167,7 @@ test("insert many book default values returning", t => withTestDatabase(async co
 
     t.deepEqual(returned, expected_returned);
 
-    const actual = await query(conn, q => select(q, bookTable));
+    const actual = await query("", conn, q => select(q, bookTable));
 
     const expected: typeof actual = [
         {
@@ -205,10 +205,10 @@ test("insert on conflict", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, bookTable, vals);
+    await insertMany("", conn, bookTable, vals);
 
     {
-        const rows = await query(conn, q => {
+        const rows = await query("", conn, q => {
             const book = select(q, bookTable);
             order(q, book.serial, Order.Asc);
             return book;
@@ -229,11 +229,11 @@ test("insert on conflict", t => withTestDatabase(async conn => {
         title: textCol("Dup")
     };
 
-    const inserted1 = await insertOnConflictDoNothing(conn, bookTable, vals2, ConflictTarget.tableColumns(["serial"]));
+    const inserted1 = await insertOnConflictDoNothing("", conn, bookTable, vals2, ConflictTarget.tableColumns(["serial"]));
     t.deepEqual(inserted1, false);
 
     {
-        const rows = await query(conn, q => {
+        const rows = await query("", conn, q => {
             const book = select(q, bookTable);
             order(q, book.serial, Order.Asc);
             return book;
@@ -254,11 +254,11 @@ test("insert on conflict", t => withTestDatabase(async conn => {
         title: textCol("Dup")
     };
 
-    const inserted2 = await insertOnConflictDoNothing(conn, bookTable, vals3, ConflictTarget.tableColumns(["serial"]));
+    const inserted2 = await insertOnConflictDoNothing("", conn, bookTable, vals3, ConflictTarget.tableColumns(["serial"]));
     t.deepEqual(inserted2, true);
 
     {
-        const rows = await query(conn, q => {
+        const rows = await query("", conn, q => {
             const book = select(q, bookTable);
             order(q, book.serial, Order.Asc);
             return book;
@@ -292,10 +292,10 @@ test("insert on conflict do update", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, bookTable, vals);
+    await insertMany("", conn, bookTable, vals);
 
     {
-        const rows = await query(conn, q => {
+        const rows = await query("", conn, q => {
             const book = select(q, bookTable);
             order(q, book.serial, Order.Asc);
             return book;
@@ -316,7 +316,7 @@ test("insert on conflict do update", t => withTestDatabase(async conn => {
         title: textCol("Dup")
     };
 
-    const inserted2 = await insertOnConflictDoUpdate(conn,
+    const inserted2 = await insertOnConflictDoUpdate("", conn,
         bookTable,
         vals2,
         ConflictTarget.tableColumns(["serial"]),
@@ -332,7 +332,7 @@ test("insert on conflict do update", t => withTestDatabase(async conn => {
     t.deepEqual(inserted2, true);
 
     {
-        const rows = await query(conn, q => {
+        const rows = await query("", conn, q => {
             const book = select(q, bookTable);
             order(q, book.serial, Order.Asc);
             return book;
@@ -353,7 +353,7 @@ test("insertManyReturning empty insert", t => withTestDatabase(async conn => {
 
     const vals: BookTable[] = [];
 
-    const actual = await insertManyReturning(conn, bookTable, vals, row => ({
+    const actual = await insertManyReturning("", conn, bookTable, vals, row => ({
         author: row.author,
         numPages: row.numPages
     }));
@@ -368,7 +368,7 @@ test("insertMany empty insert", t => withTestDatabase(async conn => {
 
     const vals: BookTable[] = [];
 
-    await insertMany(conn, bookTable, vals);
+    await insertMany("", conn, bookTable, vals);
 
     t.assert(true);
 }));
@@ -378,7 +378,7 @@ test("insertManyOnConflictDoNothing empty insert", t => withTestDatabase(async c
 
     const vals: BookTable[] = [];
 
-    await insertManyOnConflictDoNothing(conn, bookTable, vals, ConflictTarget.tableColumns(["serial"]));
+    await insertManyOnConflictDoNothing("", conn, bookTable, vals, ConflictTarget.tableColumns(["serial"]));
 
     t.assert(true);
 }));

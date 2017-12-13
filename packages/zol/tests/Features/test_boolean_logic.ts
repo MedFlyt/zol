@@ -6,7 +6,7 @@ import { booleanCol } from "../../src/Column";
 import { e, not, query } from "../../src/zol";
 
 test("not expression", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: not(booleanCol(true))
         };
@@ -18,7 +18,7 @@ test("not expression", t => withTestDatabase(async conn => {
         }
     ];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: not(booleanCol(false))
         };
@@ -34,7 +34,7 @@ test("not expression", t => withTestDatabase(async conn => {
 }));
 
 test("boolean and", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: e(booleanCol(true), "AND", booleanCol(true))
         };
@@ -42,7 +42,7 @@ test("boolean and", t => withTestDatabase(async conn => {
 
     const expected_r1: typeof r1 = [{ val: true }];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: e(booleanCol(true), "AND", booleanCol(false))
         };
@@ -50,7 +50,7 @@ test("boolean and", t => withTestDatabase(async conn => {
 
     const expected_r2: typeof r2 = [{ val: false }];
 
-    const r3 = await query(conn, _q => {
+    const r3 = await query("", conn, _q => {
         return {
             val: e(booleanCol(false), "AND", booleanCol(true))
         };
@@ -58,7 +58,7 @@ test("boolean and", t => withTestDatabase(async conn => {
 
     const expected_r3: typeof r3 = [{ val: false }];
 
-    const r4 = await query(conn, _q => {
+    const r4 = await query("", conn, _q => {
         return {
             val: e(booleanCol(false), "AND", booleanCol(false))
         };
@@ -70,7 +70,7 @@ test("boolean and", t => withTestDatabase(async conn => {
 }));
 
 test("boolean or", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: e(booleanCol(true), "OR", booleanCol(true))
         };
@@ -78,7 +78,7 @@ test("boolean or", t => withTestDatabase(async conn => {
 
     const expected_r1: typeof r1 = [{ val: true }];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: e(booleanCol(true), "OR", booleanCol(false))
         };
@@ -86,7 +86,7 @@ test("boolean or", t => withTestDatabase(async conn => {
 
     const expected_r2: typeof r2 = [{ val: true }];
 
-    const r3 = await query(conn, _q => {
+    const r3 = await query("", conn, _q => {
         return {
             val: e(booleanCol(false), "OR", booleanCol(true))
         };
@@ -94,7 +94,7 @@ test("boolean or", t => withTestDatabase(async conn => {
 
     const expected_r3: typeof r3 = [{ val: true }];
 
-    const r4 = await query(conn, _q => {
+    const r4 = await query("", conn, _q => {
         return {
             val: e(booleanCol(false), "OR", booleanCol(false))
         };

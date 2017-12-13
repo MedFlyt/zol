@@ -32,7 +32,7 @@ test("aggregate simple", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, personVals);
+    await insertMany("", conn, personTable, personVals);
 
     const addressVals: AddressTable[] = [
         {
@@ -49,9 +49,9 @@ test("aggregate simple", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, addressTable, addressVals);
+    await insertMany("", conn, addressTable, addressVals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
         const aggr = aggregate(q, q => {
             const address = select(q, addressTable);
@@ -103,9 +103,9 @@ test("aggregate sum", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, personVals);
+    await insertMany("", conn, personTable, personVals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const aggr = aggregate(q, q => {
             const person = select(q, personTable);
             return {
@@ -150,9 +150,9 @@ test("aggregate avg", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, personVals);
+    await insertMany("", conn, personTable, personVals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const aggr = aggregate(q, q => {
             const person = select(q, personTable);
             return {
@@ -197,9 +197,9 @@ test("aggregate min", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, personVals);
+    await insertMany("", conn, personTable, personVals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const aggr = aggregate(q, q => {
             const person = select(q, personTable);
             return {
@@ -244,9 +244,9 @@ test("aggregate max", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, personVals);
+    await insertMany("", conn, personTable, personVals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const aggr = aggregate(q, q => {
             const person = select(q, personTable);
             return {
@@ -292,7 +292,7 @@ test("multiple aggregates", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, personVals);
+    await insertMany("", conn, personTable, personVals);
 
     const addressVals: AddressTable[] = [
         {
@@ -309,9 +309,9 @@ test("multiple aggregates", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, addressTable, addressVals);
+    await insertMany("", conn, addressTable, addressVals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
 
         const aggr = aggregate(q, q => {

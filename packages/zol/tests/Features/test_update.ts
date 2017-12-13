@@ -14,12 +14,12 @@ test("update simple", t => withTestDatabase(async conn => {
         age: numberCol(20)
     };
 
-    const inserted = await insertReturning(conn, personTable, vals,
+    const inserted = await insertReturning("", conn, personTable, vals,
         row => ({
             id: row.id
         }));
 
-    const numUpdated = await update(conn, personTable,
+    const numUpdated = await update("", conn, personTable,
         row => e(row.id, "=", numberCol(inserted.id)),
         row => {
             const result: PersonTable = {
@@ -32,7 +32,7 @@ test("update simple", t => withTestDatabase(async conn => {
 
     t.deepEqual(numUpdated, 1);
 
-    const r1 = await query(conn, q => {
+    const r1 = await query("", conn, q => {
         const person = select(q, personTable);
         return {
             name: person.name,
@@ -68,9 +68,9 @@ test("update default", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, bookTable, vals);
+    await insertMany("", conn, bookTable, vals);
 
-    await update(conn, bookTable,
+    await update("", conn, bookTable,
         row => e(row.title, "=", textCol("Another book")),
         row => {
             const result: BookTable = {
@@ -82,7 +82,7 @@ test("update default", t => withTestDatabase(async conn => {
         }
     );
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const book = select(q, bookTable);
         order(q, book.serial, Order.Asc);
         return book;
@@ -114,9 +114,9 @@ test("update returning", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, bookTable, vals);
+    await insertMany("", conn, bookTable, vals);
 
-    const returned = await updateReturning(conn, bookTable,
+    const returned = await updateReturning("", conn, bookTable,
         row => e(row.title, "=", textCol("Another book")),
         row => {
             const result: BookTable = {
@@ -135,7 +135,7 @@ test("update returning", t => withTestDatabase(async conn => {
 
     t.deepEqual(returned, expected_returned);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const book = select(q, bookTable);
         order(q, book.serial, Order.Asc);
         return book;
@@ -158,12 +158,12 @@ test("update empty", t => withTestDatabase(async conn => {
         age: numberCol(20)
     };
 
-    const inserted = await insertReturning(conn, personTable, vals,
+    const inserted = await insertReturning("", conn, personTable, vals,
         row => ({
             id: row.id
         }));
 
-    const numUpdated = await update(conn, personTable,
+    const numUpdated = await update("", conn, personTable,
         row => e(row.id, "=", numberCol(inserted.id)),
         row => {
             const result: PersonTable = {
@@ -175,7 +175,7 @@ test("update empty", t => withTestDatabase(async conn => {
 
     t.deepEqual(numUpdated, 1);
 
-    const r1 = await query(conn, q => {
+    const r1 = await query("", conn, q => {
         const person = select(q, personTable);
         return {
             name: person.name,

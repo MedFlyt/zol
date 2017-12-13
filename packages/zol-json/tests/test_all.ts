@@ -10,7 +10,7 @@ function intCol<s>(val: number): Col<s, number> {
 }
 
 test("json obj field", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: PGJson.objFieldAsText(Unsafe.unsafeCast(PGJson.col({ a: 1, b: 2 }), "JSONB", PGJson.parser), textCol("a"))
         };
@@ -26,7 +26,7 @@ test("json obj field", t => withTestDatabase(async conn => {
 }));
 
 test("jsobBuild", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: PGJson.buildObject([
                 {
@@ -65,7 +65,7 @@ test("jsobBuild", t => withTestDatabase(async conn => {
 
 
 test("arrayElemAsText", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const fruit = selectValues(q, [
             { name: textCol("foo"), vals: PGJson.col(["a", { foo: "bar", blah: "quz" }]) }
         ]);
@@ -88,7 +88,7 @@ test("arrayElemAsText", t => withTestDatabase(async conn => {
 }));
 
 test("arrayElem", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const fruit = selectValues(q, [
             { name: textCol("foo"), vals: PGJson.col(["a", { foo: "bar", blah: "quz" }]) }
         ]);

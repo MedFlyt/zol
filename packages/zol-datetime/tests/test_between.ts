@@ -12,7 +12,7 @@ test("between instants long time span", t => withTestDatabase(async conn => {
     const actuals: number[] = [];
     const expecteds: number[] = [];
     for (let i = 0; i < 63072000; i += increment) {
-        const actual = await query(conn, _q => ({
+        const actual = await query("", conn, _q => ({
             val: durationBetween(instantCol(Instant.ofEpochSecond(startEpoch)), instantCol(Instant.ofEpochSecond(startEpoch + i)))
         }));
 
@@ -29,7 +29,7 @@ test("between instants short time spans", t => withTestDatabase(async conn => {
     const actuals: number[] = [];
     const expecteds: number[] = [];
     for (let i = 0; i < 3600; i += increment) {
-        const actual = await query(conn, _q => ({
+        const actual = await query("", conn, _q => ({
             val: durationBetween(instantCol(Instant.ofEpochSecond(startEpoch)), instantCol(Instant.ofEpochSecond(startEpoch + i)))
         }));
 
@@ -47,7 +47,7 @@ test("between instants future short time spans", t => withTestDatabase(async con
     const actuals: number[] = [];
     const expecteds: number[] = [];
     for (let i = 0; i < 3600; i += increment) {
-        const actual = await query(conn, _q => ({
+        const actual = await query("", conn, _q => ({
             val: durationBetween(instantCol(Instant.ofEpochSecond(startEpoch)), instantCol(Instant.ofEpochSecond(startEpoch + delta + i)))
         }));
 
@@ -64,7 +64,7 @@ test("between instants millis", t => withTestDatabase(async conn => {
     const actuals: [number, number][] = [];
     const expecteds: [number, number][] = [];
     for (let i = 0; i < 10000; i += increment) {
-        const actual = await query(conn, _q => ({
+        const actual = await query("", conn, _q => ({
             val: durationBetween(instantCol(Instant.ofEpochMilli(startEpoch)), instantCol(Instant.ofEpochMilli(startEpoch + i)))
         }));
 
@@ -81,7 +81,7 @@ test("negative between instants long time span", t => withTestDatabase(async con
     const actuals: number[] = [];
     const expecteds: number[] = [];
     for (let i = 0; i < 63072000; i += increment) {
-        const actual = await query(conn, _q => ({
+        const actual = await query("", conn, _q => ({
             val: durationBetween(instantCol(Instant.ofEpochSecond(startEpoch + i)), instantCol(Instant.ofEpochSecond(startEpoch)))
         }));
 
@@ -98,7 +98,7 @@ test("negative between instants short time spans", t => withTestDatabase(async c
     const actuals: number[] = [];
     const expecteds: number[] = [];
     for (let i = 0; i < 3600; i += increment) {
-        const actual = await query(conn, _q => ({
+        const actual = await query("", conn, _q => ({
             val: durationBetween(instantCol(Instant.ofEpochSecond(startEpoch + i)), instantCol(Instant.ofEpochSecond(startEpoch)))
         }));
 
@@ -116,7 +116,7 @@ test("negative between instants future short time spans", t => withTestDatabase(
     const actuals: number[] = [];
     const expecteds: number[] = [];
     for (let i = 0; i < 3600; i += increment) {
-        const actual = await query(conn, _q => ({
+        const actual = await query("", conn, _q => ({
             val: durationBetween(instantCol(Instant.ofEpochSecond(startEpoch + delta + i)), instantCol(Instant.ofEpochSecond(startEpoch)))
         }));
 
@@ -133,7 +133,7 @@ test("negative between instants millis", t => withTestDatabase(async conn => {
     const actuals: [number, number][] = [];
     const expecteds: [number, number][] = [];
     for (let i = 0; i < 10000; i += increment) {
-        const actual = await query(conn, _q => ({
+        const actual = await query("", conn, _q => ({
             val: durationBetween(instantCol(Instant.ofEpochMilli(startEpoch + i)), instantCol(Instant.ofEpochMilli(startEpoch)))
         }));
 

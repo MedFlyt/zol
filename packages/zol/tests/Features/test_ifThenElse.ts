@@ -6,7 +6,7 @@ import { defaultValue, e, ifThenElse, insertMany, numberCol, Order, order, pg, q
 import { createPersonTableSql, PersonTable, personTable } from "./Tables";
 
 test("ifThenElse simple 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         return {
             val: ifThenElse(e(textCol("A"), "<", textCol("B")), textCol("thenCondition"), textCol("elseCondition"))
         };
@@ -18,7 +18,7 @@ test("ifThenElse simple 1", t => withTestDatabase(async conn => {
 }));
 
 test("ifThenElse simple 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         return {
             val: ifThenElse(e(textCol("A"), ">", textCol("B")), textCol("thenCondition"), textCol("elseCondition"))
         };
@@ -55,9 +55,9 @@ test("ifThenElse nested", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, personVals);
+    await insertMany("", conn, personTable, personVals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
         const ageGroup =
             ifThenElse(e(person.age, "<", numberCol(18)), textCol("Child"),

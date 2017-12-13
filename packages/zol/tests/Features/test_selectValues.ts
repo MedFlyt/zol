@@ -5,7 +5,7 @@ import { withTestDatabase } from "../../../../helper_framework/TestDb";
 import { booleanCol, e, order, Order, query, selectValues, textCol } from "../../src/zol";
 
 test("selectValues 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const fruit = selectValues(q, [
             { name: textCol("apple"), color: textCol("red"), tasty: booleanCol(true) },
             { name: textCol("orange"), color: textCol("orange"), tasty: booleanCol(true) },
@@ -25,7 +25,7 @@ test("selectValues 1", t => withTestDatabase(async conn => {
 }));
 
 test("selectValues 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const fruit = selectValues(q, [
             { name: textCol("apple"), color: textCol("red"), tasty: booleanCol(true) },
             { name: textCol("orange"), color: textCol("orange"), tasty: booleanCol(true) },
@@ -58,7 +58,7 @@ test("selectValues 2", t => withTestDatabase(async conn => {
 }));
 
 test("selectValues 3", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         return selectValues(q, [
             { name: e(textCol("app"), "||", textCol("le")) }
         ]);
@@ -72,7 +72,7 @@ test("selectValues 3", t => withTestDatabase(async conn => {
 }));
 
 test("selectValues empty", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         return selectValues(q, []);
     });
 

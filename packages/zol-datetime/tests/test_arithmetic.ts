@@ -7,7 +7,7 @@ import { withTestDatabase } from "../../../helper_framework/TestDb";
 import { durationBetween, durationCol, durationDivide, durationMinus, durationMultiply, durationPlus, expandTolocalDateTime, instantAdd, instantCol, instantSubtract, localDateAdd, localDateAddDays, localDateCol, localDateSubtract, localDateSubtractDays, localDateTimeAdd, localDateTimeCol, localDateTimeSubtract, localTimeAdd, localTimeCol, localTimeSubtract, periodBetween, periodCol, truncateToLocalDate } from "../src/zol-datetime";
 
 test("instantAdd 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(100)))
     }));
 
@@ -15,7 +15,7 @@ test("instantAdd 1", t => withTestDatabase(async conn => {
 }));
 
 test("instantAdd 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(1000)))
     }));
 
@@ -23,7 +23,7 @@ test("instantAdd 2", t => withTestDatabase(async conn => {
 }));
 
 test("instantAdd 3", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(10000)))
     }));
 
@@ -31,7 +31,7 @@ test("instantAdd 3", t => withTestDatabase(async conn => {
 }));
 
 test("instantAdd 4", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(100000)))
     }));
 
@@ -39,7 +39,7 @@ test("instantAdd 4", t => withTestDatabase(async conn => {
 }));
 
 test("instantAdd 5", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(1000000)))
     }));
 
@@ -47,7 +47,7 @@ test("instantAdd 5", t => withTestDatabase(async conn => {
 }));
 
 test("instantAdd 6", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(10000000)))
     }));
 
@@ -55,7 +55,7 @@ test("instantAdd 6", t => withTestDatabase(async conn => {
 }));
 
 test("instantAdd 7", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(100000000)))
     }));
 
@@ -63,7 +63,7 @@ test("instantAdd 7", t => withTestDatabase(async conn => {
 }));
 
 test("instantAdd negative 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(-100)))
     }));
 
@@ -71,7 +71,7 @@ test("instantAdd negative 1", t => withTestDatabase(async conn => {
 }));
 
 test("instantAdd negative 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofDays(1).plusSeconds(1).negated()))
     }));
 
@@ -79,7 +79,7 @@ test("instantAdd negative 2", t => withTestDatabase(async conn => {
 }));
 
 test("instantSubtract 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantSubtract(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(100)))
     }));
 
@@ -87,7 +87,7 @@ test("instantSubtract 1", t => withTestDatabase(async conn => {
 }));
 
 test("instantSubtract 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantSubtract(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(1000)))
     }));
 
@@ -95,7 +95,7 @@ test("instantSubtract 2", t => withTestDatabase(async conn => {
 }));
 
 test("instantSubtract 3", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantSubtract(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(10000)))
     }));
 
@@ -103,7 +103,7 @@ test("instantSubtract 3", t => withTestDatabase(async conn => {
 }));
 
 test("instantSubtract 4", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantSubtract(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(100000)))
     }));
 
@@ -111,7 +111,7 @@ test("instantSubtract 4", t => withTestDatabase(async conn => {
 }));
 
 test("instantSubtract 5", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantSubtract(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(1000000)))
     }));
 
@@ -119,7 +119,7 @@ test("instantSubtract 5", t => withTestDatabase(async conn => {
 }));
 
 test("instantSubtract 6", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantSubtract(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(10000000)))
     }));
 
@@ -127,7 +127,7 @@ test("instantSubtract 6", t => withTestDatabase(async conn => {
 }));
 
 test("instantSubtract 7", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantSubtract(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(100000000)))
     }));
 
@@ -135,7 +135,7 @@ test("instantSubtract 7", t => withTestDatabase(async conn => {
 }));
 
 test("instantSubtract negative 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantSubtract(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofSeconds(-100)))
     }));
 
@@ -143,7 +143,7 @@ test("instantSubtract negative 1", t => withTestDatabase(async conn => {
 }));
 
 test("instantSubtract negative 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantSubtract(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(Duration.ofDays(1).plusSeconds(1).negated()))
     }));
 
@@ -151,7 +151,7 @@ test("instantSubtract negative 2", t => withTestDatabase(async conn => {
 }));
 
 test("durationPlus 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         const duration = durationPlus(durationCol(Duration.ofSeconds(100)), durationCol(Duration.ofSeconds(100)));
         return {
             val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), duration)
@@ -162,7 +162,7 @@ test("durationPlus 1", t => withTestDatabase(async conn => {
 }));
 
 test("durationPlus 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         const duration = durationPlus(durationCol(Duration.ofDays(1)), durationCol(Duration.ofSeconds(1)));
         return {
             val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), duration)
@@ -173,7 +173,7 @@ test("durationPlus 2", t => withTestDatabase(async conn => {
 }));
 
 test("durationPlus 3", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         const duration = durationPlus(durationCol(Duration.ofDays(1)), durationCol(Duration.ofSeconds(1).negated()));
         return {
             val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), duration)
@@ -184,7 +184,7 @@ test("durationPlus 3", t => withTestDatabase(async conn => {
 }));
 
 test("durationPlus 3", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         const duration = durationPlus(durationCol(Duration.ofDays(2)), durationCol(Duration.ofHours(2).negated()));
         return {
             val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), duration)
@@ -195,7 +195,7 @@ test("durationPlus 3", t => withTestDatabase(async conn => {
 }));
 
 test("durationMinus 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         const duration = durationMinus(durationCol(Duration.ofSeconds(100)), durationCol(Duration.ofSeconds(100)));
         return {
             val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), duration)
@@ -206,7 +206,7 @@ test("durationMinus 1", t => withTestDatabase(async conn => {
 }));
 
 test("durationMinus 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         const duration = durationMinus(durationCol(Duration.ofDays(1)), durationCol(Duration.ofSeconds(1)));
         return {
             val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), duration)
@@ -217,7 +217,7 @@ test("durationMinus 2", t => withTestDatabase(async conn => {
 }));
 
 test("durationMinus 3", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         const duration = durationMinus(durationCol(Duration.ofDays(1)), durationCol(Duration.ofSeconds(1).negated()));
         return {
             val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), duration)
@@ -228,7 +228,7 @@ test("durationMinus 3", t => withTestDatabase(async conn => {
 }));
 
 test("durationMinus 3", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         const duration = durationMinus(durationCol(Duration.ofDays(2)), durationCol(Duration.ofHours(2).negated()));
         return {
             val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), duration)
@@ -239,7 +239,7 @@ test("durationMinus 3", t => withTestDatabase(async conn => {
 }));
 
 test("durationMultiply", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         const duration = durationMultiply(durationCol(Duration.ofDays(2).plusSeconds(2)), numberCol(3));
         return {
             val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), duration)
@@ -250,7 +250,7 @@ test("durationMultiply", t => withTestDatabase(async conn => {
 }));
 
 test("durationDivide", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         return {
             val: durationDivide(durationCol(Duration.ofHours(1)), numberCol(1.5))
         };
@@ -260,13 +260,13 @@ test("durationDivide", t => withTestDatabase(async conn => {
 }));
 
 test("duration sneaky 1", t => withTestDatabase(async conn => {
-    const r = await query(conn, _q => ({
+    const r = await query("", conn, _q => ({
         val: durationBetween(instantCol(Instant.ofEpochSecond(1490140800)), instantCol(Instant.ofEpochSecond(1490227200)))
     }));
 
     const duration = r[0].val;
 
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(duration))
     }));
 
@@ -274,13 +274,13 @@ test("duration sneaky 1", t => withTestDatabase(async conn => {
 }));
 
 test("duration sneaky 2", t => withTestDatabase(async conn => {
-    const r = await query(conn, _q => ({
+    const r = await query("", conn, _q => ({
         val: durationMinus(durationBetween(instantCol(Instant.ofEpochSecond(1490140800)), instantCol(Instant.ofEpochSecond(1490227200))), durationCol(Duration.ofHours(1)))
     }));
 
     const duration = r[0].val;
 
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: instantAdd(instantCol(Instant.ofEpochSecond(1490238000)), durationCol(duration))
     }));
 
@@ -288,7 +288,7 @@ test("duration sneaky 2", t => withTestDatabase(async conn => {
 }));
 
 test("localDateTimeAdd 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localDateTimeAdd(localDateTimeCol(LocalDateTime.of(2017, 2, 20, 10, 0, 0)), durationCol(Duration.ofHours(3)))
     }));
 
@@ -296,7 +296,7 @@ test("localDateTimeAdd 1", t => withTestDatabase(async conn => {
 }));
 
 test("localDateTimeSubtract 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localDateTimeSubtract(localDateTimeCol(LocalDateTime.of(2017, 2, 20, 10, 0, 0)), durationCol(Duration.ofHours(3)))
     }));
 
@@ -304,7 +304,7 @@ test("localDateTimeSubtract 1", t => withTestDatabase(async conn => {
 }));
 
 test("localDateTimeAdd 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localDateTimeAdd(localDateTimeCol(LocalDateTime.of(2017, 2, 20, 10, 0, 0)), periodCol(Period.of(0, 1, 0)))
     }));
 
@@ -312,7 +312,7 @@ test("localDateTimeAdd 2", t => withTestDatabase(async conn => {
 }));
 
 test("localDateTimeSubtract 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localDateTimeSubtract(localDateTimeCol(LocalDateTime.of(2017, 2, 20, 10, 0, 0)), periodCol(Period.of(0, 1, 0)))
     }));
 
@@ -320,7 +320,7 @@ test("localDateTimeSubtract 2", t => withTestDatabase(async conn => {
 }));
 
 test("truncateToLocalDate", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: truncateToLocalDate(localDateTimeCol(LocalDateTime.of(2017, 2, 20, 10, 0, 0)))
     }));
 
@@ -328,7 +328,7 @@ test("truncateToLocalDate", t => withTestDatabase(async conn => {
 }));
 
 test("expandTolocalDateTime", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: expandTolocalDateTime(localDateCol(LocalDate.of(2017, 2, 20)))
     }));
 
@@ -338,7 +338,7 @@ test("expandTolocalDateTime", t => withTestDatabase(async conn => {
 }));
 
 test("localDateAddDays", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localDateAddDays(localDateCol(LocalDate.of(2017, 2, 20)), numberCol(20))
     }));
 
@@ -346,7 +346,7 @@ test("localDateAddDays", t => withTestDatabase(async conn => {
 }));
 
 test("localDateSubtractDays", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localDateSubtractDays(localDateCol(LocalDate.of(2017, 2, 20)), numberCol(20))
     }));
 
@@ -354,7 +354,7 @@ test("localDateSubtractDays", t => withTestDatabase(async conn => {
 }));
 
 test("localDateAdd 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localDateAdd(localDateCol(LocalDate.of(2017, 2, 20)), periodCol(Period.of(0, 1, 0)))
     }));
 
@@ -362,7 +362,7 @@ test("localDateAdd 1", t => withTestDatabase(async conn => {
 }));
 
 test("localDateAdd 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localDateAdd(localDateCol(LocalDate.of(2017, 2, 20)), periodCol(Period.of(1, 0, 0)))
     }));
 
@@ -370,7 +370,7 @@ test("localDateAdd 2", t => withTestDatabase(async conn => {
 }));
 
 test("localDateSubtract 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localDateSubtract(localDateCol(LocalDate.of(2017, 2, 20)), periodCol(Period.of(0, 1, 0)))
     }));
 
@@ -378,7 +378,7 @@ test("localDateSubtract 1", t => withTestDatabase(async conn => {
 }));
 
 test("localDateSubtract 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localDateSubtract(localDateCol(LocalDate.of(2017, 2, 20)), periodCol(Period.of(1, 0, 0)))
     }));
 
@@ -386,7 +386,7 @@ test("localDateSubtract 2", t => withTestDatabase(async conn => {
 }));
 
 test("localTimeAdd 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localTimeAdd(localTimeCol(LocalTime.of(13, 30, 57)), durationCol(Duration.ofHours(6).plusSeconds(7)))
     }));
 
@@ -394,7 +394,7 @@ test("localTimeAdd 1", t => withTestDatabase(async conn => {
 }));
 
 test("localTimeSubtract 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localTimeSubtract(localTimeCol(LocalTime.of(13, 30, 57)), durationCol(Duration.ofHours(6).plusSeconds(7)))
     }));
 
@@ -402,7 +402,7 @@ test("localTimeSubtract 1", t => withTestDatabase(async conn => {
 }));
 
 test("localTimeAdd 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localTimeAdd(localTimeCol(LocalTime.of(13, 30, 57)), durationCol(Duration.ofHours(20).plusSeconds(7)))
     }));
 
@@ -410,7 +410,7 @@ test("localTimeAdd 2", t => withTestDatabase(async conn => {
 }));
 
 test("localTimeSubtract 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localTimeSubtract(localTimeCol(LocalTime.of(13, 30, 57)), durationCol(Duration.ofHours(14).plusSeconds(7)))
     }));
 
@@ -418,7 +418,7 @@ test("localTimeSubtract 2", t => withTestDatabase(async conn => {
 }));
 
 test("periodBetween 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: periodBetween(localDateCol(LocalDate.of(2017, 2, 20)), localDateCol(LocalDate.of(2017, 3, 20)))
     }));
 
@@ -428,7 +428,7 @@ test("periodBetween 1", t => withTestDatabase(async conn => {
 }));
 
 test("periodBetween 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: periodBetween(localDateCol(LocalDate.of(2017, 2, 20)), localDateCol(LocalDate.of(2018, 4, 23)))
     }));
 
@@ -438,7 +438,7 @@ test("periodBetween 2", t => withTestDatabase(async conn => {
 }));
 
 test("periodBetween 3", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: periodBetween(localDateCol(LocalDate.of(2017, 1, 1)), localDateCol(LocalDate.of(2000, 1, 1)))
     }));
 

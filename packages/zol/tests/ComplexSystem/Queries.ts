@@ -10,7 +10,7 @@ export async function createPerson(conn: pg.Client, name: string): Promise<Perso
         name: textCol(name)
     };
 
-    const inserted = await insertReturning(conn,
+    const inserted = await insertReturning("", conn,
         personTable,
         values,
         row => ({ id: row.id }));
@@ -28,7 +28,7 @@ export async function createAgent(conn: pg.Client, talentAgencyId: TalentAgencyI
         email: email !== null ? textCol(email) : nullCol()
     };
 
-    const inserted = await insertReturning(conn,
+    const inserted = await insertReturning("", conn,
         agentTable,
         values,
         row => ({ id: row.id })
@@ -47,7 +47,7 @@ export async function createPerformer(conn: pg.Client, name: string, sex: Sex, h
         height: height !== null ? numberCol(height) : nullCol()
     };
 
-    const inserted = await insertReturning(conn,
+    const inserted = await insertReturning("", conn,
         performerTable,
         values,
         row => ({ id: row.id })
@@ -65,7 +65,7 @@ export async function talentAgencySignPerformer(conn: pg.Client, talentAgencyId:
         terminatedAt: nullCol()
     };
 
-    await insertReturning(conn,
+    await insertReturning("", conn,
         performerAgencyContractTable,
         values,
         row => ({ id: row.id })
@@ -73,7 +73,7 @@ export async function talentAgencySignPerformer(conn: pg.Client, talentAgencyId:
 }
 
 export async function talentAgencyTerminatePerformer(conn: pg.Client, talentAgencyId: TalentAgencyId, performerId: PerformerId, terminatedAt: string): Promise<void> {
-    await update(conn,
+    await update("", conn,
         performerAgencyContractTable,
         contract => e(
             e(contract.performerId, "=", performerIdCol(performerId)),
@@ -96,7 +96,7 @@ export async function createAudition(conn: pg.Client, title: string, time: strin
         sex: sex !== null ? sexCol(sex) : nullCol()
     };
 
-    const inserted = await insertReturning(conn,
+    const inserted = await insertReturning("", conn,
         auditionTable,
         values,
         row => ({ id: row.id })
@@ -112,7 +112,7 @@ export async function agentRecommendAudition(conn: pg.Client, agentId: AgentId, 
         auditionId: auditionIdCol(auditionId)
     };
 
-    await insertReturning(conn,
+    await insertReturning("", conn,
         recommendedAuditionTable,
         values,
         row => ({ id: row.id })
@@ -128,7 +128,7 @@ export async function auditionAddPerformance(conn: pg.Client, auditionId: Auditi
         referredByAgentId: referredByAgentId !== null ? agentIdCol(referredByAgentId) : nullCol()
     };
 
-    const inserted = await insertReturning(conn,
+    const inserted = await insertReturning("", conn,
         auditionPerformanceTable,
         values,
         row => ({ id: row.id })
@@ -145,7 +145,7 @@ export async function auditionSetWinner(conn: pg.Client, auditionId: AuditionId,
         decidedAt: textCol(decidedAt)
     };
 
-    await insertReturning(conn,
+    await insertReturning("", conn,
         auditionOutcomeTable,
         values,
         row => ({ id: row.id })

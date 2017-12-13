@@ -20,7 +20,7 @@ function selectTree<s>(q: Q<s>) {
 }
 
 test("fromTup ELit", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const fruit = selectFruit(q);
         order(q, fruit.name, Order.Asc);
 
@@ -55,7 +55,7 @@ test("fromTup ELit", t => withTestDatabase(async conn => {
 }));
 
 test("fromTup ECast", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const fruit = selectFruit(q);
         order(q, fruit.name, Order.Asc);
 
@@ -90,7 +90,7 @@ test("fromTup ECast", t => withTestDatabase(async conn => {
 }));
 
 test("fromTup EInList", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const fruit = selectFruit(q);
         order(q, fruit.name, Order.Asc);
 
@@ -125,7 +125,7 @@ test("fromTup EInList", t => withTestDatabase(async conn => {
 }));
 
 test("fromTup EInQuery", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const fruit = selectFruit(q);
         order(q, fruit.name, Order.Asc);
 
@@ -164,7 +164,7 @@ test("fromTup EInQuery", t => withTestDatabase(async conn => {
 }));
 
 test("fromTup EExists", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const fruit = selectFruit(q);
         order(q, fruit.name, Order.Asc);
 
@@ -203,7 +203,7 @@ test("fromTup EExists", t => withTestDatabase(async conn => {
 }));
 
 test("fromTup EBinOp", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const fruit = selectFruit(q);
         order(q, fruit.name, Order.Asc);
 

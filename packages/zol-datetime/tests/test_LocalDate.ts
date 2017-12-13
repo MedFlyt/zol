@@ -7,7 +7,7 @@ import { withTestDatabase } from "../../../helper_framework/TestDb";
 import { localDateCol } from "../src/zol-datetime";
 
 test("local date simple", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => ({
+    const actual = await query("", conn, _q => ({
         val: localDateCol(LocalDate.of(2017, 8, 12))
     }));
 

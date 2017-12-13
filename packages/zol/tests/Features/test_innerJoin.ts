@@ -32,7 +32,7 @@ test("inner join simple", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, personVals);
+    await insertMany("", conn, personTable, personVals);
 
     const addressVals: AddressTable[] = [
         {
@@ -45,9 +45,9 @@ test("inner join simple", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, addressTable, addressVals);
+    await insertMany("", conn, addressTable, addressVals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
         const personAddress = innerJoin(q,
             q => select(q, addressTable),
@@ -94,7 +94,7 @@ test("such that simple", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, personVals);
+    await insertMany("", conn, personTable, personVals);
 
     const addressVals: AddressTable[] = [
         {
@@ -107,9 +107,9 @@ test("such that simple", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, addressTable, addressVals);
+    await insertMany("", conn, addressTable, addressVals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = suchThat(q,
             q => select(q, personTable),
             row => e(row.age, ">", numberCol(25))

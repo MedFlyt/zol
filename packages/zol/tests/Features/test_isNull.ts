@@ -5,7 +5,7 @@ import { withTestDatabase } from "../../../../helper_framework/TestDb";
 import { isNotNull, isNull, nullCol, numberCol, query, SqlType, Unsafe } from "../../src/zol";
 
 test("not expression", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: isNull(nullCol())
         };
@@ -17,7 +17,7 @@ test("not expression", t => withTestDatabase(async conn => {
         }
     ];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: isNull(Unsafe.unsafeCast(numberCol(4), "INT", SqlType.numberParser))
         };
@@ -29,7 +29,7 @@ test("not expression", t => withTestDatabase(async conn => {
         }
     ];
 
-    const r3 = await query(conn, _q => {
+    const r3 = await query("", conn, _q => {
         return {
             val: isNotNull(nullCol())
         };

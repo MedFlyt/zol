@@ -19,7 +19,7 @@ function arraysOverlap<s>(a: Col<s, string>, b: Col<s, string>): Col<s, boolean>
 }
 
 test("unsafeRaw 1", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         return {
             val: arraysOverlap(jsonToTextArray(jsonCol(["foo", "bar"])), jsonToTextArray(jsonCol(["blah", "baz"])))
         };
@@ -31,7 +31,7 @@ test("unsafeRaw 1", t => withTestDatabase(async conn => {
 }));
 
 test("unsafeRaw 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         return {
             val: arraysOverlap(jsonToTextArray(jsonCol(["foo", "bar"])), jsonToTextArray(jsonCol(["blah", "foo"])))
         };
@@ -43,7 +43,7 @@ test("unsafeRaw 2", t => withTestDatabase(async conn => {
 }));
 
 test("unsafeRaw 3", t => withTestDatabase(async conn => {
-    const actual = await query(conn, _q => {
+    const actual = await query("", conn, _q => {
         return {
             val: arraysOverlap(jsonToTextArray(jsonCol(["foo", "bar"])), jsonToTextArray(jsonCol(["bar"])))
         };

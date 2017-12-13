@@ -5,7 +5,7 @@ import { withTestDatabase } from "../../../../helper_framework/TestDb";
 import { Col, inList, numberCol, query, restrict, SqlType, textCol, Unsafe } from "../../src/zol";
 
 test("in list", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: inList(textCol("a"), [textCol("a"), textCol("b"), textCol("c")])
         };
@@ -13,7 +13,7 @@ test("in list", t => withTestDatabase(async conn => {
 
     const expected_r1: typeof r1 = [{ val: true }];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: inList(textCol("a"), [textCol("b"), textCol("c")])
         };
@@ -21,7 +21,7 @@ test("in list", t => withTestDatabase(async conn => {
 
     const expected_r2: typeof r2 = [{ val: false }];
 
-    const r3 = await query(conn, _q => {
+    const r3 = await query("", conn, _q => {
         return {
             val: inList(textCol("c"), [textCol("a"), textCol("b"), textCol("c")])
         };
@@ -37,7 +37,7 @@ function intCol<s>(val: number): Col<s, number> {
 }
 
 test("in list empty", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, q => {
+    const r1 = await query("", conn, q => {
         restrict(q, inList(textCol("a"), []));
         return {
             val: intCol(2)

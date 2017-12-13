@@ -31,9 +31,9 @@ test("limit by simple 1", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, vals);
+    await insertMany("", conn, personTable, vals);
 
-    const actual = await query(conn, q => limit(q, 0, 2, q => {
+    const actual = await query("", conn, q => limit(q, 0, 2, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Asc);
         return {
@@ -76,9 +76,9 @@ test("limit by simple 2", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, vals);
+    await insertMany("", conn, personTable, vals);
 
-    const actual = await query(conn, q => limit(q, 1, 2, q => {
+    const actual = await query("", conn, q => limit(q, 1, 2, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Asc);
         return {
@@ -121,9 +121,9 @@ test("limit by simple 3", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, vals);
+    await insertMany("", conn, personTable, vals);
 
-    const actual = await query(conn, q => limit(q, 1, 3, q => {
+    const actual = await query("", conn, q => limit(q, 1, 3, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Asc);
         return {
@@ -167,9 +167,9 @@ test("limit by simple 4", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, vals);
+    await insertMany("", conn, personTable, vals);
 
-    const actual = await query(conn, q => limit(q, 2, 2, q => {
+    const actual = await query("", conn, q => limit(q, 2, 2, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Asc);
         return {
@@ -212,9 +212,9 @@ test("limit by simple 5", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, vals);
+    await insertMany("", conn, personTable, vals);
 
-    const actual = await query(conn, q => limit(q, 100, 10, q => {
+    const actual = await query("", conn, q => limit(q, 100, 10, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Asc);
         return {

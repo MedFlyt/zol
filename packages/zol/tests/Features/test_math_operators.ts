@@ -9,7 +9,7 @@ function intCol<s>(val: number): Col<s, number> {
 }
 
 test("math add", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: e(intCol(8), "+", intCol(4))
         };
@@ -21,7 +21,7 @@ test("math add", t => withTestDatabase(async conn => {
 }));
 
 test("math sub", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: e(intCol(8), "-", intCol(4))
         };
@@ -33,7 +33,7 @@ test("math sub", t => withTestDatabase(async conn => {
 }));
 
 test("math mul", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: e(intCol(8), "*", intCol(4))
         };
@@ -45,7 +45,7 @@ test("math mul", t => withTestDatabase(async conn => {
 }));
 
 test("math divide", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: e(intCol(8), "/", intCol(4))
         };

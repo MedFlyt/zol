@@ -5,7 +5,7 @@ import { withTestDatabase } from "../../../../helper_framework/TestDb";
 import { e, ilike, like, query, textCol } from "../../src/zol";
 
 test("string concat", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: e(textCol("a"), "||", textCol("b"))
         };
@@ -17,7 +17,7 @@ test("string concat", t => withTestDatabase(async conn => {
 }));
 
 test("string like", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: like(textCol("abc"), textCol("abc"))
         };
@@ -25,7 +25,7 @@ test("string like", t => withTestDatabase(async conn => {
 
     const expected_r1: typeof r1 = [{ val: true }];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: like(textCol("abc"), e(textCol("_"), "||", textCol("bc")))
         };
@@ -37,7 +37,7 @@ test("string like", t => withTestDatabase(async conn => {
 }));
 
 test("string like2", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: like(textCol("abc"), "_b_")
         };
@@ -45,7 +45,7 @@ test("string like2", t => withTestDatabase(async conn => {
 
     const expected_r1: typeof r1 = [{ val: true }];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: like(textCol("abc"), "b_")
         };
@@ -57,7 +57,7 @@ test("string like2", t => withTestDatabase(async conn => {
 }));
 
 test("string ilike", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: ilike(textCol("aBc"), textCol("abc"))
         };
@@ -65,7 +65,7 @@ test("string ilike", t => withTestDatabase(async conn => {
 
     const expected_r1: typeof r1 = [{ val: true }];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: ilike(textCol("abc"), e(textCol("_"), "||", textCol("Bc")))
         };
@@ -77,7 +77,7 @@ test("string ilike", t => withTestDatabase(async conn => {
 }));
 
 test("string ilike2", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: ilike(textCol("aBc"), "_b_")
         };
@@ -85,7 +85,7 @@ test("string ilike2", t => withTestDatabase(async conn => {
 
     const expected_r1: typeof r1 = [{ val: true }];
 
-    const r2 = await query(conn, _q => {
+    const r2 = await query("", conn, _q => {
         return {
             val: ilike(textCol("aBc"), "b_")
         };

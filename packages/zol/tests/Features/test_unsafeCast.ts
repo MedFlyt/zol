@@ -10,7 +10,7 @@ test("cast", t => withTestDatabase(async conn => {
             val: textCol("5")
         };
     };
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const str = selectString(q);
         const numCol: Col<{}, number> = Unsafe.unsafeCast(str.val, "INT", SqlType.numberParser);
         return {

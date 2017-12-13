@@ -53,7 +53,7 @@ async function insertSampleAddresses(conn: Client): Promise<void> {
 test("allPersons", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
 
-    const persons = await query(conn, allPersons());
+    const persons = await query("", conn, allPersons());
 
     const expected: typeof persons = [
         {
@@ -80,7 +80,7 @@ test("allPersons", t => withAllTables(async conn => {
 test("grownups", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
 
-    const persons = await query(conn, grownups());
+    const persons = await query("", conn, grownups());
 
     const expected: typeof persons = [
         {
@@ -98,7 +98,7 @@ test("grownupsIn", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
     await insertSampleAddresses(conn);
 
-    const persons = await query(conn, grownupsIn("Tokyo"));
+    const persons = await query("", conn, grownupsIn("Tokyo"));
 
     const expected: typeof persons = [
         {
@@ -113,7 +113,7 @@ test("allPeople2", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
     await insertSampleAddresses(conn);
 
-    const persons = await query(conn, allPeople2());
+    const persons = await query("", conn, allPeople2());
 
     const expected: typeof persons = [
         {
@@ -141,7 +141,7 @@ test("countHomes", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
     await insertSampleAddresses(conn);
 
-    const persons = await query(conn, countHomes());
+    const persons = await query("", conn, countHomes());
 
     const expected: typeof persons = [
         {
@@ -164,7 +164,7 @@ test("countHomes", t => withAllTables(async conn => {
 test("imperative allPersons", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
 
-    const persons = await m.query(conn, imp.allPersons);
+    const persons = await m.query("", conn, imp.allPersons);
 
     const expected: typeof persons = [
         {
@@ -191,7 +191,7 @@ test("imperative allPersons", t => withAllTables(async conn => {
 test("imperative grownups", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
 
-    const persons = await m.query(conn, imp.grownups);
+    const persons = await m.query("", conn, imp.grownups);
 
     const expected: typeof persons = [
         {
@@ -209,7 +209,7 @@ test("imperative grownupsIn", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
     await insertSampleAddresses(conn);
 
-    const persons = await m.query(conn, q => imp.grownupsIn(q, "Tokyo"));
+    const persons = await m.query("", conn, q => imp.grownupsIn(q, "Tokyo"));
 
     const expected: typeof persons = [
         {
@@ -224,7 +224,7 @@ test("imperative allPeople2", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
     await insertSampleAddresses(conn);
 
-    const persons = await m.query(conn, imp.allPeople2);
+    const persons = await m.query("", conn, imp.allPeople2);
 
     const expected: typeof persons = [
         {
@@ -252,7 +252,7 @@ test("imperative countHomes", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
     await insertSampleAddresses(conn);
 
-    const persons = await m.query(conn, imp.countHomes);
+    const persons = await m.query("", conn, imp.countHomes);
 
     const expected: typeof persons = [
         {
@@ -276,7 +276,7 @@ test("imperative specialPeople", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
     await insertSampleAddresses(conn);
 
-    const persons = await m.query(conn, imp.specialPeople);
+    const persons = await m.query("", conn, imp.specialPeople);
 
     const expected: typeof persons = [
         {
@@ -296,7 +296,7 @@ test("imperative noOne", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
     await insertSampleAddresses(conn);
 
-    const persons = await m.query(conn, imp.noOne);
+    const persons = await m.query("", conn, imp.noOne);
 
     const expected: typeof persons = [];
 
@@ -307,7 +307,7 @@ test("peopleInAddresses", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
     await insertSampleAddresses(conn);
 
-    const persons = await query(conn, peopleInAddresses());
+    const persons = await query("", conn, peopleInAddresses());
 
     const expected: typeof persons = [
         {
@@ -331,7 +331,7 @@ test("imperative peopleInAddresses", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
     await insertSampleAddresses(conn);
 
-    const persons = await m.query(conn, imp.peopleInAddresses);
+    const persons = await m.query("", conn, imp.peopleInAddresses);
 
     const expected: typeof persons = [
         {
@@ -355,7 +355,7 @@ test("age10Years", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
 
     await age10Years(conn);
-    const persons = await query(conn, allPersons());
+    const persons = await query("", conn, allPersons());
 
     const expected: typeof persons = [
         {
@@ -383,7 +383,7 @@ test("setDefaultAge", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
 
     await setDefaultAge(conn, "Miyu");
-    const persons = await query(conn, allPersons());
+    const persons = await query("", conn, allPersons());
 
     const expected: typeof persons = [
         {
@@ -412,7 +412,7 @@ test("insertAlice", t => withAllTables(async conn => {
 
     const ages = await insertPeople(conn);
     t.deepEqual(ages, [personDefaultAge, 30]);
-    const persons = await query(conn, allPersons());
+    const persons = await query("", conn, allPersons());
 
     const expected: typeof persons = [
         {
@@ -447,7 +447,7 @@ test("insertAlice", t => withAllTables(async conn => {
 test("allPersonsWithLimit 1", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
 
-    const persons = await query(conn, allPersonsWithLimit(0, 2));
+    const persons = await query("", conn, allPersonsWithLimit(0, 2));
 
     const expected: typeof persons = [
         { name: "Kobayashi", age: 23 },
@@ -460,7 +460,7 @@ test("allPersonsWithLimit 1", t => withAllTables(async conn => {
 test("allPersonsWithLimit 2", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
 
-    const persons = await query(conn, allPersonsWithLimit(0, 3));
+    const persons = await query("", conn, allPersonsWithLimit(0, 3));
 
     const expected: typeof persons = [
         { name: "Kobayashi", age: 23 },
@@ -474,7 +474,7 @@ test("allPersonsWithLimit 2", t => withAllTables(async conn => {
 test("allPersonsWithLimit 3", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
 
-    const persons = await query(conn, allPersonsWithLimit(1, 3));
+    const persons = await query("", conn, allPersonsWithLimit(1, 3));
 
     const expected: typeof persons = [
         { name: "Link", age: 125 },
@@ -488,7 +488,7 @@ test("allPersonsWithLimit 3", t => withAllTables(async conn => {
 test("allPersonsWithLimit 3", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
 
-    const persons = await query(conn, allPersonsWithLimit(2, 2));
+    const persons = await query("", conn, allPersonsWithLimit(2, 2));
 
     const expected: typeof persons = [
         { name: "Miyu", age: 10 },
@@ -501,7 +501,7 @@ test("allPersonsWithLimit 3", t => withAllTables(async conn => {
 test("allPersonsWithLimit 4", t => withAllTables(async conn => {
     await insertSamplePersons(conn);
 
-    const persons = await query(conn, allPersonsWithLimit(100, 10));
+    const persons = await query("", conn, allPersonsWithLimit(100, 10));
 
     const expected: typeof persons = [
     ];
@@ -510,7 +510,7 @@ test("allPersonsWithLimit 4", t => withAllTables(async conn => {
 }));
 
 test.only("adhoc test", t => withAllTables(async conn => {
-    const actual = await query(conn, adhocTest());
+    const actual = await query("", conn, adhocTest());
 
     const expected: typeof actual = [
         {

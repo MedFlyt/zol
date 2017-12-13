@@ -31,9 +31,9 @@ test("select distinct", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, personVals);
+    await insertMany("", conn, personTable, personVals);
 
-    const actual = await query(conn, q => distinct(q, q => {
+    const actual = await query("", conn, q => distinct(q, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Asc);
         return {
@@ -51,7 +51,7 @@ test("select distinct", t => withTestDatabase(async conn => {
 }));
 
 test("selectValues distinct", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => distinct(q, q => {
+    const actual = await query("", conn, q => distinct(q, q => {
         const fruit = selectValues(q, [
             { name: textCol("apple"), color: textCol("red"), tasty: booleanCol(true) },
             { name: textCol("orange"), color: textCol("orange"), tasty: booleanCol(true) },
@@ -71,7 +71,7 @@ test("selectValues distinct", t => withTestDatabase(async conn => {
 }));
 
 test("selectValues distinct 2", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => distinct(q, q => {
+    const actual = await query("", conn, q => distinct(q, q => {
         const fruit = selectValues(q, [
             { name: textCol("apple"), color: textCol("red"), tasty: booleanCol(true) },
             { name: textCol("orange"), color: textCol("orange"), tasty: booleanCol(true) },

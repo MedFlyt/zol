@@ -13,7 +13,7 @@ async function createPerson(conn: pg.Client, name: string): Promise<number> {
         name: textCol(name)
     };
 
-    const rets = await insertReturning(conn, personTable, values, row => ({ id: row.id }));
+    const rets = await insertReturning("", conn, personTable, values, row => ({ id: row.id }));
     return rets.id;
 }
 
@@ -27,7 +27,7 @@ async function createMeeting(conn: pg.Client, subject: string, createdAt: Instan
         timezone: textCol(timezone)
     };
 
-    const rets = await insertReturning(conn, meetingTable, values, row => ({ id: row.id }));
+    const rets = await insertReturning("", conn, meetingTable, values, row => ({ id: row.id }));
     return rets.id;
 }
 
@@ -38,7 +38,7 @@ test("instant simple", t => withTestDatabase(async conn => {
     const linkId = await createPerson(conn, "Link");
     const meetingId = await createMeeting(conn, "Standup", Instant.ofEpochSecond(1501673200), linkId, LocalDateTime.of(2017, 8, 1, 10, 0), "America/New_York");
 
-    const r1 = await query(conn, q => {
+    const r1 = await query("", conn, q => {
         const meeting = select(q, meetingTable);
         restrictEq(q, meeting.id, numberCol(meetingId));
         return meeting;
@@ -55,7 +55,7 @@ test("local date time simple", t => withTestDatabase(async conn => {
     const linkId = await createPerson(conn, "Link");
     const meetingId = await createMeeting(conn, "Standup", Instant.ofEpochSecond(1501673200), linkId, LocalDateTime.of(2017, 8, 1, 10, 0), "America/New_York");
 
-    const r1 = await query(conn, q => {
+    const r1 = await query("", conn, q => {
         const meeting = select(q, meetingTable);
         restrictEq(q, meeting.id, numberCol(meetingId));
         return meeting;
@@ -72,7 +72,7 @@ test("convert local date time to instant", t => withTestDatabase(async conn => {
     const linkId = await createPerson(conn, "Link");
     const meetingId = await createMeeting(conn, "Standup", Instant.ofEpochSecond(1501673200), linkId, LocalDateTime.of(2017, 8, 1, 10, 0), "America/New_York");
 
-    const r1 = await query(conn, q => {
+    const r1 = await query("", conn, q => {
         const meeting = select(q, meetingTable);
         restrictEq(q, meeting.id, numberCol(meetingId));
         return {

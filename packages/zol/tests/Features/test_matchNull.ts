@@ -29,9 +29,9 @@ test("matchNull", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, bookTable, vals);
+    await insertMany("", conn, bookTable, vals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const book = select(q, bookTable);
         const pagesResult =
             matchNull(book.numPages, textCol("Unknown pages"), p => ifThenElse(e(p, "<", numberCol(100)), textCol("Short Book"), textCol("Long Book")));

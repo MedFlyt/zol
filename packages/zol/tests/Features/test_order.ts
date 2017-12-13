@@ -31,9 +31,9 @@ test("order by simple", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, vals);
+    await insertMany("", conn, personTable, vals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Asc);
         return {
@@ -90,9 +90,9 @@ test("order by simple desc", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, vals);
+    await insertMany("", conn, personTable, vals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Desc);
         return {
@@ -149,9 +149,9 @@ test("order by two fields", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, vals);
+    await insertMany("", conn, personTable, vals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Asc);
         order(q, person.age, Order.Asc);
@@ -209,9 +209,9 @@ test("order by two fields2", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, vals);
+    await insertMany("", conn, personTable, vals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Desc);
         order(q, person.age, Order.Asc);
@@ -269,9 +269,9 @@ test("order by two fields3", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, vals);
+    await insertMany("", conn, personTable, vals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Asc);
         order(q, person.age, Order.Desc);
@@ -329,9 +329,9 @@ test("order by two fields3", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, vals);
+    await insertMany("", conn, personTable, vals);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Desc);
         order(q, person.age, Order.Desc);
@@ -364,7 +364,7 @@ test("order by two fields3", t => withTestDatabase(async conn => {
 }));
 
 test("order by AscNullsFirst", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const row = selectValues<{}, { val: string | null; }>(q, [
             { val: textCol("a") },
             { val: nullCol() },
@@ -384,7 +384,7 @@ test("order by AscNullsFirst", t => withTestDatabase(async conn => {
 }));
 
 test("order by AscNullsLast", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const row = selectValues<{}, { val: string | null; }>(q, [
             { val: textCol("a") },
             { val: nullCol() },
@@ -404,7 +404,7 @@ test("order by AscNullsLast", t => withTestDatabase(async conn => {
 }));
 
 test("order by DescNullsFirst", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const row = selectValues<{}, { val: string | null; }>(q, [
             { val: textCol("a") },
             { val: nullCol() },
@@ -424,7 +424,7 @@ test("order by DescNullsFirst", t => withTestDatabase(async conn => {
 }));
 
 test("order by DescNullsLast", t => withTestDatabase(async conn => {
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const row = selectValues<{}, { val: string | null; }>(q, [
             { val: textCol("a") },
             { val: nullCol() },

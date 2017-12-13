@@ -31,15 +31,15 @@ test("delete simple 1", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, vals);
+    await insertMany("", conn, personTable, vals);
 
-    const numDeleted = await delete_(conn, personTable,
+    const numDeleted = await delete_("", conn, personTable,
         row => e(row.name, "=", textCol("B"))
     );
 
     t.deepEqual(numDeleted, 1);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Asc);
         return {
@@ -83,15 +83,15 @@ test("delete simple 2", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, vals);
+    await insertMany("", conn, personTable, vals);
 
-    const numDeleted = await delete_(conn, personTable,
+    const numDeleted = await delete_("", conn, personTable,
         row => e(row.age, ">=", numberCol(20))
     );
 
     t.deepEqual(numDeleted, 3);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Asc);
         return {
@@ -133,15 +133,15 @@ test("delete simple 3", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, vals);
+    await insertMany("", conn, personTable, vals);
 
-    const numDeleted = await delete_(conn, personTable,
+    const numDeleted = await delete_("", conn, personTable,
         row => e(row.age, "=", numberCol(5))
     );
 
     t.deepEqual(numDeleted, 0);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const person = select(q, personTable);
         order(q, person.name, Order.Asc);
         return {

@@ -10,7 +10,7 @@ function bigintCol<s>(val: number): Col<s, number> {
 }
 
 test("charLength", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: charLength(textCol("Hello"))
     }));
 
@@ -20,7 +20,7 @@ test("charLength", t => withTestDatabase(async conn => {
 }));
 
 test("lower", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: lower(textCol("Hello"))
     }));
 
@@ -30,7 +30,7 @@ test("lower", t => withTestDatabase(async conn => {
 }));
 
 test("upper", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: upper(textCol("Hello"))
     }));
 
@@ -40,7 +40,7 @@ test("upper", t => withTestDatabase(async conn => {
 }));
 
 test("strpos result", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: strpos(textCol("high"), textCol("ig"))
     }));
 
@@ -50,7 +50,7 @@ test("strpos result", t => withTestDatabase(async conn => {
 }));
 
 test("strpos no result", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: strpos(textCol("high"), textCol("x"))
     }));
 
@@ -60,7 +60,7 @@ test("strpos no result", t => withTestDatabase(async conn => {
 }));
 
 test("substr 1", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: substr(textCol("alphabet"), numberCol(3))
     }));
 
@@ -70,7 +70,7 @@ test("substr 1", t => withTestDatabase(async conn => {
 }));
 
 test("substr 2", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: substr(textCol("alphabet"), numberCol(3), numberCol(2))
     }));
 
@@ -80,7 +80,7 @@ test("substr 2", t => withTestDatabase(async conn => {
 }));
 
 test("substr 3", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: substr(textCol("alphabet"), numberCol(8), numberCol(2))
     }));
 
@@ -90,7 +90,7 @@ test("substr 3", t => withTestDatabase(async conn => {
 }));
 
 test("substr 4", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: substr(textCol("alphabet"), numberCol(9))
     }));
 
@@ -100,7 +100,7 @@ test("substr 4", t => withTestDatabase(async conn => {
 }));
 
 test("chr", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: chr(numberCol(65))
     }));
 
@@ -110,7 +110,7 @@ test("chr", t => withTestDatabase(async conn => {
 }));
 
 test("chr unicode", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: chr(numberCol(937))
     }));
 
@@ -120,7 +120,7 @@ test("chr unicode", t => withTestDatabase(async conn => {
 }));
 
 test("btrim 1", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: btrim(textCol(" Test"))
     }));
 
@@ -130,7 +130,7 @@ test("btrim 1", t => withTestDatabase(async conn => {
 }));
 
 test("btrim 2", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: btrim(textCol("Test  "))
     }));
 
@@ -140,7 +140,7 @@ test("btrim 2", t => withTestDatabase(async conn => {
 }));
 
 test("btrim 3", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: btrim(textCol(" Test "))
     }));
 
@@ -150,7 +150,7 @@ test("btrim 3", t => withTestDatabase(async conn => {
 }));
 
 test("btrim 4", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: btrim(textCol("\t Test "))
     }));
 
@@ -160,7 +160,7 @@ test("btrim 4", t => withTestDatabase(async conn => {
 }));
 
 test("btrim 5", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: btrim(textCol("xyxtrimyyx"), textCol("xyz"))
     }));
 
@@ -170,7 +170,7 @@ test("btrim 5", t => withTestDatabase(async conn => {
 }));
 
 test("ltrim 1", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: ltrim(textCol(" Test"))
     }));
 
@@ -180,7 +180,7 @@ test("ltrim 1", t => withTestDatabase(async conn => {
 }));
 
 test("ltrim 2", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: ltrim(textCol("Test  "))
     }));
 
@@ -190,7 +190,7 @@ test("ltrim 2", t => withTestDatabase(async conn => {
 }));
 
 test("ltrim 3", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: ltrim(textCol(" Test "))
     }));
 
@@ -200,7 +200,7 @@ test("ltrim 3", t => withTestDatabase(async conn => {
 }));
 
 test("ltrim 4", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: ltrim(textCol("\t Test "))
     }));
 
@@ -210,7 +210,7 @@ test("ltrim 4", t => withTestDatabase(async conn => {
 }));
 
 test("ltrim 5", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: ltrim(textCol("xyxtrimyyx"), textCol("xyz"))
     }));
 
@@ -220,7 +220,7 @@ test("ltrim 5", t => withTestDatabase(async conn => {
 }));
 
 test("rtrim 1", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: rtrim(textCol(" Test"))
     }));
 
@@ -230,7 +230,7 @@ test("rtrim 1", t => withTestDatabase(async conn => {
 }));
 
 test("rtrim 2", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: rtrim(textCol("Test  "))
     }));
 
@@ -240,7 +240,7 @@ test("rtrim 2", t => withTestDatabase(async conn => {
 }));
 
 test("rtrim 3", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: rtrim(textCol(" Test "))
     }));
 
@@ -250,7 +250,7 @@ test("rtrim 3", t => withTestDatabase(async conn => {
 }));
 
 test("rtrim 4", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: rtrim(textCol("\t Test "))
     }));
 
@@ -260,7 +260,7 @@ test("rtrim 4", t => withTestDatabase(async conn => {
 }));
 
 test("rtrim 5", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: rtrim(textCol("xyxtrimyyx"), textCol("xyz"))
     }));
 
@@ -270,7 +270,7 @@ test("rtrim 5", t => withTestDatabase(async conn => {
 }));
 
 test("toHex", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => ({
+    const r1 = await query("", conn, _q => ({
         val: toHex(bigintCol(2147483647))
     }));
 

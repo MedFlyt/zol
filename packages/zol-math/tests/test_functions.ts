@@ -6,7 +6,7 @@ import { withTestDatabase } from "../../../helper_framework/TestDb";
 import { sqrt } from "../src/zol-math";
 
 test("sqrt", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: sqrt(numberCol(9))
         };
@@ -22,7 +22,7 @@ test("sqrt", t => withTestDatabase(async conn => {
 }));
 
 test("sqrt 2", t => withTestDatabase(async conn => {
-    const r1 = await query(conn, _q => {
+    const r1 = await query("", conn, _q => {
         return {
             val: sqrt(numberCol(4.84))
         };

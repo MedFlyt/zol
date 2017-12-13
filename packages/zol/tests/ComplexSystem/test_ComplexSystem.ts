@@ -59,7 +59,7 @@ async function createTalentAgencies(conn: pg.Client): Promise<TalentAgencies> {
         }
     ];
 
-    const inserted = await insertManyReturning(conn,
+    const inserted = await insertManyReturning("", conn,
         talentAgencyTable,
         values,
         row => {
@@ -198,7 +198,7 @@ test("insert initial data", _t => withAllTables(async conn => {
 test("selectAgentFullView", t => withAllTables(async conn => {
     const { agents, talentAgencies } = await insertInitialData(conn);
 
-    const actual = await query(conn, q => selectAgentFullView(q));
+    const actual = await query("", conn, q => selectAgentFullView(q));
 
     const expected: typeof actual = [
         {
@@ -249,7 +249,7 @@ test("selectAgentFullView", t => withAllTables(async conn => {
 test("performer auditions", t => withAllTables(async conn => {
     const { performers } = await insertInitialData(conn);
     async function performances(performerId: PerformerId) {
-        const ps = await query(conn, q => {
+        const ps = await query("", conn, q => {
             const auditions = performerAuditions(q, performerIdCol(performerId));
             order(q, auditions.title, Order.Asc);
             return {
@@ -282,11 +282,11 @@ test.skip("performances won or undecided", t => withAllTables(async conn => {
     const { agents, performers } = await insertInitialData(conn);
 
     const actual = [
-        await query(conn, q => performerAuditionsWonOrUndecided(q, performerIdCol(performers.abe))),
-        await query(conn, q => performerAuditionsWonOrUndecided(q, performerIdCol(performers.bernetta))),
-        await query(conn, q => performerAuditionsWonOrUndecided(q, performerIdCol(performers.colin))),
-        await query(conn, q => performerAuditionsWonOrUndecided(q, performerIdCol(performers.darlene))),
-        await query(conn, q => performerAuditionsWonOrUndecided(q, performerIdCol(performers.elvis)))
+        await query("", conn, q => performerAuditionsWonOrUndecided(q, performerIdCol(performers.abe))),
+        await query("", conn, q => performerAuditionsWonOrUndecided(q, performerIdCol(performers.bernetta))),
+        await query("", conn, q => performerAuditionsWonOrUndecided(q, performerIdCol(performers.colin))),
+        await query("", conn, q => performerAuditionsWonOrUndecided(q, performerIdCol(performers.darlene))),
+        await query("", conn, q => performerAuditionsWonOrUndecided(q, performerIdCol(performers.elvis)))
     ];
 
     const expected: typeof actual = [
@@ -384,7 +384,7 @@ test.skip("performances won or undecided", t => withAllTables(async conn => {
 test("talent agency auditions", t => withAllTables(async conn => {
     const { talentAgencies } = await insertInitialData(conn);
 
-    const actual = await query(conn, q => {
+    const actual = await query("", conn, q => {
         const a = talentAgencyAuditions(q, talentAgencyIdCol(talentAgencies.venosis));
         order(q, a.title, Order.Asc);
         return {

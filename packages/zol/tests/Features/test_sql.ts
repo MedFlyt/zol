@@ -36,7 +36,7 @@ test("identical sql", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, personTable, personVals);
+    await insertMany("", conn, personTable, personVals);
 
     const addressVals: AddressTable[] = [
         {
@@ -53,12 +53,12 @@ test("identical sql", t => withTestDatabase(async conn => {
         }
     ];
 
-    await insertMany(conn, addressTable, addressVals);
+    await insertMany("", conn, addressTable, addressVals);
 
     Debug.enableDebug();
 
     const runQuery = async () => {
-        await query(conn, q => {
+        await query("", conn, q => {
             const person = select(q, personTable);
             restrict(q, inQuery(intCol(1), q => {
                 const person2 = select(q, personTable);

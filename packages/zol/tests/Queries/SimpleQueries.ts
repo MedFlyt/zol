@@ -23,7 +23,7 @@ export async function insertPeople(conn: Client): Promise<number[]> {
         }
     ];
 
-    const inserted = await insertManyReturning(conn,
+    const inserted = await insertManyReturning("", conn,
         personTable, values,
         person => {
             return {
@@ -141,7 +141,7 @@ export function peopleInAddresses<s>(): Query<s, PersonCols<s>> {
 }
 
 export async function age10Years(conn: Client): Promise<void> {
-    await update(conn,
+    await update("", conn,
         personTable,
         person => e(person.name, "=", textCol("Link")),
         person => {
@@ -154,7 +154,7 @@ export async function age10Years(conn: Client): Promise<void> {
 }
 
 export async function setDefaultAge(conn: Client, personName: string): Promise<void> {
-    await update(conn,
+    await update("", conn,
         personTable,
         person => e(person.name, "=", textCol(personName)),
         person => {
