@@ -31,13 +31,17 @@ export function liftC2<s, a, b, c>(f: (x: Exp<SQL, a>, y: Exp<SQL, b>) => Exp<SQ
     };
 }
 
+function nullParser(val: string): never {
+    throw new Error(`Tried to parse a nullCol. This is likely a bug in zol, please report. Column value: "${val}"`);
+}
+
 export function nullCol<s>(): Col<s, null> {
     return colWrap({
         type: "ELit",
         lit: {
             type: "LNull"
         },
-        parser: val => val
+        parser: nullParser
     });
 }
 
@@ -80,16 +84,24 @@ export function numberCol<s>(val: number): Col<s, number> {
  * SQL equivalent: `CASE`
  */
 export function ifThenElse<s, a>(if_: Col<s, boolean>, then: Col<s, a>, else_: Col<s, a>): Col<s, a> {
+    // the "then" and "else_" columns are of the same type, so they
+    // (supposedly) have the same parser, so we can arbitrarily pick
+    // either one.
+    //
+    // However: we must watch out if "then" or "else_" was set to "nullCol()",
+    // and in that case choose the other one's parser.
+    //
+    // (If both "then" and "else_" were set to "nullCol()" then the
+    // the column will always have a NULL value and the parser we set
+    // here wlil never be called)
+    const parser = (<any>then).parser !== nullParser ? (<any>then).parser : (<any>else_).parser;
+
     return colWrap({
         type: "EIfThenElse",
         expIf: <any>colUnwrap(if_),
         expThen: colUnwrap(then),
         expElse: colUnwrap(else_),
-
-        // the "then" and "else_" columns are of the same type, so they
-        // (supposedly) have the same parser, so we can arbitrarily pick
-        // either one:
-        parser: (<any>colUnwrap(then)).parser
+        parser: parser
     });
 }
 
