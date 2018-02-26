@@ -44,11 +44,11 @@ export function compInsert(tbl: TableName, names: [ColName, string, (val: string
     const [, sql, params] = runPP(State.bind(
         State.mapM(ppInsertRow, cs),
         inserts => State.bind(
-            cs2 === undefined ? State.pure(undefined) : State.mapM(ppUpdate, cs2),
+            cs2 === undefined ? State.pure(undefined) : State.mapM(x => ppUpdate(x, tbl), cs2),
             updates => State.bind(
-                p === undefined ? State.pure(undefined) : ppCol(p),
+                p === undefined ? State.pure(undefined) : ppCol(p, tbl),
                 check => State.bind(
-                    State.mapM(ppSomeCol, rs),
+                    State.mapM(x => ppSomeCol(x, null), rs),
                     rs2 => {
                         let onConflict: string = "";
                         if (conflictTableCols !== undefined) {
@@ -103,7 +103,7 @@ function ppInsert(c: SomeCol<SQL>): PP<string> {
     if (c.exp === <any>defaultValue()) {
         return State.pure("DEFAULT");
     } else {
-        return ppSomeCol(c);
+        return ppSomeCol(c, null);
     }
 }
 
@@ -112,11 +112,11 @@ function ppInsert(c: SomeCol<SQL>): PP<string> {
  */
 export function compUpdate(tbl: TableName, p: Exp<SQL, boolean>, cs: [ColName, SomeCol<SQL>][], rs: SomeCol<SQL>[]): [string, Param[]] {
     const ppUpd: PP<string> = State.bind(
-        State.mapM(ppUpdate, cs),
+        State.mapM(x => ppUpdate(x, null), cs),
         updates => State.bind(
-            ppCol(p),
+            ppCol(p, null),
             check => State.bind(
-                State.mapM(ppSomeCol, rs),
+                State.mapM(x => ppSomeCol(x, null), rs),
                 rs2 =>
                     State.pure([
                         "UPDATE", fromTableName(tbl),
@@ -135,7 +135,7 @@ export function compUpdate(tbl: TableName, p: Exp<SQL, boolean>, cs: [ColName, S
  */
 export function compDelete(tbl: TableName, p: Exp<SQL, boolean>): [string, Param[]] {
     const ppUpd: PP<string> = State.bind(
-        ppCol(p),
+        ppCol(p, null),
         check =>
             State.pure([
                 "DELETE FROM", fromTableName(tbl),
@@ -147,13 +147,13 @@ export function compDelete(tbl: TableName, p: Exp<SQL, boolean>): [string, Param
 }
 
 // left=false, right=true
-function ppUpdate([n, c]: [ColName, SomeCol<SQL>]): PP<[boolean, string]> {
+function ppUpdate([n, c]: [ColName, SomeCol<SQL>], tbl: TableName | null): PP<[boolean, string]> {
     const n2 = fromColName(n);
     if (c.exp === <any>defaultValue()) {
         return State.pure<PPState, [boolean, string]>([true, n2 + " = DEFAULT"]);
     }
     return State.bind(
-        ppSomeCol(c),
+        ppSomeCol(c, tbl),
         c2 => {
             const upd = n2 + " = " + c2;
             if (n2 === c2) {
@@ -175,14 +175,14 @@ function set(us: [boolean, string][]): string {
     }
 }
 
-function ppSomeCol(c: SomeCol<SQL>): PP<string> {
+function ppSomeCol(c: SomeCol<SQL>, tbl: TableName | null): PP<string> {
     switch (c.type) {
         case "Some":
-            return ppCol(c.exp);
+            return ppCol(c.exp, tbl);
         case "Named":
             return State.bind
                 (
-                ppCol(c.exp),
+                ppCol(c.exp, tbl),
                 c2 =>
                     State.pure(c2 + " AS " + fromColName(c.colName))
                 );
@@ -192,68 +192,72 @@ function ppSomeCol(c: SomeCol<SQL>): PP<string> {
     }
 }
 
-function ppCol<a>(c: Exp<SQL, a>): PP<string> {
+function ppCol<a>(c: Exp<SQL, a>, tbl: TableName | null): PP<string> {
     switch (c.type) {
         case "ETblCol":
             throw new Error("compiler bug: ppCol saw TblCol: " + c.colNames);
         case "ECol":
-            return State.pure(fromColName(c.colName));
+            if (tbl === null) {
+                return State.pure(fromColName(c.colName));
+            } else {
+                return State.pure(fromTableName(tbl) + "." + fromColName(c.colName));
+            }
         case "ELit":
             return ppLit(c.lit);
         case "EBinOp":
-            return ppBinOp(ppOp(c.op), c.lhs, c.rhs);
+            return ppBinOp(ppOp(c.op), c.lhs, c.rhs, tbl);
         case "ECustomBinOp":
-            return ppBinOp(c.op, c.lhs, c.rhs);
+            return ppBinOp(c.op, c.lhs, c.rhs, tbl);
         case "EUnOp":
-            return ppUnOp(c.op, c.exp);
+            return ppUnOp(c.op, c.exp, tbl);
         case "EFun2":
             return State.bind(
-                ppCol(c.lhs),
+                ppCol(c.lhs, tbl),
                 a2 => State.bind(
-                    ppCol(c.rhs),
+                    ppCol(c.rhs, tbl),
                     b2 => State.pure(c.name + "(" + a2 + ", " + b2 + ")")
                 )
             );
         case "EFun3":
             return State.bind(
-                ppCol(c.col1),
+                ppCol(c.col1, tbl),
                 a2 => State.bind(
-                    ppCol(c.col2),
+                    ppCol(c.col2, tbl),
                     b2 => State.bind(
-                        ppCol(c.col3),
+                        ppCol(c.col3, tbl),
                         c2 => State.pure(c.name + "(" + a2 + ", " + b2 + ", " + c2 + ")")
                     )
                 )
             );
         case "EFunN":
             return State.bind(
-                State.mapM(ppCol, c.cols),
+                State.mapM(x => ppCol(x, tbl), c.cols),
                 cs2 => State.pure(c.name + "(" + cs2.join(", ") + ")")
             );
         case "EAggrEx":
             return ppUnOp({
                 type: "UFun",
                 name: c.name
-            }, c.exp);
+            }, c.exp, tbl);
         case "ECast":
             return State.bind(
-                ppCol(c.exp),
+                ppCol(c.exp, tbl),
                 x2 => State.pure("CAST(" + x2 + " AS " + c.sqlType + ")")
             );
         case "EIfThenElse":
             return State.bind(
-                ppCol(c.expIf),
+                ppCol(c.expIf, tbl),
                 a2 => State.bind(
-                    ppCol(c.expThen),
+                    ppCol(c.expThen, tbl),
                     b2 => State.bind(
-                        ppCol(c.expElse),
+                        ppCol(c.expElse, tbl),
                         c2 => State.pure("CASE WHEN " + a2 + " THEN " + b2 + " ELSE " + c2 + " END")
                     )
                 )
             );
         case "ERaw":
             return State.bind(
-                State.mapM(ppCol, c.fragments.filter(f => typeof f !== "string")),
+                State.mapM((x: Exp<SQL, a>) => ppCol(x, tbl), c.fragments.filter(f => typeof f !== "string")),
                 cs2 => {
                     let str = "";
                     let i = 0;
@@ -270,15 +274,15 @@ function ppCol<a>(c: Exp<SQL, a>): PP<string> {
             );
         case "EInList":
             return State.bind(
-                ppCol(c.exp),
+                ppCol(c.exp, tbl),
                 x2 => State.bind(
-                    State.mapM(ppCol, c.exps),
+                    State.mapM(x => ppCol(x, tbl), c.exps),
                     xs2 => State.pure(x2 + " IN (" + xs2.join(", ") + ")")
                 )
             );
         case "EInQuery":
             return State.bind(
-                ppCol(c.exp),
+                ppCol(c.exp, tbl),
                 x2 => State.bind(
                     ppSql(c.sql),
                     q2 => State.pure(x2 + " IN (" + q2 + ")")
@@ -295,9 +299,9 @@ function ppCol<a>(c: Exp<SQL, a>): PP<string> {
     }
 }
 
-function ppUnOp<a>(op: UnOp, c: Exp<SQL, a>): PP<string> {
+function ppUnOp<a>(op: UnOp, c: Exp<SQL, a>, tbl: TableName | null): PP<string> {
     return State.bind(
-        ppCol(c),
+        ppCol(c, tbl),
         c2 => {
             switch (op.type) {
                 case "UAbs":
@@ -393,7 +397,7 @@ function freshQueryName(): PP<string> {
 function ppSql(sql: SQL): PP<string> {
     return State.bind
         (
-        State.mapM(ppSomeCol, sql.cols),
+        State.mapM(x => ppSomeCol(x, null), sql.cols),
         cs2 =>
             State.bind(
                 ppSrc(sql.source),
@@ -460,7 +464,7 @@ function ppSrc(s: SqlSource): PP<string> {
             }
         case "Values":
             return State.bind(
-                State.mapM(ppSomeCol, s.cols),
+                State.mapM(x => ppSomeCol(x, null), s.cols),
                 row2m => {
                     const row2 = row2m.join(", ");
                     return State.bind(
@@ -483,7 +487,7 @@ function ppSrc(s: SqlSource): PP<string> {
                 l2 => State.bind(
                     ppSql(s.right),
                     r2 => State.bind(
-                        ppCol(s.exp),
+                        ppCol(s.exp, null),
                         on2 => State.bind(
                             freshQueryName(),
                             lqn => State.bind(
@@ -507,7 +511,7 @@ function ppSrc(s: SqlSource): PP<string> {
 function ppRow(xs: SomeCol<SQL>[]): PP<string> {
     const pps: PP<string>[] = [];
     for (const x of xs) {
-        pps.push(ppCol(x.exp));
+        pps.push(ppCol(x.exp, null));
     }
     return State.bind(
         State.sequence(pps),
@@ -533,7 +537,7 @@ function ppGroups(grps: SomeCol<SQL>[]): PP<string> {
         const somes: PP<string>[] = [];
         for (const g of grps) {
             if (g.type === "Some") {
-                somes.push(ppCol(g.exp));
+                somes.push(ppCol(g.exp, null));
             }
         }
         return State.bind(
@@ -549,7 +553,7 @@ function ppOrder(os: [Order, SomeCol<SQL>][]): PP<string> {
     } else {
         const somes = os.filter(x => x[1].type === "Some");
         return State.bind(
-            State.sequence(somes.map(o => State.bind(ppCol(o[1].exp), s => State.pure(s + " " + ppOrd(o[0]))))),
+            State.sequence(somes.map(o => State.bind(ppCol(o[1].exp, null), s => State.pure(s + " " + ppOrd(o[0]))))),
             os2 => State.pure(" ORDER BY " + os2.join(", "))
         );
     }
@@ -584,16 +588,16 @@ function ppLimit(lim: [number, number] | null): PP<string> {
 
 function ppCols(cs: Exp<SQL, boolean>[]): PP<string> {
     return State.bind(
-        State.mapM(ppCol, cs.slice().reverse()),
+        State.mapM(x => ppCol(x, null), cs.slice().reverse()),
         cs2 => State.pure("(" + cs2.join(") AND (") + ")")
     );
 }
 
-function ppBinOp<a>(opString: string, lhs: Exp<SQL, a>, rhs: Exp<SQL, a>): PP<string> {
+function ppBinOp<a>(opString: string, lhs: Exp<SQL, a>, rhs: Exp<SQL, a>, tbl: TableName | null): PP<string> {
     return State.bind(
-        ppCol(lhs),
+        ppCol(lhs, tbl),
         lhs2 => State.bind(
-            ppCol(rhs),
+            ppCol(rhs, tbl),
             rhs2 => State.pure(paren(lhs, lhs2) + " " + opString + " " + paren(rhs, rhs2))
         )
     );
