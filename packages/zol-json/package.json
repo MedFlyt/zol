@@ -1,6 +1,6 @@
 {
   "name": "zol-json",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "JSON SQL functionality for Zol",
   "keywords": [
     "typescript",
@@ -45,6 +45,6 @@
     "typescript": "2.4.2"
   },
   "dependencies": {
-    "zol": "^0.2.1"
+    "zol": "^0.2.2"
   }
 }
