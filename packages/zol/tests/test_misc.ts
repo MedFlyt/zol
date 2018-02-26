@@ -509,7 +509,7 @@ test("allPersonsWithLimit 4", t => withAllTables(async conn => {
     t.deepEqual(persons, expected);
 }));
 
-test.only("adhoc test", t => withAllTables(async conn => {
+test("adhoc test", t => withAllTables(async conn => {
     const actual = await query("", conn, adhocTest());
 
     const expected: typeof actual = [
