@@ -217,6 +217,8 @@ export async function insertManyOnConflictDoUpdate<Req extends object, Def exten
 
     const pgParams = params.map(x => litToPgParam(x.param));
 
+    console.log(sqlText);
+
     const result = await pg.query(conn, tagSql(sqlTag, sqlText), pgParams);
     return result.rowCount;
 }

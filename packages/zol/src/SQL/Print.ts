@@ -37,7 +37,7 @@ function runPP(pp: PP<string>): [TableName[], string, Param[]] {
  * Compile an SQL AST into a parameterized SQL query.
  */
 export function compSql(sql: SQL): [TableName[], string, Param[]] {
-    return runPP(ppSql(sql));
+    return runPP(ppSql(sql, null));
 }
 
 export function compInsert(tbl: TableName, names: [ColName, string, (val: string) => any][], cs: SomeCol<SQL>[][], conflictTableCols: undefined | ColName[], p: Exp<SQL, boolean> | undefined, cs2: [ColName, SomeCol<SQL>][] | undefined, rs: SomeCol<SQL>[]): [string, Param[]] {
@@ -284,13 +284,13 @@ function ppCol<a>(c: Exp<SQL, a>, tbl: TableName | null): PP<string> {
             return State.bind(
                 ppCol(c.exp, tbl),
                 x2 => State.bind(
-                    ppSql(c.sql),
+                    ppSql(c.sql, tbl),
                     q2 => State.pure(x2 + " IN (" + q2 + ")")
                 )
             );
         case "EExists":
             return State.bind(
-                ppSql(c.sql),
+                ppSql(c.sql, tbl),
                 q2 => State.pure("EXISTS (" + q2 + ")")
             );
         /* istanbul ignore next */
@@ -394,15 +394,15 @@ function freshQueryName(): PP<string> {
 /**
  * Pretty-print an SQL AST.
  */
-function ppSql(sql: SQL): PP<string> {
+function ppSql(sql: SQL, tbl: TableName | null): PP<string> {
     return State.bind
         (
-        State.mapM(x => ppSomeCol(x, null), sql.cols),
+        State.mapM(x => ppSomeCol(x, tbl), sql.cols),
         cs2 =>
             State.bind(
-                ppSrc(sql.source),
+                ppSrc(sql.source, tbl),
                 src2 => State.bind(
-                    ppRestricts(sql.restricts),
+                    ppRestricts(sql.restricts, tbl),
                     r2 => State.bind(
                         ppGroups(sql.groups),
                         gs2 => State.bind(
@@ -431,7 +431,7 @@ function ppSql(sql: SQL): PP<string> {
                         )))));
 }
 
-function ppSrc(s: SqlSource): PP<string> {
+function ppSrc(s: SqlSource, tbl: TableName | null): PP<string> {
     switch (s.type) {
         case "EmptyTable":
             return State.bind
@@ -450,7 +450,7 @@ function ppSrc(s: SqlSource): PP<string> {
                 return State.pure("");
             } else {
                 return State.bind(
-                    State.mapM(s => ppSql(s), s.sqls.slice().reverse()),
+                    State.mapM(s => ppSql(s, tbl), s.sqls.slice().reverse()),
                     srcs => State.bind(
                         State.mapM(
                             q => State.bind(
@@ -464,11 +464,11 @@ function ppSrc(s: SqlSource): PP<string> {
             }
         case "Values":
             return State.bind(
-                State.mapM(x => ppSomeCol(x, null), s.cols),
+                State.mapM(x => ppSomeCol(x, tbl), s.cols),
                 row2m => {
                     const row2 = row2m.join(", ");
                     return State.bind(
-                        State.mapM(ppRow, s.params),
+                        State.mapM(x => ppRow(x, tbl), s.params),
                         rows2 => State.bind(
                             freshQueryName(),
                             qn => State.pure(
@@ -483,9 +483,9 @@ function ppSrc(s: SqlSource): PP<string> {
             );
         case "Join":
             return State.bind(
-                ppSql(s.left),
+                ppSql(s.left, tbl),
                 l2 => State.bind(
-                    ppSql(s.right),
+                    ppSql(s.right, tbl),
                     r2 => State.bind(
                         ppCol(s.exp, null),
                         on2 => State.bind(
@@ -508,10 +508,10 @@ function ppSrc(s: SqlSource): PP<string> {
     }
 }
 
-function ppRow(xs: SomeCol<SQL>[]): PP<string> {
+function ppRow(xs: SomeCol<SQL>[], tbl: TableName | null): PP<string> {
     const pps: PP<string>[] = [];
     for (const x of xs) {
-        pps.push(ppCol(x.exp, null));
+        pps.push(ppCol(x.exp, tbl));
     }
     return State.bind(
         State.sequence(pps),
@@ -519,12 +519,12 @@ function ppRow(xs: SomeCol<SQL>[]): PP<string> {
     );
 }
 
-function ppRestricts(rs: Exp<SQL, boolean>[]): PP<string> {
+function ppRestricts(rs: Exp<SQL, boolean>[], tbl: TableName | null): PP<string> {
     if (rs.length === 0) {
         return State.pure("");
     } else {
         return State.bind(
-            ppCols(rs),
+            ppCols(rs, tbl),
             rs2 => State.pure(" WHERE " + rs2)
         );
     }
@@ -586,9 +586,9 @@ function ppLimit(lim: [number, number] | null): PP<string> {
     }
 }
 
-function ppCols(cs: Exp<SQL, boolean>[]): PP<string> {
+function ppCols(cs: Exp<SQL, boolean>[], tbl: TableName | null): PP<string> {
     return State.bind(
-        State.mapM(x => ppCol(x, null), cs.slice().reverse()),
+        State.mapM(x => ppCol(x, tbl), cs.slice().reverse()),
         cs2 => State.pure("(" + cs2.join(") AND (") + ")")
     );
 }
