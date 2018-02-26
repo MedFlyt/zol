@@ -1,6 +1,6 @@
 {
   "name": "zol-math",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "SQL Math functionality for Zol",
   "keywords": [
     "typescript",
@@ -45,6 +45,6 @@
     "typescript": "2.4.2"
   },
   "dependencies": {
-    "zol": "^0.2.2"
+    "zol": "^0.2.3"
   }
 }
