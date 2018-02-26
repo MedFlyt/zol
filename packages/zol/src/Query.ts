@@ -8,7 +8,7 @@ import { SqlType } from "./SqlType";
 import * as State from "./StateMonad";
 import { Table } from "./Table";
 import { allCols, colNames, state2sql } from "./Transform";
-import { ColName } from "./Types";
+import { ColName, TableName } from "./Types";
 
 function mkSome<sql, a>(val: Exp<sql, a>, parser: (val: string) => a): SomeCol<sql> {
     return {
@@ -21,6 +21,7 @@ function mkSome<sql, a>(val: Exp<sql, a>, parser: (val: string) => a): SomeCol<s
 function mkCol<sql, a>(val: ColName, parser: (val: string) => a): Exp<sql, a> {
     return {
         type: "ECol",
+        correlation: null,
         colName: val,
         parser: parser
     };
@@ -85,7 +86,7 @@ export function select<s, a extends object, b extends object>(table: Table<a, b>
                             return State.bind
                                 (
                                 State.put(st2),
-                                () => State.pure(toTup(someColNames2(rns)))
+                                () => State.pure(toTup(someColNames2(rns), null))
                                 );
                         }
                         )
@@ -152,6 +153,7 @@ export function selectValues<s, a extends object>(vals: MakeCols<s, a>[]): Query
                             colName: n,
                             exp: {
                                 type: "ECol",
+                                correlation: null,
                                 colName: n,
                                 parser: () => { throw new Error("ECol parser"); }
                             },
@@ -179,7 +181,7 @@ export function selectValues<s, a extends object>(vals: MakeCols<s, a>[]): Query
                                     for (const r of rns) {
                                         ts.push([(<SomeCol.Named<SQL>>r).colName, (<SomeCol.Named<SQL>>r).propName, r.parser]);
                                     }
-                                    return State.pure(toTup(ts));
+                                    return State.pure(toTup(ts, null));
                                 }
                             );
                         }
@@ -249,7 +251,7 @@ export function aggregate<s, a extends object>(q: Query<Inner<s>, AggrCols<s, a>
                                     ...st,
                                     sources: [sql].concat(st.sources)
                                 })),
-                                () => State.pure(toTup(someColNames2(cs)))
+                                () => State.pure(toTup(someColNames2(cs), null))
                             );
                         }
                     );
@@ -542,7 +544,7 @@ function someJoin<s, a extends object, a2>(jointype: JoinType, check: any, q: Qu
                             type: "Product",
                             sqls: [state2sql(join_st)]
                         });
-                        const on: Col<s, boolean> = check(toTup(nameds));
+                        const on: Col<s, boolean> = check(toTup(nameds, null));
                         let outCols: SomeCol<SQL>[] = [];
                         for (const c of cs) {
                             const c2 = c[0];
@@ -551,6 +553,7 @@ function someJoin<s, a extends object, a2>(jointype: JoinType, check: any, q: Qu
                                     type: "Some",
                                     exp: {
                                         type: "ECol",
+                                        correlation: null,
                                         colName: c2.colName,
                                         parser: c2.parser
                                     },
@@ -570,7 +573,7 @@ function someJoin<s, a extends object, a2>(jointype: JoinType, check: any, q: Qu
                                     right: right
                                 })]
                             }),
-                            () => State.pure(toTup(nameds))
+                            () => State.pure(toTup(nameds, null))
                         );
                     }
                 )
@@ -601,12 +604,13 @@ function fromTup<a extends object>(c: MakeCols<any, a>): [SomeCol<SQL>, string, 
     return result;
 }
 
-export function toTup<a>(colNames: [ColName, string, (val: string) => any][]): a {
+export function toTup<a>(colNames: [ColName, string, (val: string) => any][], correlation: TableName | null): a {
     const results: any = {};
     for (const c of colNames) {
         const [colName, propName, parser] = c;
         results[propName] = colWrap({
             type: "ECol",
+            correlation: correlation,
             colName: colName,
             parser: parser
         });

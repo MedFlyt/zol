@@ -44,7 +44,7 @@ export function compInsert(tbl: TableName, names: [ColName, string, (val: string
     const [, sql, params] = runPP(State.bind(
         State.mapM(ppInsertRow, cs),
         inserts => State.bind(
-            cs2 === undefined ? State.pure(undefined) : State.mapM(ppUpdate, cs2),
+            cs2 === undefined ? State.pure(undefined) : State.mapM(x => ppUpdate(x, tbl), cs2),
             updates => State.bind(
                 p === undefined ? State.pure(undefined) : ppCol(p),
                 check => State.bind(
@@ -112,7 +112,7 @@ function ppInsert(c: SomeCol<SQL>): PP<string> {
  */
 export function compUpdate(tbl: TableName, p: Exp<SQL, boolean>, cs: [ColName, SomeCol<SQL>][], rs: SomeCol<SQL>[]): [string, Param[]] {
     const ppUpd: PP<string> = State.bind(
-        State.mapM(ppUpdate, cs),
+        State.mapM(x => ppUpdate(x, null), cs),
         updates => State.bind(
             ppCol(p),
             check => State.bind(
@@ -147,7 +147,7 @@ export function compDelete(tbl: TableName, p: Exp<SQL, boolean>): [string, Param
 }
 
 // left=false, right=true
-function ppUpdate([n, c]: [ColName, SomeCol<SQL>]): PP<[boolean, string]> {
+function ppUpdate([n, c]: [ColName, SomeCol<SQL>], correlation: TableName | null): PP<[boolean, string]> {
     const n2 = fromColName(n);
     if (c.exp === <any>defaultValue()) {
         return State.pure<PPState, [boolean, string]>([true, n2 + " = DEFAULT"]);
@@ -156,7 +156,11 @@ function ppUpdate([n, c]: [ColName, SomeCol<SQL>]): PP<[boolean, string]> {
         ppSomeCol(c),
         c2 => {
             const upd = n2 + " = " + c2;
-            if (n2 === c2) {
+            if (c.type === "Some" &&
+                c.exp.type === "ECol" &&
+                c.exp.correlation === correlation &&
+                c.exp.colName === n) {
+                // Setting a column to its own value
                 return State.pure<PPState, [boolean, string]>([false, upd]);
             } else {
                 return State.pure<PPState, [boolean, string]>([true, upd]);
@@ -197,7 +201,11 @@ function ppCol<a>(c: Exp<SQL, a>): PP<string> {
         case "ETblCol":
             throw new Error("compiler bug: ppCol saw TblCol: " + c.colNames);
         case "ECol":
-            return State.pure(fromColName(c.colName));
+            if (c.correlation === null) {
+                return State.pure(fromColName(c.colName));
+            } else {
+                return State.pure(fromTableName(c.correlation) + "." + fromColName(c.colName));
+            }
         case "ELit":
             return ppLit(c.lit);
         case "EBinOp":

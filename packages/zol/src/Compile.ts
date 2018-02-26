@@ -76,7 +76,7 @@ export function finalCols<s, a>(cols: object): SomeCol<SQL>[] {
 
 export function compileInsert<a extends object, b extends object, c extends object>(tbl: Table<any, any>, rowValues: MakeTable<a, b>[], conflictTarget: ConflictTarget<a & b> | undefined, conflictAction: [(c: MakeCols<Write, a>) => Col<Write, boolean>, (c: MakeCols<Write, a>) => MakeTable<a, b>] | undefined, returning: (c: MakeCols<Write, a & b>) => MakeCols<Write, c>): [string, Param[]] {
     const names = tbl.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
-    const cs = <any>toTup(names); // tslint:disable-line:no-unnecessary-type-assertion
+    const cs = <any>toTup(names, null); // tslint:disable-line:no-unnecessary-type-assertion
     const fs = rowValues.map(finalCols);
     const rs = finalCols(returning(cs));
 
@@ -90,7 +90,7 @@ export function compileInsert<a extends object, b extends object, c extends obje
             const [check, upd] = conflictAction;
 
             const names = tbl.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
-            const cs = toTup<a>(names);
+            const cs = toTup<a>(names, tbl.tableName);
             const updated: [ColName, SomeCol<SQL>][] = [];
             const fs2 = finalCols(upd(cs));
             for (let i = 0; i < names.length; ++i) {
@@ -107,7 +107,7 @@ export function compileInsert<a extends object, b extends object, c extends obje
 
 export function compileUpdate<a extends object, b extends object, c extends object>(tbl: Table<a, b>, check: (c: MakeCols<Write, a>) => Col<Write, boolean>, upd: (c: MakeCols<Write, a>) => MakeTable<a, b>, returning: ((c: MakeCols<Write, a & b>) => MakeCols<Write, c>) | undefined): [string, Param[]] {
     const names = tbl.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
-    const cs = toTup<a>(names);
+    const cs = toTup<a>(names, null);
     const updated: [ColName, SomeCol<SQL>][] = [];
     const fs = finalCols(upd(cs));
     for (let i = 0; i < names.length; ++i) {
@@ -120,7 +120,7 @@ export function compileUpdate<a extends object, b extends object, c extends obje
     if (returning === undefined) {
         return compUpdate(tbl.tableName, predicate, updated, []);
     } else {
-        const cs = <any>toTup(names); // tslint:disable-line:no-unnecessary-type-assertion
+        const cs = <any>toTup(names, null); // tslint:disable-line:no-unnecessary-type-assertion
         const rs = finalCols(returning(cs));
         return compUpdate(tbl.tableName, predicate, updated, rs);
     }
@@ -128,7 +128,7 @@ export function compileUpdate<a extends object, b extends object, c extends obje
 
 export function compileDelete<a extends object, b extends object>(tbl: Table<a, b>, check: (c: MakeCols<Write, a>) => Col<Write, boolean>): [string, Param[]] {
     const names = tbl.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
-    const cs = toTup<a>(names);
+    const cs = toTup<a>(names, null);
     const predicate = colUnwrap(check(cs));
     return compDelete(tbl.tableName, predicate);
 }

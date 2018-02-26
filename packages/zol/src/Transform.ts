@@ -180,6 +180,7 @@ function outCol(s: SomeCol<SQL>): SomeCol<SQL> {
             type: "Some",
             exp: {
                 type: "ECol",
+                correlation: null,
                 colName: s.colName,
                 parser: s.parser
             },

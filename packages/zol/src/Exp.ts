@@ -1,5 +1,5 @@
 import * as SqlType from "./SqlType";
-import { ColName } from "./Types";
+import { ColName, TableName } from "./Types";
 
 export type SomeCol<sql> = SomeCol.Some<sql> | SomeCol.Named<sql>;
 
@@ -40,6 +40,7 @@ export type Exp<sql, a> =
 export namespace Exp {
     export interface ECol {
         readonly type: "ECol";
+        readonly correlation: TableName | null;
         readonly colName: ColName;
         readonly parser: (val: string) => any;
     }
