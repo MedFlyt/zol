@@ -2,7 +2,7 @@ import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-sid
 
 import * as test from "blue-tape";
 import { withTestDatabase } from "../../../../helper_framework/TestDb";
-import { Col, declareTable, insertMany, MakeTable, numberCol, Order, order, pg, query, select, SqlType, textCol } from "../../src/zol";
+import { Col, ColumnParseError, declareTable, insertMany, MakeTable, numberCol, order, Order, pg, query, select, SqlType, textCol } from "../../src/zol";
 
 // --------------------------------------------------------------------
 
@@ -105,4 +105,66 @@ test("custom parser", t => withTestDatabase(async conn => {
     ];
 
     t.deepEqual(actual, expected);
+}));
+
+test("custom parser error", t => withTestDatabase(async conn => {
+    await pg.query_(conn, createLetterTableSql);
+
+    const vals: LetterTable[] = [
+        {
+            num: numberCol(1),
+            pair: letterPairCol({
+                first: "a",
+                second: "b"
+            })
+        },
+        {
+            num: numberCol(2),
+            pair: letterPairCol({
+                first: "c",
+                second: "d"
+            })
+        }
+    ];
+
+    await insertMany("", conn, letterTable, vals);
+    await pg.query_(conn,
+        `
+        INSERT INTO letter
+            ("num", "pair")
+            VALUES
+            (3, 'e')
+        `);
+
+    try {
+        await query("", conn, q => {
+            const letter = select(q, letterTable);
+            order(q, letter.num, Order.Asc);
+            return {
+                num: letter.num,
+                pair: letter.pair
+            };
+        });
+    } catch (e) {
+        if (!(e instanceof ColumnParseError)) {
+            throw e;
+        }
+
+        t.deepEqual(
+            {
+                name: e.name,
+                message: e.message,
+                columnValue: e.columnValue,
+                parseFunction: e.parseFunction
+            },
+            {
+                name: "ColumnParseError",
+                message: "Invalid LetterPair: e",
+                columnValue: "e",
+                parseFunction: "letterPairParser"
+            });
+        return;
+    }
+
+    t.fail("Expected error was not thrown");
 }));
