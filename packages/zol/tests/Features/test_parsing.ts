@@ -146,8 +146,8 @@ test("custom parser error", t => withTestDatabase(async conn => {
             };
         });
     } catch (e) {
+        /* istanbul ignore if  */
         if (!(e instanceof ColumnParseError)) {
-            /* istanbul ignore next */
             throw e;
         }
 
