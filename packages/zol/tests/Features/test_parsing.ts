@@ -147,6 +147,7 @@ test("custom parser error", t => withTestDatabase(async conn => {
         });
     } catch (e) {
         if (!(e instanceof ColumnParseError)) {
+            /* istanbul ignore next */
             throw e;
         }
 
@@ -166,5 +167,6 @@ test("custom parser error", t => withTestDatabase(async conn => {
         return;
     }
 
+    /* istanbul ignore next */
     t.fail("Expected error was not thrown");
 }));
