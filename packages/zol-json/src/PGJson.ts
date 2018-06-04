@@ -60,6 +60,15 @@ export class PGJson {
     }
 
     /**
+     * check if JSON array contains text
+     *
+     * This is the PostgreSQL `?` operator
+     */
+    public static arrayContainsText<s>(lhs: Col<s, PGJson>, rhs: Col<s, string>): Col<s, boolean | null> {
+        return Unsafe.unsafeBinOp("?", lhs, Unsafe.unsafeCast(rhs, "TEXT", SqlType.textParser), PGJson.parser);
+    }
+
+    /**
      * The actual JSON object
      */
     public readonly data: any;
