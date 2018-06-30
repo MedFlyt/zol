@@ -125,6 +125,10 @@ Let's add some people using the `insertMany` function (The `conn` object is from
 
 ## Frequently Asked Questions
 
+### Can Zol be used with JavaScript
+
+It should work but is not recommended. You should use TypeScript to get the full benefits of static type checking and IDE autocomplete.
+
 ### Why can't Zol automatically create tables? Why doesn't Zol do migrations?
 
 Zol's purpose is to be a replacement for SQL for querying and manipulating data.
