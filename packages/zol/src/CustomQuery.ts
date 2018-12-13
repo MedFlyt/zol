@@ -3,18 +3,27 @@ import * as pgLib from "pg";
 /**
  * Will be thrown during a query, if parsing of a column fails for any of the returned rows
  */
-export function ColumnParseError(this: any, message: string, query: string, columnValue: string, parseFunction: string, innerError?: Error) {
-    this.name = "ColumnParseError";
-    this.message = message;
-    this.stack = (new Error()).stack;
-    this.query = query;
-    this.columnValue = columnValue;
-    this.parseFunction = parseFunction;
-    this.innerError = innerError;
+export class ColumnParseError extends Error {
+    public readonly query: string;
+    public readonly columnValue: string;
+    public readonly parseFunction: string;
+    public readonly innerError: Error | undefined;
+
+    protected __proto__: Error; // tslint:disable-line:variable-name
+
+    public constructor(message: string, query: string, columnValue: string, parseFunction: string, innerError?: Error) {
+        const trueProto = new.target.prototype;
+        super(message);
+
+        this.__proto__ = trueProto;
+
+        this.query = query;
+        this.columnValue = columnValue;
+        this.parseFunction = parseFunction;
+        this.innerError = innerError;
+    }
 }
 
-ColumnParseError.prototype = Object.create(Error.prototype);
-ColumnParseError.prototype.constructor = ColumnParseError;
 
 export function runCustomQuery(conn: pgLib.Client, propNames: string[], propParsers: ((val: string) => any)[], text: string, values: any): Promise<any[]> {
     return new Promise<any[]>((resolve, reject) => {
@@ -26,7 +35,7 @@ export function runCustomQuery(conn: pgLib.Client, propNames: string[], propPars
             }
 
             if (customQuery.parseError !== null) {
-                reject(new (<any>ColumnParseError)(
+                reject(new ColumnParseError(
                     customQuery.parseError.message,
                     text,
                     customQuery.parseErrorValue,

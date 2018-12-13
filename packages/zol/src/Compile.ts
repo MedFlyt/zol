@@ -92,14 +92,14 @@ export function compileInsert<a extends object, b extends object, c extends obje
             const names = tbl.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
             const cs = toTup<a>(names, tbl.tableName);
             const updated: [ColName, SomeCol<SQL>][] = [];
-            const fs2 = finalCols(upd(cs));
+            const fs2 = finalCols(upd(<any>cs));
             for (let i = 0; i < names.length; ++i) {
                 updated.push([
                     names[i][0],
                     fs2[i]
                 ]);
             }
-            const predicate = colUnwrap(check(cs));
+            const predicate = colUnwrap(check(<any>cs));
             return compInsert(tbl.tableName, names, fs, conflictTblCols, predicate, updated, rs);
         }
     }
@@ -109,14 +109,14 @@ export function compileUpdate<a extends object, b extends object, c extends obje
     const names = tbl.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
     const cs = toTup<a>(names, null);
     const updated: [ColName, SomeCol<SQL>][] = [];
-    const fs = finalCols(upd(cs));
+    const fs = finalCols(upd(<any>cs));
     for (let i = 0; i < names.length; ++i) {
         updated.push([
             names[i][0],
             fs[i]
         ]);
     }
-    const predicate = colUnwrap(check(cs));
+    const predicate = colUnwrap(check(<any>cs));
     if (returning === undefined) {
         return compUpdate(tbl.tableName, predicate, updated, []);
     } else {
@@ -129,6 +129,6 @@ export function compileUpdate<a extends object, b extends object, c extends obje
 export function compileDelete<a extends object, b extends object>(tbl: Table<a, b>, check: (c: MakeCols<Write, a>) => Col<Write, boolean>): [string, Param[]] {
     const names = tbl.tableCols.map<[ColName, string, (val: string) => any]>(x => [x.name, x.propName, x.parser]);
     const cs = toTup<a>(names, null);
-    const predicate = colUnwrap(check(cs));
+    const predicate = colUnwrap(check(<any>cs));
     return compDelete(tbl.tableName, predicate);
 }

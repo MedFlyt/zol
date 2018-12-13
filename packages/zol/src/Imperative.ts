@@ -70,7 +70,7 @@ export function leftJoin<s, a extends object>(q: Q<s>, s: (q: Q<Inner<s>>) => Ma
             runState: (x: GenState): [a, GenState] => {
                 const mutQ2: MutQuery = [x];
                 const result = s(<any>mutQ2);
-                return [result, mutQ2[0]];
+                return [<any>result, mutQ2[0]];
             }
         }
     };
@@ -86,7 +86,7 @@ export function innerJoin<s, a extends object>(q: Q<s>, s: (q: Q<Inner<s>>) => M
             runState: (x: GenState): [a, GenState] => {
                 const mutQ2: MutQuery = [x];
                 const result = s(<any>mutQ2);
-                return [result, mutQ2[0]];
+                return [<any>result, mutQ2[0]];
             }
         }
     };
@@ -130,7 +130,7 @@ export function aggregate<s, a extends object>(q: Q<s>, s: (q: Q<Inner<s>>) => A
             runState: (x: GenState): [a, GenState] => {
                 const mutQ2: MutQuery = [x];
                 const result = s(<any>mutQ2);
-                return [result, mutQ2[0]];
+                return [<any>result, mutQ2[0]];
             }
         }
     };
@@ -201,7 +201,7 @@ export function limit<s, a extends object>(q: Q<s>, from: number, to: number, qu
             runState: (x: GenState): [a, GenState] => {
                 const mutQ2: MutQuery = [x];
                 const result = query(<any>mutQ2);
-                return [result, mutQ2[0]];
+                return [<any>result, mutQ2[0]];
             }
         }
     };
@@ -224,7 +224,7 @@ export function distinct<s, a extends object>(q: Q<s>, query: (q: Q<s>) => MakeC
             runState: (x: GenState): [a, GenState] => {
                 const mutQ2: MutQuery = [x];
                 const result = query(<any>mutQ2);
-                return [result, mutQ2[0]];
+                return [<any>result, mutQ2[0]];
             }
         }
     };
