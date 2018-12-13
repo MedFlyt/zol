@@ -186,9 +186,9 @@ function ppSomeCol(c: SomeCol<SQL>): PP<string> {
         case "Named":
             return State.bind
                 (
-                ppCol(c.exp),
-                c2 =>
-                    State.pure(c2 + " AS " + fromColName(c.colName))
+                    ppCol(c.exp),
+                    c2 =>
+                        State.pure(c2 + " AS " + fromColName(c.colName))
                 );
         /* istanbul ignore next */
         default:
@@ -340,22 +340,22 @@ function ppLit(l: Lit): PP<string> {
         default:
             return State.bind
                 (
-                State.get(),
-                pp => {
-                    const p2: Param = {
-                        param: l
-                    };
-                    return State.bind
-                        (State.put({
-                            ppParams: [p2].concat(pp.ppParams),
-                            ppTables: pp.ppTables,
-                            ppParamNS: pp.ppParamNS + 1,
-                            ppQueryNS: pp.ppQueryNS
-                        }),
-                        () =>
-                            State.pure("$" + pp.ppParamNS)
-                        );
-                }
+                    State.get(),
+                    pp => {
+                        const p2: Param = {
+                            param: l
+                        };
+                        return State.bind
+                            (State.put({
+                                ppParams: [p2].concat(pp.ppParams),
+                                ppTables: pp.ppTables,
+                                ppParamNS: pp.ppParamNS + 1,
+                                ppQueryNS: pp.ppQueryNS
+                            }),
+                                () =>
+                                    State.pure("$" + pp.ppParamNS)
+                            );
+                    }
                 );
     }
 }
@@ -363,13 +363,13 @@ function ppLit(l: Lit): PP<string> {
 function dependOn(tableName: TableName): PP<void> {
     return State.bind
         (
-        State.get(),
-        pp => State.put({
-            ppParams: pp.ppParams,
-            ppTables: [tableName].concat(pp.ppTables),
-            ppParamNS: pp.ppParamNS,
-            ppQueryNS: pp.ppQueryNS
-        })
+            State.get(),
+            pp => State.put({
+                ppParams: pp.ppParams,
+                ppTables: [tableName].concat(pp.ppTables),
+                ppParamNS: pp.ppParamNS,
+                ppQueryNS: pp.ppQueryNS
+            })
         );
 }
 
@@ -379,19 +379,19 @@ function dependOn(tableName: TableName): PP<void> {
 function freshQueryName(): PP<string> {
     return State.bind
         (
-        State.get(),
-        pp =>
-            State.bind
-                (
-                State.put({
-                    ppParams: pp.ppParams,
-                    ppTables: pp.ppTables,
-                    ppParamNS: pp.ppParamNS,
-                    ppQueryNS: pp.ppQueryNS + 1
-                }),
-                () =>
-                    State.pure("q" + pp.ppQueryNS)
-                )
+            State.get(),
+            pp =>
+                State.bind
+                    (
+                        State.put({
+                            ppParams: pp.ppParams,
+                            ppTables: pp.ppTables,
+                            ppParamNS: pp.ppParamNS,
+                            ppQueryNS: pp.ppQueryNS + 1
+                        }),
+                        () =>
+                            State.pure("q" + pp.ppQueryNS)
+                    )
         );
 }
 
@@ -401,38 +401,38 @@ function freshQueryName(): PP<string> {
 function ppSql(sql: SQL): PP<string> {
     return State.bind
         (
-        State.mapM(ppSomeCol, sql.cols),
-        cs2 =>
-            State.bind(
-                ppSrc(sql.source),
-                src2 => State.bind(
-                    ppRestricts(sql.restricts),
-                    r2 => State.bind(
-                        ppGroups(sql.groups),
-                        gs2 => State.bind(
-                            ppOrder(sql.ordering),
-                            ord2 => State.bind(
-                                ppLimit(sql.limits),
-                                lim2 => {
-                                    const result = (cs: string[]): string => {
-                                        if (cs.length === 0) {
-                                            return "1";
-                                        } else {
-                                            return cs.join(", ");
-                                        }
-                                    };
+            State.mapM(ppSomeCol, sql.cols),
+            cs2 =>
+                State.bind(
+                    ppSrc(sql.source),
+                    src2 => State.bind(
+                        ppRestricts(sql.restricts),
+                        r2 => State.bind(
+                            ppGroups(sql.groups),
+                            gs2 => State.bind(
+                                ppOrder(sql.ordering),
+                                ord2 => State.bind(
+                                    ppLimit(sql.limits),
+                                    lim2 => {
+                                        const result = (cs: string[]): string => {
+                                            if (cs.length === 0) {
+                                                return "1";
+                                            } else {
+                                                return cs.join(", ");
+                                            }
+                                        };
 
-                                    return State.pure(
-                                        "SELECT " + (sql.distinct ? "DISTINCT " : "") + result(cs2) +
-                                        src2 +
-                                        r2 +
-                                        gs2 +
-                                        ord2 +
-                                        lim2
-                                    );
-                                }
-                            )
-                        )))));
+                                        return State.pure(
+                                            "SELECT " + (sql.distinct ? "DISTINCT " : "") + result(cs2) +
+                                            src2 +
+                                            r2 +
+                                            gs2 +
+                                            ord2 +
+                                            lim2
+                                        );
+                                    }
+                                )
+                            )))));
 }
 
 function ppSrc(s: SqlSource): PP<string> {
@@ -440,14 +440,14 @@ function ppSrc(s: SqlSource): PP<string> {
         case "EmptyTable":
             return State.bind
                 (
-                freshQueryName(),
-                qn =>
-                    State.pure(" FROM (SELECT NULL LIMIT 0) AS " + qn)
+                    freshQueryName(),
+                    qn =>
+                        State.pure(" FROM (SELECT NULL LIMIT 0) AS " + qn)
                 );
         case "TableName":
             return State.bind
                 (dependOn(s.tableName),
-                () => State.pure(" FROM " + fromTableName(s.tableName))
+                    () => State.pure(" FROM " + fromTableName(s.tableName))
                 );
         case "Product":
             if (s.sqls.length === 0) {

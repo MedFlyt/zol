@@ -153,13 +153,11 @@ test("custom parser error", t => withTestDatabase(async conn => {
 
         t.deepEqual(
             {
-                name: e.name,
                 message: e.message,
                 columnValue: e.columnValue,
                 parseFunction: e.parseFunction
             },
             {
-                name: "ColumnParseError",
                 message: "Invalid LetterPair: e",
                 columnValue: "e",
                 parseFunction: "letterPairParser"

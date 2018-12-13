@@ -69,27 +69,27 @@ export function select<s, a extends object, b extends object>(table: Table<a, b>
         resolve(
             State.bind
                 (
-                State.mapM(x => State.bind<GenState, SomeCol<SQL>, [SomeCol<SQL>, string, (val: string) => any]>(rename(mkSome(mkCol(x[0], x[2]), x[2])), y => State.pure<GenState, [SomeCol<SQL>, string, (val: string) => any]>([y, x[1], x[2]])), cs2),
-                (rns: [SomeCol<SQL>, string, (val: string) => any][]) =>
-                    State.bind
-                        (
-                        State.get(),
-                        st => {
-                            const newSource = sqlFrom(rns.map(x => x[0]), {
-                                type: "TableName",
-                                tableName: table.tableName
-                            });
-                            const st2: GenState = {
-                                ...st,
-                                sources: [newSource].concat(st.sources)
-                            };
-                            return State.bind
-                                (
-                                State.put(st2),
-                                () => State.pure(toTup(someColNames2(rns), null))
-                                );
-                        }
-                        )
+                    State.mapM(x => State.bind<GenState, SomeCol<SQL>, [SomeCol<SQL>, string, (val: string) => any]>(rename(mkSome(mkCol(x[0], x[2]), x[2])), y => State.pure<GenState, [SomeCol<SQL>, string, (val: string) => any]>([y, x[1], x[2]])), cs2),
+                    (rns: [SomeCol<SQL>, string, (val: string) => any][]) =>
+                        State.bind
+                            (
+                                State.get(),
+                                st => {
+                                    const newSource = sqlFrom(rns.map(x => x[0]), {
+                                        type: "TableName",
+                                        tableName: table.tableName
+                                    });
+                                    const st2: GenState = {
+                                        ...st,
+                                        sources: [newSource].concat(st.sources)
+                                    };
+                                    return State.bind
+                                        (
+                                            State.put(st2),
+                                            () => State.pure(toTup(someColNames2(rns), null))
+                                        );
+                                }
+                            )
                 ));
     });
     return result;

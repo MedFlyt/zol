@@ -18,6 +18,7 @@
     "insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": false,
     "insertSpaceAfterTypeAssertion": false,
     "insertSpaceBeforeFunctionParenthesis": false,
+    "insertSpaceBeforeTypeAnnotation": false,
     "placeOpenBraceOnNewLineForFunctions": false,
     "placeOpenBraceOnNewLineForControlBlocks": false
 }
