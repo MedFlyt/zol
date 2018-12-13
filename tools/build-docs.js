@@ -78,6 +78,9 @@ function main() {
             throw p.error;
         }
         console.log(p.stdout.toString());
+        if (p.status !== 0) {
+            throw new Error(`typedoc process failed with exit code ${p.status}`);
+        }
     } finally {
         fs.removeSync(dirName);
     }
