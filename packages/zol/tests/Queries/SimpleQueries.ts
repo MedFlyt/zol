@@ -42,10 +42,10 @@ export function allPersons<s>(): Query<s, PersonCols<s>> {
         person =>
             queryBind
                 (queryPure({}),
-                () =>
-                    queryPure({
-                        ...person
-                    })
+                    () =>
+                        queryPure({
+                            ...person
+                        })
                 )
     );
 }
@@ -203,10 +203,10 @@ export function adhocTest<s>(): Query<s, {
         person =>
             queryBind
                 (queryPure(person.bar),
-                () =>
-                    queryPure({
-                        ...person
-                    })
+                    () =>
+                        queryPure({
+                            ...person
+                        })
                 )
     );
 }
