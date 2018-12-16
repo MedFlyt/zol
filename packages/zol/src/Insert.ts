@@ -5,6 +5,7 @@ import { litToPgParam, tagSql } from "./Frontend";
 import { ConflictTarget } from "./OnConflict";
 import { pg } from "./pg";
 import { MakeCols, MakeTable, toTup, Write } from "./Query";
+import { Param } from "./SQL";
 import { Table } from "./Table";
 import { ColName } from "./Types";
 
@@ -215,7 +216,7 @@ export async function insertManyOnConflictDoUpdate<Req extends object, Def exten
 
     const [sqlText, params] = compileInsert(table, rowValues, conflictTarget, [onConflictPred, onConflictUpdate], () => ({}));
 
-    const pgParams = params.map(x => litToPgParam(x.param));
+    const pgParams = params.map((x: Param) => litToPgParam(x.param));
 
     const result = await pg.query(conn, tagSql(sqlTag, sqlText), pgParams);
     return result.rowCount;
