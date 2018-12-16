@@ -1,6 +1,6 @@
 {
   "name": "zol-string",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "SQL string functions for Zol",
   "keywords": [
     "typescript",
@@ -45,6 +45,6 @@
     "typescript": "3.2.2"
   },
   "dependencies": {
-    "zol": "^0.2.4"
+    "zol": "^0.2.5"
   }
 }
