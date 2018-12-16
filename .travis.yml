@@ -10,7 +10,7 @@ cache:
 notifications:
     email: false
 node_js:
-    - '6'
+    - '8'
 addons:
     postgresql: "9.6"
 services:
