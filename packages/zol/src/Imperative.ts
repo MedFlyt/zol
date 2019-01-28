@@ -9,6 +9,7 @@ import * as m from "./Query";
 import { Aggr, AggrCols, Inner, LeftCols, MakeCols } from "./Query";
 import { Order } from "./SQL";
 import { SqlType } from "./SqlType";
+import { StreamingRows } from "./StreamingRows";
 import { Table } from "./Table";
 import { Unsafe } from "./Unsafe";
 
@@ -36,6 +37,27 @@ export async function query<t extends object>(sqlTag: string | undefined, conn: 
     const result = q(<any>mutQ);
     const [n, sql] = compQuery2(result, mutQ[0]);
     return Frontend.query2<t>(sqlTag, conn, n, sql);
+}
+
+/**
+ * Perform a query, but stream the results rather than loading them all into
+ * memory.
+ *
+ * After you call this function, you *must* call the `readAllRows` function, and
+ * you must call it while the connection is still open (and don't close the
+ * connection until it completes).
+ *
+ * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
+ * @param rowChunkSize How many rows to read and process during each iteration
+ */
+export async function queryStreaming<t extends object>(sqlTag: string | undefined, conn: pg.Client, q: (q: Q<{}>) => MakeCols<{}, t>, rowChunkSize = 5000): Promise<StreamingRows<t>> {
+    // This ensures that the generated SQL will be the same for identical queries
+    resetScope();
+
+    const mutQ: MutQuery = [initState(0)];
+    const result = q(<any>mutQ);
+    const [n, sql] = compQuery2(result, mutQ[0]);
+    return Frontend.query2Streaming<t>(sqlTag, conn, n, sql, rowChunkSize);
 }
 
 export function select<s, a extends object, b extends object>(q: Q<s>, table: Table<a, b>): MakeCols<s, a & b> {

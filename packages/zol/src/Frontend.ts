@@ -1,6 +1,6 @@
 import { assertNever } from "./assertNever";
 import { compQuery, resetScope } from "./Compile";
-import { runCustomQuery } from "./CustomQuery";
+import { runCustomQuery, runCustomQueryStreaming } from "./CustomQuery";
 import * as Debug from "./Debug";
 import { pg } from "./pg";
 import { MakeCols } from "./Query";
@@ -8,6 +8,7 @@ import { Query } from "./Query/Type";
 import { SQL } from "./SQL";
 import { compSql } from "./SQL/Print";
 import { Lit } from "./SqlType";
+import { StreamingRows } from "./StreamingRows";
 
 export class QueryMetricsImpl extends Debug.Debug.QueryMetrics {
     public setQuerySQL(val: string) {
@@ -82,6 +83,13 @@ export async function query2<t extends object>(sqlTag: string | undefined, conn:
         }
     }
     return rows;
+}
+
+export async function query2Streaming<t extends object>(sqlTag: string | undefined, conn: pg.Client, _n: number, sql: SQL, rowChunkSize: number): Promise<StreamingRows<t>> {
+    const [, sqlText, params] = compSql(sql);
+    const pgParams = params.map(x => litToPgParam(x.param));
+    const streamingRows = await runCustomQueryStreaming(conn, sql.cols.map((s: any) => s.propName), sql.cols.map((s: any) => s.parser), tagSql(sqlTag, sqlText), pgParams, rowChunkSize);
+    return streamingRows;
 }
 
 export function tagSql(sqlTag: string | undefined, sqlText: string): string {

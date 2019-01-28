@@ -46,7 +46,8 @@
     "typescript": "3.2.2"
   },
   "dependencies": {
-    "@types/pg": ">=7.1.0 <=7.4.11"
+    "@types/pg": ">=7.1.0 <=7.4.11",
+    "pg-cursor": ">=2.0.0 <3"
   },
   "peerDependencies": {
     "pg": ">=7.0.2 <8"
