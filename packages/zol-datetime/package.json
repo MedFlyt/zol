@@ -1,6 +1,6 @@
 {
   "name": "zol-datetime",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "SQL Date/Time functionality for Zol",
   "keywords": [
     "typescript",
@@ -44,10 +44,10 @@
     "tslint": "5.11.0",
     "typescript-formatter": "7.2.2",
     "typescript": "3.2.2",
-    "zol": "^0.3.0"
+    "zol": "^0.3.1"
   },
   "peerDependencies": {
     "js-joda": ">=1.5.4 <2",
-    "zol": "^0.3.0"
+    "zol": "^0.3.1"
   }
 }
