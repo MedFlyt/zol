@@ -148,7 +148,8 @@ CustomCursor.prototype.handleDataRow = function(this: any, msg: any) {
 
 export function runCustomQueryStreaming(conn: pgLib.Client, propNames: string[], propParsers: ((val: string) => any)[], text: string, values: any, rowChunkSize: number): Promise<StreamingRows<any>> {
     return new Promise<StreamingRows<any>>((resolve, reject) => {
-        const cursor = conn.query(new CustomCursor(propNames, propParsers, text, values));
+        const cursor = new CustomCursor(propNames, propParsers, text, values);
+        conn.query(cursor);
 
         // Read the first batch of results before we return from this function,
         // so that if there is an SQL error it will be thrown here, rather than
