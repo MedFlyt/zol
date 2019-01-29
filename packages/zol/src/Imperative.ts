@@ -50,7 +50,7 @@ export async function query<t extends object>(sqlTag: string | undefined, conn: 
  * @param sqlTag Will be injected as a comment into the SQL that is sent to the server. Useful for identifying the query during log analysis and performance analysis
  * @param rowChunkSize How many rows to read and process during each iteration
  */
-export async function queryStreaming<t extends object>(sqlTag: string | undefined, conn: pg.Client, q: (q: Q<{}>) => MakeCols<{}, t>, rowChunkSize = 5000): Promise<StreamingRows<t>> {
+export async function queryStreaming<t extends object>(sqlTag: string | undefined, conn: pg.Client, q: (q: Q<{}>) => MakeCols<{}, t>, rowChunkSize = 2000): Promise<StreamingRows<t>> {
     // This ensures that the generated SQL will be the same for identical queries
     resetScope();
 
