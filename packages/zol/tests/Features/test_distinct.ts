@@ -2,7 +2,7 @@ import "../../../../helper_framework/boot"; // tslint:disable-line:no-import-sid
 
 import * as test from "blue-tape";
 import { withTestDatabase } from "../../../../helper_framework/TestDb";
-import { booleanCol, defaultValue, distinct, insertMany, numberCol, order, Order, pg, query, select, selectValues, textCol } from "../../src/zol";
+import { booleanCol, defaultValue, distinct, e, insertMany, numberCol, order, Order, pg, query, restrict, select, selectValues, textCol } from "../../src/zol";
 import { createPersonTableSql, PersonTable, personTable } from "./Tables";
 
 test("select distinct", t => withTestDatabase(async conn => {
@@ -33,13 +33,18 @@ test("select distinct", t => withTestDatabase(async conn => {
 
     await insertMany("", conn, personTable, personVals);
 
-    const actual = await query("", conn, q => distinct(q, q => {
-        const person = select(q, personTable);
-        order(q, person.name, Order.Asc);
+    const actual = await query("", conn, q => {
+        const row = distinct(q, q => {
+            const person = select(q, personTable);
+            return {
+                name: person.name
+            };
+        });
+        order(q, row.name, Order.Asc);
         return {
-            name: person.name
+            name: row.name
         };
-    }));
+    });
 
     const expected: typeof actual = [
         { name: "A" },
@@ -51,15 +56,18 @@ test("select distinct", t => withTestDatabase(async conn => {
 }));
 
 test("selectValues distinct", t => withTestDatabase(async conn => {
-    const actual = await query("", conn, q => distinct(q, q => {
-        const fruit = selectValues(q, [
-            { name: textCol("apple"), color: textCol("red"), tasty: booleanCol(true) },
-            { name: textCol("orange"), color: textCol("orange"), tasty: booleanCol(true) },
-            { name: textCol("banana"), color: textCol("yellow"), tasty: booleanCol(false) }
-        ]);
-        order(q, fruit.name, Order.Asc);
-        return fruit;
-    }));
+    const actual = await query("", conn, q => {
+        const row = distinct(q, q => {
+            const fruit = selectValues(q, [
+                { name: textCol("apple"), color: textCol("red"), tasty: booleanCol(true) },
+                { name: textCol("orange"), color: textCol("orange"), tasty: booleanCol(true) },
+                { name: textCol("banana"), color: textCol("yellow"), tasty: booleanCol(false) }
+            ]);
+            return fruit;
+        });
+        order(q, row.name, Order.Asc);
+        return row;
+    });
 
     const expected: typeof actual = [
         { name: "apple", color: "red", tasty: true },
@@ -71,21 +79,44 @@ test("selectValues distinct", t => withTestDatabase(async conn => {
 }));
 
 test("selectValues distinct 2", t => withTestDatabase(async conn => {
-    const actual = await query("", conn, q => distinct(q, q => {
-        const fruit = selectValues(q, [
-            { name: textCol("apple"), color: textCol("red"), tasty: booleanCol(true) },
-            { name: textCol("orange"), color: textCol("orange"), tasty: booleanCol(true) },
-            { name: textCol("apple"), color: textCol("red"), tasty: booleanCol(true) },
-            { name: textCol("banana"), color: textCol("yellow"), tasty: booleanCol(false) }
-        ]);
-        order(q, fruit.name, Order.Asc);
-        return fruit;
-    }));
+    const actual = await query("", conn, q => {
+        const row = distinct(q, q => {
+            const fruit = selectValues(q, [
+                { name: textCol("apple"), color: textCol("red"), tasty: booleanCol(true) },
+                { name: textCol("orange"), color: textCol("orange"), tasty: booleanCol(true) },
+                { name: textCol("apple"), color: textCol("red"), tasty: booleanCol(true) },
+                { name: textCol("banana"), color: textCol("yellow"), tasty: booleanCol(false) }
+            ]);
+            return fruit;
+        });
+        order(q, row.name, Order.Asc);
+        return row;
+    });
 
     const expected: typeof actual = [
         { name: "apple", color: "red", tasty: true },
         { name: "banana", color: "yellow", tasty: false },
         { name: "orange", color: "orange", tasty: true }
+    ];
+
+    t.deepEqual(actual, expected);
+}));
+
+test("restricted distinct", t => withTestDatabase(async conn => {
+    const actual = await query("", conn, q => distinct(q, q => {
+        const x = selectValues(q, [
+            { a: numberCol(42), b: numberCol(1) },
+            { a: numberCol(42), b: numberCol(2) },
+            { a: numberCol(42), b: numberCol(3) }
+        ]);
+        restrict(q, e(x.b, ">=", numberCol(2)));
+        return {
+            a: x.a
+        };
+    }));
+
+    const expected: typeof actual = [
+        { a: 42 }
     ];
 
     t.deepEqual(actual, expected);

@@ -369,23 +369,16 @@ export function distinct<s, a>(quer: Query<s, a>): Query<s, a> {
                     return State.bind(
                         State.get(),
                         st => State.bind(
-                            (
-                                inner_st.sources.length === 1
-                                    ? State.put({
-                                        ...st,
-                                        sources: [{
-                                            ...inner_st.sources[0],
-                                            distinct: true
-                                        }]
-                                    })
-                                    : State.put({
-                                        ...st,
-                                        sources: [sqlFrom(allCols(inner_st.sources), {
-                                            type: "Product",
-                                            sqls: inner_st.sources
-                                        })]
-                                    })
-                            ),
+                            (State.put({
+                                ...st,
+                                sources: [{
+                                    ...sqlFrom(allCols(inner_st.sources), {
+                                        type: "Product",
+                                        sqls: inner_st.sources
+                                    }),
+                                    distinct: true
+                                }]
+                            })),
                             () => State.pure(res)
                         )
 
