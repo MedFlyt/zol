@@ -465,7 +465,7 @@ export function inQuery<s, a>(lhs: Col<s, a>, rhs: Query<s, Col<s, a>>): Col<s, 
     return <any>colWrap({
         type: "EInQuery",
         exp: colUnwrap(lhs),
-        sql: compQuery(freshScope(), q2)[1],
+        sql: compQuery(freshScope(), q2),
         parser: SqlType.booleanParser
     });
 }

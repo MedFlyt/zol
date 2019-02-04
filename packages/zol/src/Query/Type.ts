@@ -1,3 +1,4 @@
+import { nextGlobalNameSupply } from "../Compile";
 import { GenState, initState, Name, Scope, showName } from "../GenState";
 import * as State from "../StateMonad";
 import { ColName } from "../Types";
@@ -82,19 +83,15 @@ export function isolate<s, a>(q: Query<s, a>): State.State<GenState, [GenState, 
     return State.bind(
         State.get(),
         st => State.bind(
-            State.put({
-                ...initState(st.nameScope),
-                nameSupply: st.nameSupply
-            }),
+            State.put(
+                initState(st.nameScope)
+            ),
             () => State.bind(
                 q.unQ,
                 x => State.bind(
                     State.get(),
                     st2 => State.bind(
-                        State.put({
-                            ...st,
-                            nameSupply: st2.nameSupply
-                        }),
+                        State.put(st),
                         () => State.pure<GenState, [GenState, a]>([st2, x])
                     )
                 )
@@ -109,16 +106,10 @@ export function isolate<s, a>(q: Query<s, a>): State.State<GenState, [GenState, 
 export function freshId(): State.State<GenState, Name> {
     return State.bind(
         State.get(),
-        st => State.bind(
-            State.put({
-                ...st,
-                nameSupply: st.nameSupply + 1
-            }),
-            () => State.pure({
-                scope: st.nameScope,
-                ident: st.nameSupply
-            })
-        )
+        st => State.pure({
+            scope: st.nameScope,
+            ident: nextGlobalNameSupply()
+        })
     );
 }
 

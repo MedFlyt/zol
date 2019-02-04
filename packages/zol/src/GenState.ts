@@ -28,7 +28,6 @@ export interface GenState {
     readonly sources: SQL[];
     readonly staticRestricts: Exp<SQL, boolean>[];
     readonly groupCols: SomeCol<SQL>[];
-    readonly nameSupply: number;
     readonly nameScope: number;
 }
 
@@ -37,7 +36,6 @@ export function initState(scope: number): GenState {
         sources: [],
         staticRestricts: [],
         groupCols: [],
-        nameSupply: 0,
         nameScope: scope
     };
 }

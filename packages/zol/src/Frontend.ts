@@ -1,5 +1,5 @@
 import { assertNever } from "./assertNever";
-import { compQuery, resetScope } from "./Compile";
+import { compQuery, resetGlobalNameSupply, resetScope } from "./Compile";
 import { runCustomQuery, runCustomQueryStreaming } from "./CustomQuery";
 import * as Debug from "./Debug";
 import { pg } from "./pg";
@@ -45,12 +45,13 @@ export function query<t extends object>(sqlTag: string | undefined, conn: pg.Cli
 
     // This ensures that the generated SQL will be the same for identical queries
     resetScope();
+    resetGlobalNameSupply();
 
-    const [n, sql] = compQuery(0, q);
-    return query2(sqlTag, conn, n, sql);
+    const sql = compQuery(0, q);
+    return query2(sqlTag, conn, sql);
 }
 
-export async function query2<t extends object>(sqlTag: string | undefined, conn: pg.Client, _n: number, sql: SQL): Promise<t[]> {
+export async function query2<t extends object>(sqlTag: string | undefined, conn: pg.Client, sql: SQL): Promise<t[]> {
     if (Debug.enabled) {
         // tslint:disable-next-line:no-non-null-assertion
         (<QueryMetricsImpl>Debug.lastQueryMetrics.get(conn)!).setStage2BeforeCompileSql();
@@ -85,7 +86,7 @@ export async function query2<t extends object>(sqlTag: string | undefined, conn:
     return rows;
 }
 
-export async function query2Streaming<t extends object>(sqlTag: string | undefined, conn: pg.Client, _n: number, sql: SQL, rowChunkSize: number): Promise<StreamingRows<t>> {
+export async function query2Streaming<t extends object>(sqlTag: string | undefined, conn: pg.Client, sql: SQL, rowChunkSize: number): Promise<StreamingRows<t>> {
     const [, sqlText, params] = compSql(sql);
     const pgParams = params.map(x => litToPgParam(x.param));
     const streamingRows = await runCustomQueryStreaming(conn, sql.cols.map((s: any) => s.propName), sql.cols.map((s: any) => s.parser), tagSql(sqlTag, sqlText), pgParams, rowChunkSize);

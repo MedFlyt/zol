@@ -15,17 +15,16 @@ import { ColName } from "./Types";
  *
  * Groups are ignored, as they are only used by `aggregate`.
  */
-export function compQuery<a>(scope: Scope, q: Query<any, a>): [number, SQL] {
+export function compQuery<a>(scope: Scope, q: Query<any, a>): SQL {
     const [cs, st] = runQueryM(scope, q);
     return compQuery2(cs, st);
 }
 
-export function compQuery2<a>(cs: a, st: GenState): [number, SQL] {
+export function compQuery2<a>(cs: a, st: GenState): SQL {
     const final = finalCols(<any>cs);
     const sql = state2sql(st);
     const live = colNames(final).concat(allNonOutputColNames(sql));
     const srcs = removeDeadCols(live, sql);
-    const n: number = st.nameSupply;
     const s: SQL = {
         cols: final,
         source: {
@@ -38,7 +37,7 @@ export function compQuery2<a>(cs: a, st: GenState): [number, SQL] {
         limits: null,
         distinct: false
     };
-    return [n, s];
+    return s;
 }
 
 let scopeSupply: Scope = 1;
@@ -50,6 +49,17 @@ export function freshScope(): Scope {
 
 export function resetScope(): void {
     scopeSupply = 1;
+}
+
+let globalNameSupply: number = 1;
+
+export function nextGlobalNameSupply(): number {
+    globalNameSupply++;
+    return globalNameSupply - 1;
+}
+
+export function resetGlobalNameSupply(): void {
+    globalNameSupply = 0;
 }
 
 /**

@@ -1,5 +1,5 @@
 import { booleanCol, Col, colUnwrap, colWrap, numberCol } from "./Column";
-import { compQuery2, freshScope, resetScope } from "./Compile";
+import { compQuery2, freshScope, resetGlobalNameSupply, resetScope } from "./Compile";
 import * as Debug from "./Debug";
 import { QueryMetricsImpl } from "./Frontend";
 import * as Frontend from "./Frontend";
@@ -32,11 +32,12 @@ export async function query<t extends object>(sqlTag: string | undefined, conn: 
 
     // This ensures that the generated SQL will be the same for identical queries
     resetScope();
+    resetGlobalNameSupply();
 
     const mutQ: MutQuery = [initState(0)];
     const result = q(<any>mutQ);
-    const [n, sql] = compQuery2(result, mutQ[0]);
-    return Frontend.query2<t>(sqlTag, conn, n, sql);
+    const sql = compQuery2(result, mutQ[0]);
+    return Frontend.query2<t>(sqlTag, conn, sql);
 }
 
 /**
@@ -53,11 +54,12 @@ export async function query<t extends object>(sqlTag: string | undefined, conn: 
 export async function queryStreaming<t extends object>(sqlTag: string | undefined, conn: pg.Client, q: (q: Q<{}>) => MakeCols<{}, t>, rowChunkSize = 2000): Promise<StreamingRows<t>> {
     // This ensures that the generated SQL will be the same for identical queries
     resetScope();
+    resetGlobalNameSupply();
 
     const mutQ: MutQuery = [initState(0)];
     const result = q(<any>mutQ);
-    const [n, sql] = compQuery2(result, mutQ[0]);
-    return Frontend.query2Streaming<t>(sqlTag, conn, n, sql, rowChunkSize);
+    const sql = compQuery2(result, mutQ[0]);
+    return Frontend.query2Streaming<t>(sqlTag, conn, sql, rowChunkSize);
 }
 
 export function select<s, a extends object, b extends object>(q: Q<s>, table: Table<a, b>): MakeCols<s, a & b> {
@@ -176,7 +178,7 @@ export function inQuery<s, a>(lhs: Col<s, a>, rhs: (q: Q<s>) => Col<s, a>): Col<
     return <any>colWrap({
         type: "EInQuery",
         exp: colUnwrap(lhs),
-        sql: compQuery2(result2, mutQ[0])[1],
+        sql: compQuery2(result2, mutQ[0]),
         parser: SqlType.booleanParser
     });
 }
@@ -211,7 +213,7 @@ export function exists<s>(subquery: (q: Q<s>) => Col<s, Arbitrary>): Col<s, bool
 
     return <any>colWrap({
         type: "EExists",
-        sql: compQuery2(result2, mutQ[0])[1],
+        sql: compQuery2(result2, mutQ[0]),
         parser: SqlType.booleanParser
     });
 }
