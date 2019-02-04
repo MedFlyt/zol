@@ -350,3 +350,103 @@ test("multiple aggregates", t => withTestDatabase(async conn => {
 
     t.deepEqual(actual, expected);
 }));
+
+test("aggregate empty table count", t => withTestDatabase(async conn => {
+    await pg.query_(conn, createPersonTableSql);
+
+    const actual = await query("", conn, q => {
+        const aggr = aggregate(q, q => {
+            const vals = select(q, personTable);
+            return {
+                c: count(vals.age)
+            };
+        });
+        return {
+            x: aggr.c
+        };
+    });
+
+    const expected: typeof actual = [{ x: 0 }];
+
+    t.deepEqual(actual, expected);
+}));
+
+test("aggregate empty table sum", t => withTestDatabase(async conn => {
+    await pg.query_(conn, createPersonTableSql);
+
+    const actual = await query("", conn, q => {
+        const aggr = aggregate(q, q => {
+            const vals = select(q, personTable);
+            return {
+                c: sum(vals.age)
+            };
+        });
+        return {
+            x: aggr.c
+        };
+    });
+
+    const expected: typeof actual = [{ x: 0 }];
+
+    t.deepEqual(actual, expected);
+}));
+
+test("aggregate empty table avg", t => withTestDatabase(async conn => {
+    await pg.query_(conn, createPersonTableSql);
+
+    const actual = await query("", conn, q => {
+        const aggr = aggregate(q, q => {
+            const vals = select(q, personTable);
+            return {
+                c: avg(vals.age)
+            };
+        });
+        return {
+            x: aggr.c
+        };
+    });
+
+    const expected: typeof actual = [{ x: null }];
+
+    t.deepEqual(actual, expected);
+}));
+
+test("aggregate empty table min", t => withTestDatabase(async conn => {
+    await pg.query_(conn, createPersonTableSql);
+
+    const actual = await query("", conn, q => {
+        const aggr = aggregate(q, q => {
+            const vals = select(q, personTable);
+            return {
+                c: min(vals.age)
+            };
+        });
+        return {
+            x: aggr.c
+        };
+    });
+
+    const expected: typeof actual = [{ x: null }];
+
+    t.deepEqual(actual, expected);
+}));
+
+test("aggregate empty table max", t => withTestDatabase(async conn => {
+    await pg.query_(conn, createPersonTableSql);
+
+    const actual = await query("", conn, q => {
+        const aggr = aggregate(q, q => {
+            const vals = select(q, personTable);
+            return {
+                c: max(vals.age)
+            };
+        });
+        return {
+            x: aggr.c
+        };
+    });
+
+    const expected: typeof actual = [{ x: null }];
+
+    t.deepEqual(actual, expected);
+}));

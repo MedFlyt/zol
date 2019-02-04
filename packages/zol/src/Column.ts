@@ -116,3 +116,11 @@ export function ifThenElse<s, a>(if_: Col<s, boolean>, then: Col<s, a>, else_: C
 export function matchNull<s, s2, a, b>(nullable: Col<s, a | null>, replacement: Col<s, b>, f: (col: Col<s2, a>) => Col<s2, b>): Col<s, b> {
     return ifThenElse(isNull(nullable), replacement, <any>f(<any>nullable));
 }
+
+/**
+ * If the second value is null, return the first value. Otherwise return the
+ * second value.
+ */
+export function ifNull<s, a>(replacement: Col<s, a>, nullable: Col<s, a | null>): Col<s, a> {
+    return matchNull(nullable, replacement, x => x);
+}

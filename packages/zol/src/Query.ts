@@ -1,4 +1,4 @@
-import { Col, colUnwrap, colWrap } from "./Column";
+import { Col, colUnwrap, colWrap, ifNull, numberCol } from "./Column";
 import { compQuery, finalCols, freshScope } from "./Compile";
 import { Exp, SomeCol } from "./Exp";
 import { GenState, rename } from "./GenState";
@@ -9,6 +9,7 @@ import * as State from "./StateMonad";
 import { Table } from "./Table";
 import { allCols, colNames, state2sql } from "./Transform";
 import { ColName, TableName } from "./Types";
+import { Unsafe } from "./Unsafe";
 
 function mkSome<sql, a>(val: Exp<sql, a>, parser: (val: string) => a): SomeCol<sql> {
     return {
@@ -404,7 +405,7 @@ export function count<s, a>(col: Col<s, a>): Aggr<s, number> {
     };
 }
 
-export function avg<s>(col: Col<s, number>): Aggr<s, number> {
+export function avg<s>(col: Col<s, number>): Aggr<s, number | null> {
     return <any>{
         type: "EAggrEx",
         name: "AVG",
@@ -414,15 +415,20 @@ export function avg<s>(col: Col<s, number>): Aggr<s, number> {
 }
 
 export function sum<s>(col: Col<s, number>): Aggr<s, number> {
-    return <any>{
-        type: "EAggrEx",
-        name: "SUM",
-        exp: colUnwrap(col),
-        parser: SqlType.numberParser
-    };
+    return <any>colUnwrap(
+        ifNull(
+            Unsafe.unsafeCast(numberCol(0), "INT", SqlType.intParser),
+            colWrap({
+                type: "EAggrEx",
+                name: "SUM",
+                exp: colUnwrap(col),
+                parser: SqlType.numberParser
+            })
+        )
+    );
 }
 
-export function max<s, a>(col: Col<s, a>): Aggr<s, a> {
+export function max<s, a>(col: Col<s, a>): Aggr<s, a | null> {
     return <any>{
         type: "EAggrEx",
         name: "MAX",
@@ -431,7 +437,7 @@ export function max<s, a>(col: Col<s, a>): Aggr<s, a> {
     };
 }
 
-export function min<s, a>(col: Col<s, a>): Aggr<s, a> {
+export function min<s, a>(col: Col<s, a>): Aggr<s, a | null> {
     return <any>{
         type: "EAggrEx",
         name: "MIN",
