@@ -7,8 +7,6 @@ export function allNamesInExp<a>(exp: Exp<SQL, a>): ColName[] {
     switch (exp.type) {
         case "ECol":
             return [exp.colName];
-        case "ETblCol":
-            return exp.colNames;
         case "ELit":
             return [];
         case "EBinOp":

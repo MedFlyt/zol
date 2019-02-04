@@ -21,7 +21,6 @@ export namespace SomeCol {
 
 export type Exp<sql, a> =
     Exp.ECol |
-    Exp.ETblCol |
     Exp.ELit |
     Exp.EBinOp<sql, a> |
     Exp.ECustomBinOp<sql, a> |
@@ -43,11 +42,6 @@ export namespace Exp {
         readonly correlation: TableName | null;
         readonly colName: ColName;
         readonly parser: (val: string) => any;
-    }
-
-    export interface ETblCol {
-        readonly type: "ETblCol";
-        readonly colNames: ColName[];
     }
 
     export interface ELit {

@@ -198,8 +198,6 @@ function ppSomeCol(c: SomeCol<SQL>): PP<string> {
 
 function ppCol<a>(c: Exp<SQL, a>): PP<string> {
     switch (c.type) {
-        case "ETblCol":
-            throw new Error("compiler bug: ppCol saw TblCol: " + c.colNames);
         case "ECol":
             if (c.correlation === null) {
                 return State.pure(fromColName(c.colName));

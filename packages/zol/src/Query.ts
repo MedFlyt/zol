@@ -591,9 +591,6 @@ function fromTup<a extends object>(c: MakeCols<any, a>): [SomeCol<SQL>, string, 
     for (const key of keys) {
         const col: Col<any, any> = (<any>c)[key];
         const exp = colUnwrap(col);
-        if (exp.type === "ETblCol") {
-            throw new Error("Unexpected exp type:: " + exp.type);
-        }
         result.push([{
             type: "Some",
             exp: exp,
