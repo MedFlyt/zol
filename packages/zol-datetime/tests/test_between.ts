@@ -75,6 +75,14 @@ test("between instants millis", t => withTestDatabase(async conn => {
     t.deepEqual(actuals, expecteds);
 }));
 
+function normalizeZero(num: number): number {
+    if (num === -0) {
+        return 0;
+    } else {
+        return num;
+    }
+}
+
 test("negative between instants long time span", t => withTestDatabase(async conn => {
     const startEpoch = 1490238000;
     const increment = 12 * 60 * 60;
@@ -86,7 +94,7 @@ test("negative between instants long time span", t => withTestDatabase(async con
         }));
 
         actuals.push(actual[0].val.seconds());
-        expecteds.push(-i);
+        expecteds.push(normalizeZero(-i));
     }
 
     t.deepEqual(actuals, expecteds);
@@ -103,7 +111,7 @@ test("negative between instants short time spans", t => withTestDatabase(async c
         }));
 
         actuals.push(actual[0].val.seconds());
-        expecteds.push(-i);
+        expecteds.push(normalizeZero(-i));
     }
 
     t.deepEqual(actuals, expecteds);
