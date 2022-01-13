@@ -68,7 +68,7 @@ export class HugeResultsBenchmark extends QueryBenchmark {
     }
 
     public async run(): Promise<Debug.QueryMetrics> {
-        await query(this.conn, q => {
+        await query("", this.conn, q => {
             return select(q, personTable);
         });
         return Debug.getLastQueryMetrics(this.conn);
