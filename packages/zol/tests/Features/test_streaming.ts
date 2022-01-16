@@ -5,6 +5,10 @@ import { withTestDatabase } from "../../../../helper_framework/TestDb";
 import { Col, numberCol, order, Order, queryStreaming, selectValues, SqlType, textCol, Unsafe } from "../../src/zol";
 
 test("streaming nums", t => withTestDatabase(async conn => {
+    if ((conn as any).native !== undefined) {
+        return t.skip("Streaming not supported when using \"pg-native\" driver");
+    }
+
     const numTotalRows = 55;
     const rowChunkSize = 10;
 
@@ -52,6 +56,10 @@ test("streaming nums", t => withTestDatabase(async conn => {
 }));
 
 test("streaming empty", t => withTestDatabase(async conn => {
+    if ((conn as any).native !== undefined) {
+        return t.skip("Streaming not supported when using \"pg-native\" driver");
+    }
+
     const resultsStream = await queryStreaming("", conn, q => {
         return selectValues(q, []);
     });
@@ -65,6 +73,10 @@ test("streaming empty", t => withTestDatabase(async conn => {
 }));
 
 test("streaming action error 1", t => withTestDatabase(async conn => {
+    if ((conn as any).native !== undefined) {
+        return t.skip("Streaming not supported when using \"pg-native\" driver");
+    }
+
     const numTotalRows = 40;
     const rowChunkSize = 10;
 
@@ -103,6 +115,10 @@ test("streaming action error 1", t => withTestDatabase(async conn => {
 }));
 
 test("streaming action error 2", t => withTestDatabase(async conn => {
+    if ((conn as any).native !== undefined) {
+        return t.skip("Streaming not supported when using \"pg-native\" driver");
+    }
+
     const numTotalRows = 40;
     const rowChunkSize = 10;
 

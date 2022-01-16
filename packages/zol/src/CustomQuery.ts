@@ -37,12 +37,17 @@ function identityTypeParser(val: string) {
 
 export function runCustomQuery(conn: pgLib.Client, propNames: string[], propParsers: ((val: string) => any)[], text: string, values: any): Promise<any[]> {
     return new Promise<any[]>((resolve, reject) => {
+        let customTypeParserIgnored = true;
+
         conn.query({
             text: text,
             values: values,
             rowMode: "array",
             types: {
-                getTypeParser: () => identityTypeParser
+                getTypeParser: () => (val: string) => {
+                    customTypeParserIgnored = false;
+                    return val;
+                }
             }
         }, (err: any, result: QueryResult) => {
             if (<boolean>err) {
@@ -61,7 +66,46 @@ export function runCustomQuery(conn: pgLib.Client, propNames: string[], propPars
                 const row = resultRows[i];
                 const newRow: any = {};
                 for (let j = 0; j < numFields; ++j) {
-                    const colValue = row[j];
+                    let colValue = row[j];
+
+                    // "pg" has a bug that it ignores our custom type parser
+                    // when using "pg-native":
+                    // <https://github.com/brianc/node-postgres/issues/2686>
+                    //
+                    // Here is a workaround until the bug is fixed
+                    if (customTypeParserIgnored && colValue !== null) {
+                        switch (result.fields[j].dataTypeID) {
+                            case 16: // BOOL
+                                colValue = colValue === true ? "t" : "f";
+                                break;
+                            case 21: // INT2
+                            case 23: // INT4
+                            case 700: // FLOAT4
+                            case 701: // FLOAT8
+                            case 1700: // NUMERIC
+                                colValue = "" + colValue;
+                                break;
+                            case 114: // JSON
+                            case 3802: // JSONB
+                                colValue = JSON.stringify(colValue);
+                                break;
+                            case 1082: // DATE
+                                colValue = formatDate(colValue);
+                                break;
+                            case 1184: // TIMESTAMPTZ
+                                colValue = formatTimestamptz(colValue);
+                                break;
+                            case 1114: // TIMESTAMP
+                                colValue = formatTimestamp(colValue);
+                                break;
+                            case 1186: // INTERVAL
+                                colValue = formatInterval(colValue);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
                     // This try block is more broad than necessary.. we only expect
                     // an error to happen inside the call to:
                     //
@@ -93,6 +137,10 @@ export function runCustomQuery(conn: pgLib.Client, propNames: string[], propPars
 }
 
 export function runCustomQueryStreaming(conn: pgLib.Client, propNames: string[], propParsers: ((val: string) => any)[], text: string, values: any, rowChunkSize: number): Promise<StreamingRows<any>> {
+    if ((conn as any).native) {
+        throw new Error("Streaming not supported when using \"pg-native\" driver");
+    }
+
     function parseRows(resultRows: any[]): any[] {
         const resultRowsLength = resultRows.length;
         const numFields = propNames.length;
@@ -212,4 +260,76 @@ export function runCustomQueryStreaming(conn: pgLib.Client, propNames: string[],
             }
         });
     });
+}
+
+function formatDate(date: Date): string {
+    return `${date.getFullYear()}-${twoDigits(date.getMonth() + 1)}-${twoDigits(date.getDate())}`;
+}
+
+function formatTimestamp(date: Date): string {
+    return `${date.getFullYear()}-${twoDigits(date.getMonth() + 1)}-${twoDigits(date.getDate())} ${twoDigits(date.getHours())}:${twoDigits(date.getMinutes())}:${twoDigits(date.getSeconds())}.${threeDigits(date.getMilliseconds())}`;
+}
+
+function formatTimestamptz(date: Date): string {
+    return `${date.getUTCFullYear()}-${twoDigits(date.getUTCMonth() + 1)}-${twoDigits(date.getUTCDate())} ${twoDigits(date.getUTCHours())}:${twoDigits(date.getUTCMinutes())}:${twoDigits(date.getUTCSeconds())}.${threeDigits(date.getUTCMilliseconds())}`;
+}
+
+function formatInterval(interval: any): string {
+    let result = "";
+    if (interval.years !== undefined) {
+        result += `${interval.years} years `;
+    }
+    if (interval.months !== undefined) {
+        result += `${interval.months} months `;
+    }
+    if (interval.days !== undefined) {
+        result += `${interval.days} days `;
+    }
+    let negativeInterval = false;
+
+    let hours = interval.hours !== undefined ? interval.hours : 0;
+    if (hours < 0) {
+        negativeInterval = true;
+        hours = -hours;
+    }
+
+    let minutes = interval.minutes !== undefined ? interval.minutes : 0;
+    if (minutes < 0) {
+        negativeInterval = true;
+        minutes = -minutes;
+    }
+
+    let seconds = interval.seconds !== undefined ? interval.seconds : 0;
+    if (seconds < 0) {
+        negativeInterval = true;
+        seconds = -seconds;
+    }
+
+    let milliseconds = interval.milliseconds !== undefined ? Math.trunc(interval.milliseconds) : 0;
+    if (milliseconds < 0) {
+        negativeInterval = true;
+        milliseconds = -milliseconds;
+    }
+
+    result += `${negativeInterval ? "-" : ""}${twoDigits(hours)}:${twoDigits(minutes)}:${twoDigits(seconds)}.${threeDigits(milliseconds)}`;
+    result = result.trim();
+    return result;
+}
+
+function twoDigits(val: number): string {
+    if (val <= 9) {
+        return "0" + val;
+    } else {
+        return "" + val;
+    }
+}
+
+function threeDigits(val: number): string {
+    if (val <= 9) {
+        return "00" + val;
+    } else if (val <= 99) {
+        return "0" + val;
+    } else {
+        return "" + val;
+    }
 }

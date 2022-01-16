@@ -56,6 +56,10 @@ function letterPairParser(val: string): LetterPair {
 // --------------------------------------------------------------------
 
 test("streaming parse error 1", t => withTestDatabase(async conn => {
+    if ((conn as any).native !== undefined) {
+        return t.skip("Streaming not supported when using \"pg-native\" driver");
+    }
+
     await pg.query_(conn, createLetterTableSql);
 
     const vals: LetterTable[] = [
@@ -133,6 +137,10 @@ test("streaming parse error 1", t => withTestDatabase(async conn => {
 }));
 
 test("streaming parse error 2", t => withTestDatabase(async conn => {
+    if ((conn as any).native !== undefined) {
+        return t.skip("Streaming not supported when using \"pg-native\" driver");
+    }
+
     await pg.query_(conn, createLetterTableSql);
 
     const vals: LetterTable[] = [
